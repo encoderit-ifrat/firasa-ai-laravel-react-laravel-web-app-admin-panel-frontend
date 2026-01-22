@@ -4,7 +4,6 @@ import {
   ArrowUpDown,
   Eye,
   PenSquare,
-  Trash2,
   Plus,
   Rows3,
   SlidersHorizontal,
@@ -38,6 +37,7 @@ import {
   AlertDialogCancel,
 } from "../../../components/ui/alert-dialog";
 import FormUser from "./-components/form-user";
+import IconDelete from "../../../components/svg-icon/icon-delete";
 
 export const Route = createFileRoute("/_app/users-results/")({
   component: RouteComponent,
@@ -242,20 +242,20 @@ function RouteComponent() {
                 },
               },
               {
-                type: "delete",
-                name: "delete",
-                icon: Trash2,
-                props: {
-                  variant: "destructive",
-                  onClick: () =>
-                    setForm({
-                      type: "delete",
-                      title: "",
-                      description: "",
-                      id: data.id,
-                    }),
-                },
-              },
+  type: "delete",
+  name: "delete",
+  icon: IconDelete, // Changed from <IconDelete/> to IconDelete
+  props: {
+    variant: "destructive",
+    onClick: () =>
+      setForm({
+        type: "delete",
+        title: "",
+        description: "",
+        id: data.id,
+      }),
+  },
+}
             ]}
           />
         );
@@ -366,7 +366,7 @@ function RouteComponent() {
                 setForm(FORM_DATA);
               }}
             >
-              <Trash2 /> Delete
+              <IconDelete /> Delete
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
