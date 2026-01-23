@@ -84,28 +84,34 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" side={sidebarSide} {...props}>
       <SidebarHeader>
-        <div className="flex items-center justify-between">
-          {!open ? (
-            <div
-              onMouseEnter={() => setIsHovered(true)}
-              onMouseLeave={() => setIsHovered(false)}
-              className="relative"
-            >
-              {!isHovered ? (
-                <IconHead className="size-8 cursor-pointer" />
-              ) : (
-                <SidebarTrigger className="rounded-md p-1" />
-              )}
-            </div>
-          ) : (
-            <>
-              <IconHead className="size-8 cursor-pointer" />
-              <IconHeaderName />
-              <SidebarTrigger className="rounded-md p-1" />
-            </>
-          )}
+  <div className="flex items-center ">
+    {!open ? (
+      <div
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        className="relative"
+      >
+        {!isHovered ? (
+          <IconHead className="size-8 cursor-pointer" />
+        ) : (
+          <SidebarTrigger className="rounded-md p-1" />
+        )}
+      </div>
+    ) : (
+      <>
+        {/* LEFT: LOGO */}
+        <div className="flex items-center gap-1">
+          <IconHead className="size-8 shrink-0 cursor-pointer" />
+          <IconHeaderName className="h-5 w-auto -ml-1" />
         </div>
-      </SidebarHeader>
+
+        {/* RIGHT: TOGGLE */}
+        <SidebarTrigger className="ml-auto rounded-md p-1 items-center" />
+      </>
+    )}
+  </div>
+</SidebarHeader>
+
       <SidebarContent>
         <NavMain routes={routes} />
       </SidebarContent>

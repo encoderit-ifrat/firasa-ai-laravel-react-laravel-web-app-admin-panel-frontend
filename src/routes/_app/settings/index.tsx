@@ -39,6 +39,7 @@ import { Badge } from "../../../components/ui/badge";
 import { cn } from "../../../lib/utils";
 import FormAdmin from './-components/form-admin';
 import AppPagination from '../../../components/app-pagination';
+import IconUpdate from '../../../components/svg-icon/icon-update';
 
 export const Route = createFileRoute('/_app/settings/')({
   component: RouteComponent,
@@ -185,7 +186,7 @@ function RouteComponent() {
             className={cn(
               status === "Active"
                 ? "bg-green-100 text-green-700 border-green-200 hover:bg-green-100"
-                : "bg-gray-100 text-gray-700 border-gray-200 hover:bg-gray-100"
+                : "bg-gray-100 text-[#585051] border-gray-200 hover:bg-gray-100"
             )}
           >
              <span
@@ -212,6 +213,7 @@ function RouteComponent() {
                 name: "view",
                 icon: Eye,
                 props: {
+                  variant:"update",
                   onClick: () =>
                     setForm({
                       type: "read",
@@ -224,8 +226,9 @@ function RouteComponent() {
               {
                 type: "update",
                 name: "edit",
-                icon: PenSquare,
+                icon: IconUpdate,
                 props: {
+                   variant:"update",
                   onClick: () =>
                     setForm({
                       type: "update",
@@ -240,7 +243,7 @@ function RouteComponent() {
                 name: "delete",
                 icon: Trash2,
                 props: {
-                  variant: "destructive",
+                  variant: "delete",
                   onClick: () =>
                     setForm({
                       type: "delete",
@@ -342,14 +345,16 @@ function RouteComponent() {
         </div>
 
         {/* Dynamic Content */}
+       
       </div>
-    
+     
+
       {/* Data Info & Pagination */}
             <AppTable data={paginatedData} columns={columns} />
       <div className="flex items-end justify-between px-4">
-        <div className="text-sm text-gray-600">
+        {/* <div className="text-sm text-gray-600">
           Showing {startIndex + 1} to {Math.min(startIndex + ITEMS_PER_PAGE, DUMMY_DATA.length)} of {DUMMY_DATA.length} users
-        </div>
+        </div> */}
         <AppPagination
           currentPage={currentPage}
           totalPages={totalPages}

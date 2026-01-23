@@ -103,7 +103,7 @@ function RouteComponent() {
       </div>
       <div className="divider border-1 mt-6"></div>
       <section className="mb-20">
-        <h1 className="mt-14 mb-10 text-xl font-semibold">Statistics</h1>
+        <h1 className="text-primary mt-14 mb-10 text-xl font-semibold">Statistics</h1>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <CircleChart />
           <LineChart />

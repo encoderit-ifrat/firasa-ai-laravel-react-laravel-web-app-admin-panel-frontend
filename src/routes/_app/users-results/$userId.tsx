@@ -124,6 +124,7 @@ function RouteComponent() {
       <UserProfileDetail
         user={user}
         onEdit={(id) =>
+          
           setForm({
             type: "update",
             title: "Update User Result",

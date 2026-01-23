@@ -20,7 +20,7 @@ const chartData = [
   { category: "Free", value: 89, fill: "#FFA1E6" },
   { category: "Pro", value: 14, fill: "#FA3ABC" },
   { category: "Subscribers", value: 18, fill: "#CC0A7E" },
-  
+
 ];
 
 const chartConfig = {
@@ -88,7 +88,7 @@ export function CircleChart() {
         <div className="flex flex-col lg:flex-row items-center gap-8">
           <div className="lg:flex-1">
             <ChartContainer config={chartConfig}>
-              <PieChart>
+              <PieChart width={300} height={300}>
                 <ChartTooltip
                   cursor={false}
                   content={<ChartTooltipContent hideLabel />}
@@ -101,6 +101,8 @@ export function CircleChart() {
                   endAngle={-270}
                   label={renderCustomLabel}
                   labelLine={false}
+                  innerRadius={0}
+                  outerRadius={150}
                 >
                   {chartData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.fill} />
@@ -108,6 +110,7 @@ export function CircleChart() {
                 </Pie>
               </PieChart>
             </ChartContainer>
+           
           </div>
 
           <div className="flex flex-col gap-3 lg:justify-center">

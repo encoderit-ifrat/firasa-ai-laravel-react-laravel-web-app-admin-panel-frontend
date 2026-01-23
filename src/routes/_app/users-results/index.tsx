@@ -32,6 +32,8 @@ import {
 import FormUser from "./-components/form-user";
 import IconDelete from "../../../components/svg-icon/icon-delete";
 import AppPagination from "../../../components/app-pagination";
+import IconUpgrade from "../../../components/svg-icon/icon-upgrade";
+import IconUpdate from "../../../components/svg-icon/icon-update";
 
 export const Route = createFileRoute("/_app/users-results/")({
   component: RouteComponent,
@@ -223,7 +225,7 @@ function RouteComponent() {
             className={cn(
               status === "Active"
                 ? "bg-green-100 text-green-700 border-green-200 hover:bg-green-100"
-                : "bg-gray-100 text-gray-700 border-gray-200 hover:bg-gray-100"
+                : "bg-gray-100 text-[#585051] border-gray-200 hover:bg-gray-100"
             )}
           >
             <span
@@ -250,6 +252,7 @@ function RouteComponent() {
                 name: "view",
                 icon: Eye,
                 props: {
+                variant:"update",
                   onClick: () =>
                     navigate({
                       to: "/users-results/$userId",
@@ -260,10 +263,12 @@ function RouteComponent() {
               {
                 type: "update",
                 name: "edit",
-                icon: PenSquare,
+                icon: IconUpdate,
                 props: {
+                  variant:"update",
                   onClick: () =>
                     setForm({
+                      
                       type: "update",
                       title: "Update User Result",
                       description: "",
@@ -276,7 +281,7 @@ function RouteComponent() {
                 name: "delete",
                 icon: IconDelete,
                 props: {
-                  variant: "destructive",
+                  variant: "delete",
                   onClick: () =>
                     setForm({
                       type: "delete",
@@ -338,9 +343,9 @@ function RouteComponent() {
 
             <AppTable data={paginatedData} columns={columns} />
       <div className="flex items-end justify-between px-4">
-        <div className="text-sm text-gray-600">
+        {/* <div className="text-sm text-gray-600">
           Showing {startIndex + 1} to {Math.min(startIndex + ITEMS_PER_PAGE, DUMMY_DATA.length)} of {DUMMY_DATA.length} users
-        </div>
+        </div> */}
         <AppPagination
           currentPage={currentPage}
           totalPages={totalPages}

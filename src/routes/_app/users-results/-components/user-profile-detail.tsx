@@ -1,5 +1,5 @@
 import type { ColumnDef } from "@tanstack/react-table";
-import { ArrowLeft, ArrowUpDown, Eye, Link as LinkIcon } from "lucide-react";
+import { ArrowLeft, ArrowUpDown, Eye } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
 import AppTable from "../../../../components/app-table";
 import { Button } from "../../../../components/ui/button";
@@ -7,6 +7,7 @@ import { Badge } from "../../../../components/ui/badge";
 import { cn } from "../../../../lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "../../../../components/ui/avatar";
 import IconDelete from "../../../../components/svg-icon/icon-delete";
+import IconUpdate from "../../../../components/svg-icon/icon-update";
 
 type UserData = {
   id: number;
@@ -181,7 +182,7 @@ export default function UserProfileDetail({
       cell: () => (
         <div className="flex items-center gap-2">
           <Button
-            variant="ghost"
+            variant="update"
             size="icon"
             className="h-8 w-8"
             onClick={() => {
@@ -191,14 +192,14 @@ export default function UserProfileDetail({
             <Eye className="h-4 w-4" />
           </Button>
           <Button
-            variant="ghost"
+            variant="update"
             size="icon"
             className="h-8 w-8"
             onClick={() => {
               // Handle edit action
             }}
           >
-            <LinkIcon className="h-4 w-4" />
+            <IconUpdate className="h-4 w-4" />
           </Button>
         </div>
       ),
@@ -256,7 +257,7 @@ export default function UserProfileDetail({
             variant="outline"
             onClick={() => onEdit?.(user.id)}
           >
-            <LinkIcon className="h-4 w-4 mr-2" />
+            <IconUpdate className="h-4 w-4 mr-2" />
             Edit
           </Button>
           <Button
