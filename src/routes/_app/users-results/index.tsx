@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
 import {
   ArrowUpDown,
@@ -21,13 +21,6 @@ import { Checkbox } from "../../../components/ui/checkbox";
 import { Badge } from "../../../components/ui/badge";
 import { cn } from "../../../lib/utils";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from "../../../components/ui/dialog";
-import {
   AlertDialog,
   AlertDialogContent,
   AlertDialogHeader,
@@ -43,7 +36,23 @@ export const Route = createFileRoute("/_app/users-results/")({
   component: RouteComponent,
 });
 
-const DUMMY_DATA = [
+type UserData = {
+  id: number;
+  name: string;
+  email: string;
+  gender: string;
+  datetime: string;
+  deviceUsed: string;
+  plan: string;
+  testsTaken: number;
+  lastTestDate: string;
+  status: string;
+  joinDate?: string;
+  lastActive?: string;
+  avatar?: string;
+};
+
+const DUMMY_DATA: UserData[] = [
   {
     id: 1,
     name: "John Doe",
@@ -55,6 +64,9 @@ const DUMMY_DATA = [
     testsTaken: 15,
     lastTestDate: "2024-03-15",
     status: "Active",
+    joinDate: "2024-01-15",
+    lastActive: "2024-03-15",
+    avatar: "/image/profilePhoto.png",
   },
   {
     id: 2,
@@ -67,6 +79,9 @@ const DUMMY_DATA = [
     testsTaken: 8,
     lastTestDate: "2024-03-10",
     status: "Active",
+    joinDate: "2024-02-10",
+    lastActive: "2024-03-10",
+    avatar: "/image/profilePhoto.png",
   },
   {
     id: 3,
@@ -79,6 +94,9 @@ const DUMMY_DATA = [
     testsTaken: 22,
     lastTestDate: "2024-03-18",
     status: "Inactive",
+    joinDate: "2023-12-18",
+    lastActive: "2024-02-18",
+    avatar: "/image/profilePhoto.png",
   },
   {
     id: 4,
@@ -91,6 +109,9 @@ const DUMMY_DATA = [
     testsTaken: 30,
     lastTestDate: "2024-03-20",
     status: "Active",
+    joinDate: "2023-11-20",
+    lastActive: "2024-03-20",
+    avatar: "/image/profilePhoto.png",
   },
   {
     id: 5,
@@ -103,13 +124,17 @@ const DUMMY_DATA = [
     testsTaken: 5,
     lastTestDate: "2024-03-05",
     status: "Active",
+    joinDate: "2024-02-05",
+    lastActive: "2024-03-05",
+    avatar: "/image/profilePhoto.png",
   },
 ];
 
 function RouteComponent() {
   const [form, setForm] = useState<TForm>(FORM_DATA);
+  const navigate = useNavigate();
 
-  const columns: ColumnDef<any>[] = [
+  const columns: ColumnDef<UserData>[] = [
     {
       id: "select",
       accessorKey: "id",
@@ -219,11 +244,9 @@ function RouteComponent() {
                 icon: Eye,
                 props: {
                   onClick: () =>
-                    setForm({
-                      type: "read",
-                      title: "View User Result",
-                      description: "",
-                      id: data.id,
+                    navigate({
+                      to: "/users-results/$userId",
+                      params: { userId: data.id.toString() },
                     }),
                 },
               },
@@ -307,22 +330,6 @@ function RouteComponent() {
       </div>
 
       <AppTable data={DUMMY_DATA} columns={columns} />
-
-      {/* Read Dialog */}
-      <Dialog
-        open={form.type === "read"}
-        onOpenChange={() => setForm(FORM_DATA)}
-      >
-        <DialogContent className="w-full max-w-lg">
-          <DialogHeader>
-            <DialogTitle>{form.title}</DialogTitle>
-            <DialogDescription>{form.description}</DialogDescription>
-          </DialogHeader>
-          <div className="p-4 bg-gray-100 rounded-md">
-            <p>Viewing user data for ID: {form.id}</p>
-          </div>
-        </DialogContent>
-      </Dialog>
 
       {/* Create/Update Sheet */}
       <FormUser

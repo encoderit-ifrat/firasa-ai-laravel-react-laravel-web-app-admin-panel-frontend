@@ -31,7 +31,7 @@ export function NavUser({
     avatar: "/image/profilePhoto.png",
   },
 }: {
-  user: {
+  user?: {
     name: string;
     email: string;
     avatar: string;

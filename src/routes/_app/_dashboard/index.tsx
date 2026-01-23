@@ -25,6 +25,7 @@ const dashboardCards = [
     value: "5000",
     label: "Total Users",
     trend: MiniAreaChart,
+    trendType: "positive" as const,
   },
   {
     id: 2,
@@ -32,6 +33,7 @@ const dashboardCards = [
     value: "200",
     label: "Completed Tests",
     trend: MiniAreaChart,
+    trendType: "positive" as const,
   },
   {
     id: 3,
@@ -39,13 +41,15 @@ const dashboardCards = [
     value: "20",
     label: "Upgrade to Pro",
     trend: MiniAreaChart,
+    trendType: "positive" as const,
   },
   {
     id: 4,
     icon: IconConversion,
     value: "45%",
-    label: "Conversion w",
+    label: "Conversion",
     trend: MiniAreaChart,
+    trendType: "negative" as const, // Shows dip then recovery
   },
 ];
 
@@ -66,7 +70,7 @@ function RouteComponent() {
           Dashboard Overview
         </h6>
       </div>
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {dashboardCards.map((card) => {
           const IconComponent = card.icon;
           const TrendComponent = card.trend;
@@ -75,7 +79,7 @@ function RouteComponent() {
             <Card key={card.id} className="@container/card">
               <div className="p-4 flex items-center justify-between w-full">
                 <div className="flex items-center gap-4">
-                  <div className="rounded-full bg-gray-100 flex items-center justify-center">
+                  <div className="rounded-full bg-gray-100 p-2 flex items-center justify-center">
                     <IconComponent />
                   </div>
 
@@ -90,7 +94,7 @@ function RouteComponent() {
                 </div>
 
                 <div className="w-20 flex items-end">
-                  <TrendComponent />
+                  <TrendComponent trend={card.trendType} />
                 </div>
               </div>
             </Card>
@@ -99,14 +103,10 @@ function RouteComponent() {
       </div>
       <div className="divider border-1 mt-6"></div>
       <section className="mb-20">
-        <h1 className="mt-14 mb-10 text-lg">Statistics</h1>
-        <div className="flex items-stretch gap-6">
-          <div className="w-1/2 grid">
-            <CircleChart />
-          </div>
-          <div className="w-1/2 grid">
-            <LineChart />
-          </div>
+        <h1 className="mt-14 mb-10 text-xl font-semibold">Statistics</h1>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <CircleChart />
+          <LineChart />
         </div>
       </section>
     </section>

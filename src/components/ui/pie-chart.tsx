@@ -79,7 +79,7 @@ export function CircleChart() {
     <Card>
       <CardHeader>
         <div className="flex items-center justify-between gap-4">
-          <CardTitle className="text-3xl font-semibold">User</CardTitle>
+          <CardTitle className="text-3xl font-semibold">Users</CardTitle>
           <DropdownSelector options={days} defaultValue={days[0]} />
         </div>
       </CardHeader>

@@ -115,7 +115,7 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-[#F4F2F3] text-foreground;
+    @apply bg-[#F4F2F3] text-[#585051];
   }
   .bg-gradient {
       @apply bg-linear-to-r from-[#FA6C12] via-[#FF77D7] to-[#FF77D7] text-black hover:opacity-90

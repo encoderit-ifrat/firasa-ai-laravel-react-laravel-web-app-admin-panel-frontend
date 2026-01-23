@@ -8,6 +8,7 @@ import { cn } from "../lib/utils";
 type Option = {
   label: string;
   value: string;
+  icon?: React.ComponentType<{ className?: string }>;
 };
 
 type DropdownSelectProps = {
@@ -28,7 +29,8 @@ export function DropdownSelect({
   disabled = false,
 }: DropdownSelectProps) {
   const [open, setOpen] = useState(false);
-  const selectedLabel = options.find((o) => o.value === value)?.label;
+  const selectedOption = options.find((o) => o.value === value);
+  const SelectedIcon = selectedOption?.icon;
 
   const handleSelect = (optionValue: string) => {
     if (disabled) return;
@@ -43,37 +45,39 @@ export function DropdownSelect({
           type="button"
           disabled={disabled}
           className={cn(
-            "w-full  h-9 flex items-center justify-between rounded-md border px-3 py-2 text-sm text-custom-header-text shadow-sm",
+            "h-9 flex items-center justify-between gap-2 rounded-md border px-3 py-2 text-sm text-custom-header-text shadow-sm bg-background hover:bg-accent transition-colors",
             disabled && "opacity-50 cursor-not-allowed bg-muted",
             className
           )}
         >
-          {selectedLabel ? (
-            <span>{selectedLabel}</span>
-          ) : (
-            <span className="text-custom-header-text">{placeholder}</span>
-          )}
-
-          <ChevronDownIcon size={16} />
+          <div className="flex items-center gap-2">
+            {SelectedIcon && <SelectedIcon className="text-base leading-none" />}
+            <span>{selectedOption?.label || placeholder}</span>
+          </div>
+          <ChevronDownIcon size={16} className="opacity-50" />
         </button>
       </PopoverTrigger>
 
-      <PopoverContent className="p-0 w-48">
-        <ul className="divide-y rounded-md border bg-background text-custom-header-text">
-          {options.map((option) => (
-            <li key={option.value}>
-              <button
-                type="button"
-                onClick={() => handleSelect(option.value)}
-                className={cn(
-                  "w-full px-3 py-2 text-left text-sm hover:bg-accent",
-                  value === option.value && "bg-accent/50"
-                )}
-              >
-                {option.label}
-              </button>
-            </li>
-          ))}
+      <PopoverContent className="p-0 w-48" align="end">
+        <ul className="divide-y rounded-md border bg-background">
+          {options.map((option) => {
+            const OptionIcon = option.icon;
+            return (
+              <li key={option.value}>
+                <button
+                  type="button"
+                  onClick={() => handleSelect(option.value)}
+                  className={cn(
+                    "w-full px-3 py-2 text-left text-sm hover:bg-accent flex items-center gap-2 transition-colors",
+                    value === option.value && "bg-accent/50 font-medium"
+                  )}
+                >
+                  {OptionIcon && <OptionIcon className="text-base leading-none" />}
+                  <span>{option.label}</span>
+                </button>
+              </li>
+            );
+          })}
         </ul>
       </PopoverContent>
     </Popover>
