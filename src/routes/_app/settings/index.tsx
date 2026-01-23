@@ -104,7 +104,7 @@ const DUMMY_DATA = [
 
 type ContentSection = 'articles' | 'testimonials' | 'reports' | 'static' | 'seo';
 
-const ITEMS_PER_PAGE = 5;
+const ITEMS_PER_PAGE = 3;
 
 function RouteComponent() {
   const [form, setForm] = useState<TForm>(FORM_DATA);
@@ -342,13 +342,11 @@ function RouteComponent() {
         </div>
 
         {/* Dynamic Content */}
-       
       </div>
-      
-      <AppTable data={paginatedData} columns={columns} />
-
+    
       {/* Data Info & Pagination */}
-      <div className="flex items-center justify-between px-4">
+            <AppTable data={paginatedData} columns={columns} />
+      <div className="flex items-end justify-between px-4">
         <div className="text-sm text-gray-600">
           Showing {startIndex + 1} to {Math.min(startIndex + ITEMS_PER_PAGE, DUMMY_DATA.length)} of {DUMMY_DATA.length} users
         </div>
