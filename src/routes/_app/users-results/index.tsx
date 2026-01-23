@@ -1,9 +1,9 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
 import {
-  ArrowUpDown,
+  ArrowDown,
+  ChevronsUpDown,
   Eye,
-  PenSquare,
   Plus,
   Rows3,
   SlidersHorizontal,
@@ -32,7 +32,6 @@ import {
 import FormUser from "./-components/form-user";
 import IconDelete from "../../../components/svg-icon/icon-delete";
 import AppPagination from "../../../components/app-pagination";
-import IconUpgrade from "../../../components/svg-icon/icon-upgrade";
 import IconUpdate from "../../../components/svg-icon/icon-update";
 
 export const Route = createFileRoute("/_app/users-results/")({
@@ -78,10 +77,10 @@ const DUMMY_DATA: UserData[] = [
     gender: "female",
     datetime: "2024-03-10T14:20",
     deviceUsed: "Mobile",
-    plan: "Basic",
+    plan: "Unavailable",
     testsTaken: 8,
     lastTestDate: "2024-03-10",
-    status: "Active",
+    status: "Unavailable",
     joinDate: "2024-02-10",
     lastActive: "2024-03-10",
     avatar: "/image/profilePhoto.png",
@@ -96,7 +95,7 @@ const DUMMY_DATA: UserData[] = [
     plan: "Premium",
     testsTaken: 22,
     lastTestDate: "2024-03-18",
-    status: "Inactive",
+    status: "Suspended",
     joinDate: "2023-12-18",
     lastActive: "2024-02-18",
     avatar: "/image/profilePhoto.png",
@@ -143,6 +142,15 @@ function RouteComponent() {
   const totalPages = Math.ceil(DUMMY_DATA.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const paginatedData = DUMMY_DATA.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
+  const statusVariantMap = {
+    Active: "active",
+    Suspended: "suspended",
+    Unavailable: "unavailable",
+  } as const;
+
+
+
   const columns: ColumnDef<UserData>[] = [
     {
       id: "select",
@@ -159,7 +167,10 @@ function RouteComponent() {
             }
             aria-label="Select all"
           />
-          <span className="font-medium">ID</span>
+          <div className="flex items-center gap-1">
+            <span className="font-medium">ID</span>
+            <ArrowDown className="h-4 w-4 text-muted-foreground" />
+          </div>
         </div>
       ),
       cell: ({ row }) => (
@@ -183,25 +194,58 @@ function RouteComponent() {
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Name
-          <ArrowUpDown />
+          <ArrowDown />
         </Button>
       ),
       cell: ({ row }) => (
         <div className="lowercase">{row.getValue("name")}</div>
       ),
     },
-    { header: "Email", accessorKey: "email" },
-    { header: "Device Used", accessorKey: "deviceUsed" },
+
     {
-      header: "Plan",
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="flex items-center gap-1"
+        >
+          Email
+          <ChevronsUpDown className="h-4 w-4" />
+        </Button>
+      ),
+      accessorKey: "email",
+    },
+    {
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="flex items-center gap-1"
+        >
+          Device Used
+          <ChevronsUpDown className="h-4 w-4" />
+        </Button>
+      ),
+      accessorKey: "deviceUsed",
+    },
+    {
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="flex items-center gap-1"
+        >
+          Plan
+          <ChevronsUpDown className="h-4 w-4" />
+        </Button>
+      ),
       accessorKey: "plan",
       cell: ({ row }) => {
         const plan = row.getValue("plan") as string;
         const planColors = {
-
-          Pro: "bg-gradient",
-
+          Pro: "bg-gradient text-[#585051]",
         };
+
         return (
           <Badge
             variant="outline"
@@ -212,26 +256,55 @@ function RouteComponent() {
         );
       },
     },
-    { header: "Tests Taken", accessorKey: "testsTaken" },
-    { header: "Last Test Date", accessorKey: "lastTestDate" },
     {
-      header: "Status",
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="flex items-center gap-1"
+        >
+          Tests Taken
+          <ChevronsUpDown className="h-4 w-4" />
+        </Button>
+      ),
+      accessorKey: "testsTaken",
+    },
+    {
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="flex items-center gap-1"
+        >
+          Last Test Date
+          <ChevronsUpDown className="h-4 w-4" />
+        </Button>
+      ),
+      accessorKey: "lastTestDate",
+    },
+    {
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="flex items-center gap-1"
+        >
+          Status
+          <ChevronsUpDown className="h-4 w-4" />
+        </Button>
+      ),
       accessorKey: "status",
       cell: ({ row }) => {
-        const status = row.getValue("status") as string;
+        const status = row.getValue("status") as keyof typeof statusVariantMap;
+
         return (
-          <Badge
-            variant={status === "Active" ? "default" : "secondary"}
-            className={cn(
-              status === "Active"
-                ? "bg-green-100 text-green-700 border-green-200 hover:bg-green-100"
-                : "bg-gray-100 text-[#585051] border-gray-200 hover:bg-gray-100"
-            )}
-          >
+          <Badge variant={statusVariantMap[status]}>
             <span
               className={cn(
                 "w-1.5 h-1.5 rounded-full",
-                status === "Active" ? "bg-green-600" : "bg-gray-600"
+                status === "Active" && "bg-[#34C759]",
+                status === "Suspended" && "bg-[#FF9500]",
+                status === "Unavailable" && "bg-[#FF3B30]"
               )}
             />
             {status}
@@ -239,6 +312,7 @@ function RouteComponent() {
         );
       },
     },
+
     {
       header: "Actions",
       accessorKey: "action",
@@ -252,7 +326,7 @@ function RouteComponent() {
                 name: "view",
                 icon: Eye,
                 props: {
-                variant:"update",
+                  variant: "update",
                   onClick: () =>
                     navigate({
                       to: "/users-results/$userId",
@@ -265,10 +339,10 @@ function RouteComponent() {
                 name: "edit",
                 icon: IconUpdate,
                 props: {
-                  variant:"update",
+                  variant: "update",
                   onClick: () =>
                     setForm({
-                      
+
                       type: "update",
                       title: "Update User Result",
                       description: "",
@@ -334,14 +408,14 @@ function RouteComponent() {
             <Button variant="gray">
               <SlidersHorizontal /> Filters
             </Button>
-            <Button variant="outline">
+            <Button variant="outline" >
               <IconExport /> Export
             </Button>
           </div>
         </div>
       </div>
 
-            <AppTable data={paginatedData} columns={columns} />
+      <AppTable data={paginatedData} columns={columns} />
       <div className="flex items-end justify-between px-4">
         {/* <div className="text-sm text-gray-600">
           Showing {startIndex + 1} to {Math.min(startIndex + ITEMS_PER_PAGE, DUMMY_DATA.length)} of {DUMMY_DATA.length} users

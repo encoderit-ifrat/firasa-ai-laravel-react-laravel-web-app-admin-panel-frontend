@@ -75,7 +75,7 @@ export default function Navbar() {
           />
 
           <div className="relative" title={t("notifications")}>
-            <IconNotification className="size-8 cursor-pointer hover:opacity-70 transition-opacity" />
+            <IconNotification className="size-10 cursor-pointer hover:opacity-70 transition-opacity" />
             {/* Notification badge */}
             <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-medium text-white">
               3

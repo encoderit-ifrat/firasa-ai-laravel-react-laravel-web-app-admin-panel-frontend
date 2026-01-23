@@ -1,19 +1,20 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import type { ColumnDef } from "@tanstack/react-table";
 import {
-  ArrowUpDown,
   Eye,
-  PenSquare,
   Trash2,
   Plus,
   Rows3,
   SlidersHorizontal,
+  ChevronsUpDown,
+  ArrowDown,
 } from "lucide-react";
 import { useState } from "react";
 import type { TForm } from "../../../types/form";
 import { FORM_DATA } from "../../../data/form";
 import AppActionsDropdown from "../../../components/app-actions-dropdown";
 import AppTable from "../../../components/app-table";
+import AppPagination from '../../../components/app-pagination';
 import { Button } from "../../../components/ui/button";
 import SearchBar from "../../../components/ui/search-bar";
 import IconSort from "../../../components/svg-icon/icon-sort";
@@ -35,10 +36,9 @@ import {
   AlertDialogFooter,
   AlertDialogCancel,
 } from "../../../components/ui/alert-dialog";
-import { Badge } from "../../../components/ui/badge";
+// import { Badge } from "../../../components/ui/badge";
 import { cn } from "../../../lib/utils";
 import FormAdmin from './-components/form-admin';
-import AppPagination from '../../../components/app-pagination';
 import IconUpdate from '../../../components/svg-icon/icon-update';
 
 export const Route = createFileRoute('/_app/settings/')({
@@ -77,7 +77,7 @@ const DUMMY_DATA = [
     plan: "Premium",
     testsTaken: 22,
     lastTestDate: "2024-03-18",
-    status: "Inactive",
+    status: "Unavailable",
   },
   {
     id: 4,
@@ -88,7 +88,7 @@ const DUMMY_DATA = [
     plan: "Pro",
     testsTaken: 30,
     lastTestDate: "2024-03-20",
-    status: "Active",
+    status: "Suspended",
   },
   {
     id: 5,
@@ -103,14 +103,14 @@ const DUMMY_DATA = [
   },
 ];
 
-type ContentSection = 'articles' | 'testimonials' | 'reports' | 'static' | 'seo';
+type ContentSection = 'admin-management' | 'api-keys-management' | 'language-management';
 
-const ITEMS_PER_PAGE = 3;
+const ITEMS_PER_PAGE = 5;
 
 function RouteComponent() {
   const [form, setForm] = useState<TForm>(FORM_DATA);
-  const [activeSection, setActiveSection] = useState<ContentSection>('articles');
-    const [currentPage, setCurrentPage] = useState(1);
+  const [activeSection, setActiveSection] = useState<ContentSection>('admin-management');
+  const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
 
   const totalPages = Math.ceil(DUMMY_DATA.length / ITEMS_PER_PAGE);
@@ -118,14 +118,20 @@ function RouteComponent() {
   const paginatedData = DUMMY_DATA.slice(startIndex, startIndex + ITEMS_PER_PAGE);
 
   const contentSections = [
-    { id: 'articles' as ContentSection, label: 'Articles' },
-    { id: 'testimonials' as ContentSection, label: 'Testimonials' },
-    { id: 'reports' as ContentSection, label: 'Reports Pages' },
-    { id: 'static' as ContentSection, label: 'Static Pages' },
-    { id: 'seo' as ContentSection, label: 'SEO Metadata' },
+    { id: 'admin-management' as ContentSection, label: 'Admin Management' },
+    { id: 'api-keys-management' as ContentSection, label: 'API Keys Management' },
+    { id: 'language-management' as ContentSection, label: 'Language Management' },
   ];
 
+  // const statusVariantMap = {
+  //   Active: "active",
+  //   Suspended: "suspended",
+  //   Unavailable: "unavailable",
+  // } as const;
+
   const columns: ColumnDef<any>[] = [
+
+
     {
       id: "select",
       accessorKey: "id",
@@ -141,7 +147,10 @@ function RouteComponent() {
             }
             aria-label="Select all"
           />
-          <span className="font-medium">ID</span>
+          <div className="flex items-center gap-1">
+            <span className="font-medium">ID</span>
+            <ArrowDown className="h-4 w-4 text-muted-foreground" />
+          </div>
         </div>
       ),
       cell: ({ row }) => (
@@ -157,6 +166,7 @@ function RouteComponent() {
       enableSorting: false,
       enableHiding: false,
     },
+
     {
       accessorKey: "name",
       header: ({ column }) => (
@@ -165,41 +175,77 @@ function RouteComponent() {
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
           Name
-          <ArrowUpDown />
+          <ArrowDown />
         </Button>
       ),
       cell: ({ row }) => (
         <div className="lowercase">{row.getValue("name")}</div>
       ),
     },
-    { header: "Email", accessorKey: "email" },
-    { header: "Role", accessorKey: "role" },
-    { header: "Date", accessorKey: "lastTestDate" },
+
+
     {
-      header: "Status",
-      accessorKey: "status",
-      cell: ({ row }) => {
-        const status = row.getValue("status") as string;
-        return (
-          <Badge
-            variant={status === "Active" ? "default" : "secondary"}
-            className={cn(
-              status === "Active"
-                ? "bg-green-100 text-green-700 border-green-200 hover:bg-green-100"
-                : "bg-gray-100 text-[#585051] border-gray-200 hover:bg-gray-100"
-            )}
-          >
-             <span
-              className={cn(
-                "w-1.5 h-1.5 rounded-full",
-                status === "Active" ? "bg-green-600" : "bg-gray-600"
-              )}
-            />
-            {status}
-          </Badge>
-        );
-      },
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="flex items-center gap-1"
+        >
+          Email
+          <ChevronsUpDown className="h-4 w-4" />
+        </Button>
+      ),
+      accessorKey: "email",
     },
+    {
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="flex items-center gap-1"
+        >
+          Role
+          <ChevronsUpDown className="h-4 w-4" />
+        </Button>
+      ),
+      accessorKey: "role",
+    },
+    {
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="flex items-center gap-1"
+        >
+          Date
+          <ChevronsUpDown className="h-4 w-4" />
+        </Button>
+      ),
+      accessorKey: "lastTestDate",
+    },
+
+   
+    // {
+    //   header: "Status",
+    //   accessorKey: "status",
+    //   cell: ({ row }) => {
+    //     const status = row.getValue("status") as keyof typeof statusVariantMap;
+
+    //     return (
+    //       <Badge variant={statusVariantMap[status]}>
+    //         <span
+    //           className={cn(
+    //             "w-1.5 h-1.5 rounded-full",
+    //             status === "Active" && "bg-[#34C759]",
+    //             status === "Suspended" && "bg-[#FF9500]",
+    //             status === "Unavailable" && "bg-[#FF3B30]"
+    //           )}
+    //         />
+    //         {status}
+    //       </Badge>
+    //     );
+    //   },
+    // },
     {
       header: "Actions",
       accessorKey: "action",
@@ -213,7 +259,7 @@ function RouteComponent() {
                 name: "view",
                 icon: Eye,
                 props: {
-                  variant:"update",
+                  variant: "update",
                   onClick: () =>
                     setForm({
                       type: "read",
@@ -228,7 +274,7 @@ function RouteComponent() {
                 name: "edit",
                 icon: IconUpdate,
                 props: {
-                   variant:"update",
+                  variant: "update",
                   onClick: () =>
                     setForm({
                       type: "update",
@@ -262,16 +308,12 @@ function RouteComponent() {
 
   const renderContent = () => {
     switch (activeSection) {
-      case 'articles':
-        return <AppTable data={DUMMY_DATA} columns={columns} />;
-      case 'testimonials':
-        return <div className="p-8 text-center text-gray-500">Testimonials content goes here</div>;
-      case 'reports':
-        return <div className="p-8 text-center text-gray-500">Reports Pages content goes here</div>;
-      case 'static':
-        return <div className="p-8 text-center text-gray-500">Static Pages content goes here</div>;
-      case 'seo':
-        return <div className="p-8 text-center text-gray-500">SEO Metadata content goes here</div>;
+      case 'admin-management':
+        return <AppTable data={paginatedData} columns={columns} />;
+      case 'api-keys-management':
+        return <div className="p-8 text-center text-gray-500">API Keys Management content goes here</div>;
+      case 'language-management':
+        return <div className="p-8 text-center text-gray-500">Language Management content goes here</div>;
       default:
         return null;
     }
@@ -302,7 +344,10 @@ function RouteComponent() {
             {contentSections.map((section) => (
               <button
                 key={section.id}
-                onClick={() => setActiveSection(section.id)}
+                onClick={() => {
+                  setActiveSection(section.id);
+                  setCurrentPage(1);
+                }}
                 className={cn(
                   "px-4 py-2.5 text-sm font-medium transition-colors relative",
                   "hover:text-gray-900",
@@ -321,20 +366,20 @@ function RouteComponent() {
         </div>
 
         <div className="mb-4">
-          <h2 className="text-xl font-semibold mb-4 capitalize">{activeSection}</h2>
+          <h2 className="text-xl font-semibold mb-4 capitalize text-primary">{activeSection.replace(/-/g, ' ')}</h2>
           <div className="flex justify-between mb-4">
             <SearchBar />
             <div className="flex gap-2">
-              <Button variant="outline">
+              <Button variant="gray">
                 <Rows3 /> Columns
               </Button>
-              <Button variant="outline">
+              <Button variant="gray">
                 <Eye /> View
               </Button>
-              <Button variant="outline">
+              <Button variant="gray">
                 <IconSort /> Sort
               </Button>
-              <Button variant="outline">
+              <Button variant="gray">
                 <SlidersHorizontal /> Filters
               </Button>
               <Button variant="outline">
@@ -345,25 +390,25 @@ function RouteComponent() {
         </div>
 
         {/* Dynamic Content */}
-       
+        {renderContent()}
       </div>
-     
 
       {/* Data Info & Pagination */}
-            <AppTable data={paginatedData} columns={columns} />
-      <div className="flex items-end justify-between px-4">
-        {/* <div className="text-sm text-gray-600">
-          Showing {startIndex + 1} to {Math.min(startIndex + ITEMS_PER_PAGE, DUMMY_DATA.length)} of {DUMMY_DATA.length} users
-        </div> */}
-        <AppPagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          paginationItemsToDisplay={5}
-          onClickPage={(page) => setCurrentPage(page)}
-          onClickPrev={(page) => setCurrentPage(Math.max(page - 1, 1))}
-          onClickNext={(page) => setCurrentPage(Math.min(page + 1, totalPages))}
-        />
-      </div>
+      {activeSection === 'admin-management' && (
+        <div className="flex items-center justify-between px-4">
+          {/* <div className="text-sm text-gray-600">
+            Showing {startIndex + 1} to {Math.min(startIndex + ITEMS_PER_PAGE, DUMMY_DATA.length)} of {DUMMY_DATA.length} admins
+          </div> */}
+          <AppPagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            paginationItemsToDisplay={5}
+            onClickPage={(page) => setCurrentPage(page)}
+            onClickPrev={(page) => setCurrentPage(Math.max(page - 1, 1))}
+            onClickNext={(page) => setCurrentPage(Math.min(page + 1, totalPages))}
+          />
+        </div>
+      )}
 
       {/* Read Dialog */}
       <Dialog
@@ -407,8 +452,7 @@ function RouteComponent() {
               Are you sure you want to delete?
             </AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete this user? This action cannot be
-              undone.
+              Are you sure you want to delete this user? This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="flex gap-2">
