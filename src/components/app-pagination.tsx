@@ -1,14 +1,10 @@
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
-import { usePagination } from "@/hooks/use-pagination";
-import { cn } from "@/lib/utils";
-import { buttonVariants } from "@/components/ui/button";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-} from "@/components/ui/pagination";
+import { usePagination } from "../hooks/use-pagination";
+import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink } from "./ui/pagination";
+import { cn } from "../lib/utils";
+import { buttonVariants } from "./ui/button";
+
+
 
 type PaginationProps = {
   currentPage: number;
@@ -32,6 +28,8 @@ export default function AppPagination({
     totalPages,
     paginationItemsToDisplay,
   });
+
+
 
   return (
     <Pagination>

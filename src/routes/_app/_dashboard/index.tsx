@@ -60,13 +60,13 @@ function RouteComponent() {
   return (
     <section className="px-4">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold leading-12">Dashboard</h1>
-        <Button variant="outline">
+        <h1 className="text-3xl font-bold leading-12 text-primary">Dashboard</h1>
+        <Button className="text-primary" variant="outline">
           Daily <ChevronsUpDown className="ml-auto size-4" />
         </Button>
       </div>
       <div className="mt-6 mb-10">
-        <h6 className="text-xl font-semibold leading-[150%]">
+        <h6 className="text-xl font-semibold text-primary leading-[150%]">
           Dashboard Overview
         </h6>
       </div>

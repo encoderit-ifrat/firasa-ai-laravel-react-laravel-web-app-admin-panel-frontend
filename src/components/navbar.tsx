@@ -51,7 +51,7 @@ export default function Navbar() {
   const currentLanguage = i18n.language || "en";
 
   return (
-    <header className="flex h-14 shrink-0 items-center gap-2 justify-between px-2 md:px-4 border-b bg-background">
+    <header className="flex h-14 shrink-0 items-center gap-2 justify-between px-2 md:px-4 border-b">
       {isMobile && <SidebarTrigger className="-ml-1" />}
 
       <div className="flex items-center justify-between w-full px-4 py-2 gap-4">

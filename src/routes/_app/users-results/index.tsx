@@ -31,6 +31,7 @@ import {
 } from "../../../components/ui/alert-dialog";
 import FormUser from "./-components/form-user";
 import IconDelete from "../../../components/svg-icon/icon-delete";
+import AppPagination from "../../../components/app-pagination";
 
 export const Route = createFileRoute("/_app/users-results/")({
   component: RouteComponent,
@@ -130,10 +131,16 @@ const DUMMY_DATA: UserData[] = [
   },
 ];
 
+const ITEMS_PER_PAGE = 5;
+
 function RouteComponent() {
   const [form, setForm] = useState<TForm>(FORM_DATA);
+  const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
 
+  const totalPages = Math.ceil(DUMMY_DATA.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const paginatedData = DUMMY_DATA.slice(startIndex, startIndex + ITEMS_PER_PAGE);
   const columns: ColumnDef<UserData>[] = [
     {
       id: "select",
@@ -265,20 +272,20 @@ function RouteComponent() {
                 },
               },
               {
-  type: "delete",
-  name: "delete",
-  icon: IconDelete, // Changed from <IconDelete/> to IconDelete
-  props: {
-    variant: "destructive",
-    onClick: () =>
-      setForm({
-        type: "delete",
-        title: "",
-        description: "",
-        id: data.id,
-      }),
-  },
-}
+                type: "delete",
+                name: "delete",
+                icon: IconDelete,
+                props: {
+                  variant: "destructive",
+                  onClick: () =>
+                    setForm({
+                      type: "delete",
+                      title: "",
+                      description: "",
+                      id: data.id,
+                    }),
+                },
+              }
             ]}
           />
         );
@@ -290,7 +297,7 @@ function RouteComponent() {
     <div className="space-y-4 p-4">
       <div className="px-4">
         <div className="flex justify-between mb-6 mt-6">
-          <h1 className="text-3xl font-bold leading-12">Users & Results</h1>
+          <h1 className="text-primary text-3xl font-bold leading-12">Users & Results</h1>
           <Button
             variant="customGradient"
             onClick={() =>
@@ -330,6 +337,19 @@ function RouteComponent() {
       </div>
 
       <AppTable data={DUMMY_DATA} columns={columns} />
+      <div className="flex items-center justify-between px-4">
+        <div className="text-sm text-gray-600">
+         Showing {startIndex + 1} to {Math.min(startIndex + ITEMS_PER_PAGE, DUMMY_DATA.length)} of {DUMMY_DATA.length} users
+        </div>
+        <AppPagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          paginationItemsToDisplay={5}
+          onClickPage={(page) => setCurrentPage(page)}
+          onClickPrev={(page) => setCurrentPage(Math.max(page - 1, 1))}
+          onClickNext={(page) => setCurrentPage(Math.min(page + 1, totalPages))}
+        />
+      </div>
 
       {/* Create/Update Sheet */}
       <FormUser
