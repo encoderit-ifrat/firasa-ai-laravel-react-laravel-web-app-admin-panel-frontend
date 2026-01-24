@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from "../../../../components/ui/sheet";
+import AppSheet from "../../../../components/app-sheet";
 import {
   Form,
   FormControl,
@@ -69,115 +69,112 @@ export default function FormUser({
   };
 
   return (
-    <Sheet open={open} onOpenChange={onClose}>
-      <SheetContent side="right" className="sm:max-w-md">
-        <SheetHeader>
-          <div className="flex items-center justify-between">
-            <SheetTitle>
-              {formData ? "Update User" : "Add New User"}
-            </SheetTitle>
-            <div className="flex items-center gap-2">
-              <Button
-                type="button"
-                variant="gray"
-                size="lg"
-                onClick={() => {
-                  reset();
-                  onClose();
-                }}
-                className="capitalize"
-              >
-                Cancel
-              </Button>
-              <Button 
-                type="submit"
-                size="lg"
-                variant="customGradient"
-                onClick={handleSubmit(onSubmit)}
-              >
-                {formData ? "Update" : "Create"}
-              </Button>
-            </div>
-          </div>
-         
-        </SheetHeader>
+    <AppSheet
+      open={open}
+      onOpenChange={onClose}
+      title={formData ? "Update User" : "Add New User"}
+      actions={
+        <>
+          <Button
+            type="button"
+            variant="gray"
+            size="lg"
+            onClick={() => {
+              reset();
+              onClose();
+            }}
+            className="capitalize"
+          >
+            Cancel
+          </Button>
+          <Button
+            type="submit"
+            size="lg"
+            variant="customGradient"
+            onClick={handleSubmit(onSubmit)}
+          >
+            {formData ? "Update" : "Create"}
+          </Button>
+        </>
+      }
+    >
 
-        <Form {...form}>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 px-6 py-4">
-            {/* NAME */}
-            <FormField
-              control={control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name *</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Enter your name" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
 
-            {/* EMAIL */}
-            <FormField
-              control={control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email *</FormLabel>
-                  <FormControl>
-                    <Input type="email" placeholder="Enter your email" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+      <Form {...form}>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 px-6 py-4">
+          {/* NAME */}
+          <FormField
+            control={control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Name *</FormLabel>
+                <FormControl>
+                  <Input placeholder="Enter your name" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-            {/* GENDER */}
-            <FormField
-              control={control}
-              name="gender"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Gender *</FormLabel>
-                  <FormControl>
-                    <Select
-                      value={field.value || undefined}
-                      onValueChange={field.onChange}
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select gender" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="male">Male</SelectItem>
-                        <SelectItem value="female">Female</SelectItem>
-                        <SelectItem value="other">Other</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+          {/* EMAIL */}
+          <FormField
+            control={control}
+            name="email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email *</FormLabel>
+                <FormControl>
+                  <Input type="email" placeholder="Enter your email" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-            {/* DATE & TIME */}
-            <FormField
-              control={control}
-              name="datetime"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Date & Time *</FormLabel>
-                  <FormControl>
-                    <Input type="datetime-local" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </form>
-        </Form>
-      </SheetContent>
-    </Sheet>
+          {/* GENDER */}
+          <FormField
+            control={control}
+            name="gender"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Gender *</FormLabel>
+                <FormControl>
+                  <Select
+                    value={field.value || undefined}
+                    onValueChange={field.onChange}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select gender" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="male">Male</SelectItem>
+                      <SelectItem value="female">Female</SelectItem>
+                      <SelectItem value="other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* DATE & TIME */}
+          <FormField
+            control={control}
+            name="datetime"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Date & Time *</FormLabel>
+                <FormControl>
+                  <Input type="datetime-local" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </form>
+      </Form>
+    </AppSheet>
   );
 }

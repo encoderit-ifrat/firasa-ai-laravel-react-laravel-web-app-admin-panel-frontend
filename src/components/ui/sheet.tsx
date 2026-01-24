@@ -59,13 +59,13 @@ function SheetContent({
         className={cn(
           "bg-background data-[state=open]:animate-in data-[state=closed]:animate-out fixed z-50 flex flex-col shadow-lg transition ease-in-out data-[state=closed]:duration-300 data-[state=open]:duration-500",
           side === "right" &&
-            "data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right top-4 right-4 bottom-4 left-auto h-[calc(100vh-2rem)] w-[calc(75%-1rem)] sm:w-[calc(28rem-1rem)] border rounded-3xl",
+          "data-[state=closed]:slide-out-to-right data-[state=open]:slide-in-from-right top-4 right-4 bottom-4 left-auto h-[calc(100vh-2rem)] w-[calc(75%-1rem)] sm:w-[calc(28rem-1rem)] border rounded-3xl",
           side === "left" &&
-            "data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left top-4 left-4 bottom-4 right-auto h-[calc(100vh-2rem)] w-[calc(75%-1rem)] sm:w-[calc(28rem-1rem)] border rounded-3xl",
+          "data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left top-4 left-4 bottom-4 right-auto h-[calc(100vh-2rem)] w-[calc(75%-1rem)] sm:w-[calc(28rem-1rem)] border rounded-3xl",
           side === "top" &&
-            "data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top top-4 left-4 right-4 bottom-auto h-auto border rounded-3xl",
+          "data-[state=closed]:slide-out-to-top data-[state=open]:slide-in-from-top top-4 left-4 right-4 bottom-auto h-auto border rounded-3xl",
           side === "bottom" &&
-            "data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom bottom-4 left-4 right-4 top-auto h-auto border rounded-3xl",
+          "data-[state=closed]:slide-out-to-bottom data-[state=open]:slide-in-from-bottom bottom-4 left-4 right-4 top-auto h-auto border rounded-3xl",
           className
         )}
         {...props}
@@ -79,9 +79,7 @@ function SheetContent({
             <span className="sr-only">Close</span>
           </SheetPrimitive.Close>
         )}
-        <div className="mt-16 flex-1 overflow-y-auto">
-          {children}
-        </div>
+        {children}
       </SheetPrimitive.Content>
     </SheetPortal>
   )

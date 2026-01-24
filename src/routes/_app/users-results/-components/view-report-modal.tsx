@@ -1,9 +1,4 @@
-import {
-    Sheet,
-    SheetContent,
-    SheetHeader,
-    SheetTitle,
-} from "../../../../components/ui/sheet";
+import AppSheet from "../../../../components/app-sheet";
 import { Button } from "../../../../components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "../../../../components/ui/avatar";
 import { Pencil } from "lucide-react";
@@ -77,80 +72,76 @@ export default function ViewReportModal({
     user,
 }: ViewReportModalProps) {
     return (
-        <Sheet open={open} onOpenChange={onOpenChange}>
-            <SheetContent side="right" className="w-[90vw] sm:max-w-xl h-full flex flex-col p-0 gap-0">
-                <SheetHeader className="p-4 border-b">
-                    <SheetTitle>View Report</SheetTitle>
-                </SheetHeader>
+        <AppSheet
+            open={open}
+            onOpenChange={onOpenChange}
+            title="View Report"
+        >
+            {/* Personality Profile */}
+            <div className="flex flex-col items-center text-center">
+                <div className="relative mb-4">
+                    <Avatar className="h-24 w-24 border-4 border-white shadow-sm">
+                        <AvatarImage src={user.avatar} alt={user.name} />
+                        <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                    </Avatar>
+                </div>
 
-                <div className="flex-1 overflow-y-auto p-6 space-y-8">
-                    {/* Personality Profile */}
-                    <div className="flex flex-col items-center text-center">
-                        <div className="relative mb-4">
-                            <Avatar className="h-24 w-24 border-4 border-white shadow-sm">
-                                <AvatarImage src={user.avatar} alt={user.name} />
-                                <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
-                            </Avatar>
-                        </div>
+                <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Personality</p>
+                <h2 className="text-2xl font-bold mb-3">{REPORT_DATA.personalityTitle}</h2>
 
-                        <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Personality</p>
-                        <h2 className="text-2xl font-bold mb-3">{REPORT_DATA.personalityTitle}</h2>
+                <p className="text-sm text-muted-foreground leading-relaxed max-w-md mb-6">
+                    {REPORT_DATA.personalityDescription}
+                </p>
 
-                        <p className="text-sm text-muted-foreground leading-relaxed max-w-md mb-6">
-                            {REPORT_DATA.personalityDescription}
-                        </p>
+                <Button variant="outline" className="rounded-full gap-2 px-6">
+                    Edit <Pencil className="h-3.5 w-3.5" />
+                </Button>
+            </div>
 
-                        <Button variant="outline" className="rounded-full gap-2 px-6">
-                            Edit <Pencil className="h-3.5 w-3.5" />
-                        </Button>
+            <div className="border-t border-dashed w-full" />
+
+            {/* Strengths */}
+            <div>
+                <SectionHeader title="Strengths" />
+                <div className="space-y-6">
+                    {REPORT_DATA.strengths.map((item, index) => (
+                        <ProgressBar
+                            key={index}
+                            value={item.value}
+                            label={item.label}
+                            gradientColor={item.color}
+                        />
+                    ))}
+                </div>
+            </div>
+
+            {/* Growth Areas */}
+            <div>
+                <SectionHeader title="Growth Areas" />
+                <div className="space-y-6">
+                    {REPORT_DATA.growthAreas.map((item, index) => (
+                        <ProgressBar
+                            key={index}
+                            value={item.value}
+                            label={item.label}
+                            gradientColor={item.color}
+                        />
+                    ))}
+                </div>
+            </div>
+
+            {/* Worth Sharing */}
+            <div>
+                <SectionHeader title="Worth sharing" />
+                <div className="grid grid-cols-2 gap-4">
+                    <div className="h-24 rounded-xl bg-gradient-to-br from-green-500/20 to-green-600/20 border border-green-100 flex items-end p-3 relative overflow-hidden">
+                        <span className="font-bold text-green-700">91%</span>
                     </div>
-
-                    <div className="border-t border-dashed w-full" />
-
-                    {/* Strengths */}
-                    <div>
-                        <SectionHeader title="Strengths" />
-                        <div className="space-y-6">
-                            {REPORT_DATA.strengths.map((item, index) => (
-                                <ProgressBar
-                                    key={index}
-                                    value={item.value}
-                                    label={item.label}
-                                    gradientColor={item.color}
-                                />
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Growth Areas */}
-                    <div>
-                        <SectionHeader title="Growth Areas" />
-                        <div className="space-y-6">
-                            {REPORT_DATA.growthAreas.map((item, index) => (
-                                <ProgressBar
-                                    key={index}
-                                    value={item.value}
-                                    label={item.label}
-                                    gradientColor={item.color}
-                                />
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Worth Sharing */}
-                    <div>
-                        <SectionHeader title="Worth sharing" />
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="h-24 rounded-xl bg-gradient-to-br from-green-500/20 to-green-600/20 border border-green-100 flex items-end p-3 relative overflow-hidden">
-                                <span className="font-bold text-green-700">91%</span>
-                            </div>
-                            <div className="h-24 rounded-xl bg-gradient-to-br from-green-500/20 to-green-600/20 border border-green-100 flex items-end p-3 relative overflow-hidden">
-                                <span className="font-bold text-green-700">91%</span>
-                            </div>
-                        </div>
+                    <div className="h-24 rounded-xl bg-gradient-to-br from-green-500/20 to-green-600/20 border border-green-100 flex items-end p-3 relative overflow-hidden">
+                        <span className="font-bold text-green-700">91%</span>
                     </div>
                 </div>
-            </SheetContent>
-        </Sheet>
+            </div>
+        </AppSheet>
     );
 }
