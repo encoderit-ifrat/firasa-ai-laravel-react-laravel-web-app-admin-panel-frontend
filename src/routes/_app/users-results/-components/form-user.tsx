@@ -101,7 +101,7 @@ export default function FormUser({
 
 
       <Form {...form}>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 px-6 py-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 py-4">
           {/* NAME */}
           <FormField
             control={control}
