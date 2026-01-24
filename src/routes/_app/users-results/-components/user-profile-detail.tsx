@@ -8,6 +8,8 @@ import { cn } from "../../../../lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "../../../../components/ui/avatar";
 import IconDelete from "../../../../components/svg-icon/icon-delete";
 import IconUpdate from "../../../../components/svg-icon/icon-update";
+import ViewReportModal from "./view-report-modal";
+import { useState } from "react";
 
 type UserData = {
   id: number;
@@ -73,6 +75,7 @@ export default function UserProfileDetail({
   onDelete,
 }: UserProfileDetailProps) {
   const navigate = useNavigate();
+  const [viewReportOpen, setViewReportOpen] = useState(false);
 
   const personalityTestColumns: ColumnDef<PersonalityTestResult>[] = [
     {
@@ -186,7 +189,7 @@ export default function UserProfileDetail({
             size="icon"
             className="h-8 w-8"
             onClick={() => {
-              // Handle view action
+              setViewReportOpen(true);
             }}
           >
             <Eye className="h-4 w-4" />
@@ -325,6 +328,11 @@ export default function UserProfileDetail({
           columns={personalityTestColumns}
         />
       </div>
+      <ViewReportModal
+        open={viewReportOpen}
+        onOpenChange={setViewReportOpen}
+        user={{ name: user.name, avatar: user.avatar }}
+      />
     </div>
   );
 }
