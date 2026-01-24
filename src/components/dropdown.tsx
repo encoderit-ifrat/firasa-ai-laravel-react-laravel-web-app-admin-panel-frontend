@@ -38,7 +38,7 @@ export function DropdownSelector<T = string>({
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="lg" className={`flex items-center gap-2 ${buttonClassName || ""}`}>
+        <Button variant="outline" size="lg" className={`flex items-center gap-2 bg-[#F4F2F3] ${buttonClassName || ""}`}>
           {selected.icon && <selected.icon className="w-4 h-4" />}
           {selected.label}
           <ChevronDown className="w-4 h-4" />

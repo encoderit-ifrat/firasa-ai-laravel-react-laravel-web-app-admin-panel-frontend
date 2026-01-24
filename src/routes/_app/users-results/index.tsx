@@ -374,10 +374,11 @@ function RouteComponent() {
 
   return (
     <div className="space-y-4 p-4">
-      <div className="px-4">
+      <div>
         <div className="flex justify-between mb-6 mt-6">
           <h1 className="text-primary text-3xl font-bold leading-12">Users & Results</h1>
           <Button
+            size="icon-lg"
             variant="customGradient"
             onClick={() =>
               setForm({
@@ -392,8 +393,7 @@ function RouteComponent() {
         </div>
         <div className="flex justify-between mb-4">
           <SearchBar
-            searchPlaceholder="Search..."
-            variant="default"
+            variant="bordered"
           />
           <div className="flex gap-2">
             <Button variant="gray">

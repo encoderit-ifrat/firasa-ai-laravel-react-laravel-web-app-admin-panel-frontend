@@ -51,20 +51,20 @@ export default function Navbar() {
   const currentLanguage = i18n.language || "en";
 
   return (
-    <header className="flex h-14 shrink-0 items-center gap-2 justify-between px-2 md:px-4">
+    <header className="flex h-14 shrink-0 items-center gap-2 justify-between m-6">
       {isMobile && <SidebarTrigger className="-ml-1" />}
 
-      <div className="flex items-center justify-between w-full px-4 py-2 gap-4">
+      <div className="flex items-center justify-between w-full gap-4">
         <div className="flex-1 max-w-md">
           <SearchBar
             searchPlaceholder="Search..."
-            variant="bordered"
+            variant="default"
           />
         </div>
 
         <div className="flex items-center gap-3">
           <DropdownSelect
-            className="min-w-[120px]"
+            className="min-w-[120px] min-h-14 bg-[#F4F2F3] rounded-full"
             options={LANGUAGES.map((lang) => ({
               label: lang.label,
               value: lang.value,
@@ -75,7 +75,7 @@ export default function Navbar() {
           />
 
           <div className="relative" title={t("notifications")}>
-            <IconNotification className="size-10 cursor-pointer hover:opacity-70 transition-opacity" />
+            <IconNotification className="size-12 cursor-pointer hover:opacity-70 transition-opacity" />
             {/* Notification badge */}
             <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-medium text-white">
               3

@@ -325,6 +325,7 @@ function RouteComponent() {
         <div className="flex justify-between mb-6 mt-6">
           <h1 className="text-primary text-3xl font-bold leading-12">Settings</h1>
           <Button
+            size="icon-lg"
             variant="customGradient"
             onClick={() =>
               setForm({
@@ -368,7 +369,9 @@ function RouteComponent() {
         <div className="mb-4">
           <h2 className="text-xl font-semibold mb-4 capitalize text-primary">{activeSection.replace(/-/g, ' ')}</h2>
           <div className="flex justify-between mb-4">
-            <SearchBar />
+            <SearchBar 
+            variant="bordered"
+            />
             <div className="flex gap-2">
               <Button variant="gray">
                 <Rows3 /> Columns

@@ -49,7 +49,7 @@ const dashboardCards = [
     value: "45%",
     label: "Conversion",
     trend: MiniAreaChart,
-    trendType: "negative" as const, // Shows dip then recovery
+    trendType: "negative" as const, 
   },
 ];
 
@@ -60,8 +60,8 @@ function RouteComponent() {
   return (
     <section className="px-4">
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold leading-12 text-primary">Dashboard</h1>
-        <Button className="text-primary" variant="outline">
+        <h1 className="max-h-28 text-3xl font-bold leading-12 text-primary">Dashboard</h1>
+        <Button size="lg" variant="gray">
           Daily <ChevronsUpDown className="ml-auto size-4" />
         </Button>
       </div>
@@ -70,7 +70,7 @@ function RouteComponent() {
           Dashboard Overview
         </h6>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {dashboardCards.map((card) => {
           const IconComponent = card.icon;
           const TrendComponent = card.trend;
@@ -103,7 +103,7 @@ function RouteComponent() {
       </div>
       <div className="divider border-1 mt-6"></div>
       <section className="mb-20">
-        <h1 className="text-primary mt-14 mb-10 text-xl font-semibold">Statistics</h1>
+        <h1 className="text-primary mt-14 mb-10 text-xl font-medium">Statistics</h1>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <CircleChart />
           <LineChart />

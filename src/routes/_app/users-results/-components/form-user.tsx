@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "../../../../components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "../../../../components/ui/sheet";
 import {
   Form,
   FormControl,
@@ -80,7 +80,7 @@ export default function FormUser({
               <Button
                 type="button"
                 variant="gray"
-                size="sm"
+                size="lg"
                 onClick={() => {
                   reset();
                   onClose();
@@ -91,7 +91,7 @@ export default function FormUser({
               </Button>
               <Button 
                 type="submit"
-                size="sm"
+                size="lg"
                 variant="customGradient"
                 onClick={handleSubmit(onSubmit)}
               >
@@ -99,11 +99,7 @@ export default function FormUser({
               </Button>
             </div>
           </div>
-          <SheetDescription>
-            {formData 
-              ? "Update the user information below" 
-              : "Fill in the details to create a new user"}
-          </SheetDescription>
+         
         </SheetHeader>
 
         <Form {...form}>
