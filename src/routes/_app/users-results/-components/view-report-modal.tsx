@@ -1,8 +1,8 @@
 import AppSheet from "../../../../components/app-sheet";
 import { Button } from "../../../../components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "../../../../components/ui/avatar";
-import { Pencil } from "lucide-react";
 import { cn } from "../../../../lib/utils";
+import IconUpdate from "../../../../components/svg-icon/icon-update";
 
 interface ViewReportModalProps {
     open: boolean;
@@ -60,7 +60,7 @@ function SectionHeader({ title, onEdit }: { title: string; onEdit?: () => void }
         <div className="flex items-center justify-between mb-4">
             <h3 className="font-semibold text-lg">{title}</h3>
             <Button variant="ghost" size="sm" className="h-8 gap-2 text-muted-foreground hover:text-foreground bg-gray-100/50 rounded-full px-4">
-                Edit <Pencil className="h-3 w-3" />
+                Edit <IconUpdate className="h-3 w-3" />
             </Button>
         </div>
     );
@@ -94,7 +94,7 @@ export default function ViewReportModal({
                 </p>
 
                 <Button variant="outline" className="rounded-full gap-2 px-6">
-                    Edit <Pencil className="h-3.5 w-3.5" />
+                    Edit <IconUpdate className="h-3.5 w-3.5" />
                 </Button>
             </div>
 
