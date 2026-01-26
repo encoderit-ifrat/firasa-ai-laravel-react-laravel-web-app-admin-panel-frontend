@@ -1,5 +1,5 @@
 import type { ColumnDef } from "@tanstack/react-table";
-import { ArrowLeft, ArrowUpDown, Eye } from "lucide-react";
+import { ArrowLeft, ArrowUpDown, ChevronRight, Eye } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
 import AppTable from "../../../../components/app-table";
 import { Button } from "../../../../components/ui/button";
@@ -217,18 +217,16 @@ export default function UserProfileDetail({
           variant="ghost"
           size="icon"
           onClick={() => navigate({ to: "/users-results" })}
-          className="h-8 w-8"
+          className="h-10 w-10 bg-white rounded-lg"
         >
-          <ArrowLeft className="h-4 w-4" />
+          <ArrowLeft className="h-5 w-5" />
         </Button>
-        <div className="text-sm text-muted-foreground">
-          Users <span className="mx-2">/</span> View Details
+        <div className="flex flex-col gap-1">
+          <div className="flex items-center text-sm text-muted-foreground">
+            Users <ChevronRight className="mx-1 h-3 w-3" /> View Details
+          </div>
+          <h2 className="text-primary text-2xl font-bold">Users Profile</h2>
         </div>
-      </div>
-
-      {/* Page Title */}
-      <div className="flex items-center gap-4">
-        <h2 className="text-3xl font-bold">Users Profile</h2>
       </div>
 
       {/* User Profile Section */}
@@ -245,7 +243,7 @@ export default function UserProfileDetail({
           </Avatar>
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <h3 className="text-2xl font-semibold">{user.name}</h3>
+              <h3 className="text-primary text-2xl font-semibold">{user.name}</h3>
               {user.plan === "Pro" && (
                 <Badge className="bg-gradient text-black border-0">
                   Pro
@@ -280,19 +278,19 @@ export default function UserProfileDetail({
             <p className="text-sm text-muted-foreground mb-1">
               Tests Taken
             </p>
-            <p className="text-2xl font-semibold">{user.testsTaken}</p>
+            <p className="text-primary text-2xl font-semibold">{user.testsTaken}</p>
           </div>
           <div>
             <p className="text-sm text-muted-foreground mb-1">
               Join Date
             </p>
-            <p className="text-2xl font-semibold">{user.joinDate || "N/A"}</p>
+            <p className="text-primary text-2xl font-semibold">{user.joinDate || "N/A"}</p>
           </div>
           <div>
             <p className="text-sm text-muted-foreground mb-1">
               Last Active
             </p>
-            <p className="text-2xl font-semibold">{user.lastActive || "N/A"}</p>
+            <p className="text-primary text-2xl font-semibold">{user.lastActive || "N/A"}</p>
           </div>
           <div>
             <p className="text-sm text-muted-foreground mb-1">

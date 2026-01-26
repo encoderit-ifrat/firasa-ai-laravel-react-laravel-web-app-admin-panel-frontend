@@ -3,11 +3,13 @@ import { useTranslation } from "react-i18next";
 import type { DropdownOption } from "./dropdown";
 import { useIsMobile } from "../hooks/use-mobile";
 import SearchBar from "./ui/search-bar";
-import { SidebarTrigger } from "./ui/sidebar";
+import { SidebarMenuButton, SidebarTrigger } from "./ui/sidebar";
 import { NavUser } from "./nav-user";
 import IconNotification from "./svg-icon/icon-notification";
 import i18n from "../i18n";
 import { DropdownSelect } from "./DropdownSelect";
+import { NewNavUser, NewNavUserAvatar } from "./new-nav-user";
+import { ChevronDown } from "lucide-react";
 
 // Custom flag components
 const USFlag = ({ className }: { className?: string }) => (
@@ -30,6 +32,7 @@ export default function Navbar() {
   const { t } = useTranslation();
   const isMobile = useIsMobile();
 
+
   // Load saved language from localStorage
   useEffect(() => {
     const savedLang = localStorage.getItem("language");
@@ -46,6 +49,14 @@ export default function Navbar() {
       localStorage.setItem("language", option.value);
     }
   };
+
+  const user = {
+    name: "Guest",
+    email: "encoderit@gmail.com",
+    avatar: "/image/profilePhoto.png",
+  };
+
+
 
   // Get current language value
   const currentLanguage = i18n.language || "en";
@@ -64,7 +75,7 @@ export default function Navbar() {
 
         <div className="flex items-center gap-3">
           <DropdownSelect
-            className="min-w-[120px] min-h-14 bg-[#F4F2F3] rounded-full"
+            className="min-w-[120px] min-h-14 bg-[#F4F2F3] rounded-full text-primary"
             options={LANGUAGES.map((lang) => ({
               label: lang.label,
               value: lang.value,
@@ -82,7 +93,17 @@ export default function Navbar() {
             </span>
           </div>
 
-          <NavUser />
+          {/* <NavUser /> */}
+          <NewNavUser user={user}>
+            <SidebarMenuButton
+              size="lg"
+              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-primary border-2 min-h-14 rounded-full bg-[#F4F2F3]"
+            >
+              <NewNavUserAvatar className="h-12 w-12" />
+
+              <ChevronDown className="ml-auto size-4" />
+            </SidebarMenuButton>
+          </NewNavUser>
         </div>
       </div>
     </header>

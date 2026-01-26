@@ -59,7 +59,7 @@ function SectionHeader({ title, onEdit }: { title: string; onEdit?: () => void }
     return (
         <div className="flex items-center justify-between mb-4">
             <h3 className="font-semibold text-lg">{title}</h3>
-            <Button variant="ghost" size="sm" className="h-8 gap-2 text-muted-foreground hover:text-foreground bg-gray-100/50 rounded-full px-4">
+            <Button variant="ghost" size="sm" className="h-8 gap-2 text-primary hover:text-foreground bg-gray-100/50 rounded-full px-4">
                 Edit <IconUpdate className="h-3 w-3" />
             </Button>
         </div>
