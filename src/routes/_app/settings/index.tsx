@@ -8,6 +8,7 @@ import {
   SlidersHorizontal,
   ChevronsUpDown,
   ArrowDown,
+ 
 } from "lucide-react";
 import { useState } from "react";
 import type { TForm } from "../../../types/form";
@@ -36,73 +37,16 @@ import {
   AlertDialogFooter,
   AlertDialogCancel,
 } from "../../../components/ui/alert-dialog";
-// import { Badge } from "../../../components/ui/badge";
 import { cn } from "../../../lib/utils";
 import FormAdmin from './-components/form-admin';
 import IconUpdate from '../../../components/svg-icon/icon-update';
 import CardAdmin from './-components/card-admin';
+import { useGetAllUsers } from './-api/queries/use-get-all-users';
+import type { TAdminSchema } from './-type/admin';
 
 export const Route = createFileRoute('/_app/settings/')({
   component: RouteComponent,
 })
-
-const DUMMY_DATA = [
-  {
-    id: 1,
-    name: "John Doe",
-    email: "john.doe@example.com",
-    role: "admin",
-    deviceUsed: "Desktop",
-    plan: "Premium",
-    testsTaken: 15,
-    lastTestDate: "2024-03-15",
-    status: "Active",
-  },
-  {
-    id: 2,
-    name: "Jane Smith",
-    email: "jane.smith@example.com",
-    role: "user",
-    deviceUsed: "Mobile",
-    plan: "Basic",
-    testsTaken: 8,
-    lastTestDate: "2024-03-10",
-    status: "Active",
-  },
-  {
-    id: 3,
-    name: "Mike Johnson",
-    email: "mike.johnson@example.com",
-    role: "manager",
-    deviceUsed: "Tablet",
-    plan: "Premium",
-    testsTaken: 22,
-    lastTestDate: "2024-03-18",
-    status: "Unavailable",
-  },
-  {
-    id: 4,
-    name: "Sarah Williams",
-    email: "sarah.williams@example.com",
-    role: "admin",
-    deviceUsed: "Desktop",
-    plan: "Pro",
-    testsTaken: 30,
-    lastTestDate: "2024-03-20",
-    status: "Suspended",
-  },
-  {
-    id: 5,
-    name: "David Brown",
-    email: "david.brown@example.com",
-    role: "user",
-    deviceUsed: "Mobile",
-    plan: "Basic",
-    testsTaken: 5,
-    lastTestDate: "2024-03-05",
-    status: "Active",
-  },
-];
 
 type ContentSection = 'admin-management' | 'api-keys-management' | 'language-management';
 
@@ -114,25 +58,29 @@ function RouteComponent() {
   const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
 
-  const totalPages = Math.ceil(DUMMY_DATA.length / ITEMS_PER_PAGE);
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const paginatedData = DUMMY_DATA.slice(startIndex, startIndex + ITEMS_PER_PAGE);
-
   const contentSections = [
     { id: 'admin-management' as ContentSection, label: 'Admin Management' },
     { id: 'api-keys-management' as ContentSection, label: 'API Keys Management' },
     { id: 'language-management' as ContentSection, label: 'Language Management' },
   ];
 
-  // const statusVariantMap = {
-  //   Active: "active",
-  //   Suspended: "suspended",
-  //   Unavailable: "unavailable",
-  // } as const;
+  const { data: usersResponse, isLoading: isLoadingUsers } = useGetAllUsers({
+    params: {
+      page: currentPage,
+      per_page: ITEMS_PER_PAGE,
+      search: "",
+    },
+    options: {
+      enabled: activeSection === "admin-management",
+    },
+  });
 
-  const columns: ColumnDef<any>[] = [
+  console.log("🚀 ~ RouteComponent ~ usersResponse:", usersResponse);
 
+  const users = usersResponse?.data || [];
+  const totalPages = usersResponse?.meta?.last_page || 1;
 
+  const columns: ColumnDef<TAdminSchema>[] = [
     {
       id: "select",
       accessorKey: "id",
@@ -167,7 +115,6 @@ function RouteComponent() {
       enableSorting: false,
       enableHiding: false,
     },
-
     {
       accessorKey: "name",
       header: ({ column }) => (
@@ -183,8 +130,6 @@ function RouteComponent() {
         <div className="lowercase">{row.getValue("name")}</div>
       ),
     },
-
-
     {
       header: ({ column }) => (
         <Button
@@ -205,48 +150,16 @@ function RouteComponent() {
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           className="flex items-center gap-1"
         >
-          Role
+          Created At
           <ChevronsUpDown className="h-4 w-4" />
         </Button>
       ),
-      accessorKey: "role",
+      accessorKey: "created_at",
+      cell: ({ row }) => {
+        const date = new Date(row.getValue("created_at"));
+        return <div>{date.toLocaleDateString()}</div>;
+      },
     },
-    {
-      header: ({ column }) => (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="flex items-center gap-1"
-        >
-          Date
-          <ChevronsUpDown className="h-4 w-4" />
-        </Button>
-      ),
-      accessorKey: "lastTestDate",
-    },
-
-
-    // {
-    //   header: "Status",
-    //   accessorKey: "status",
-    //   cell: ({ row }) => {
-    //     const status = row.getValue("status") as keyof typeof statusVariantMap;
-
-    //     return (
-    //       <Badge variant={statusVariantMap[status]}>
-    //         <span
-    //           className={cn(
-    //             "w-1.5 h-1.5 rounded-full",
-    //             status === "Active" && "bg-[#34C759]",
-    //             status === "Suspended" && "bg-[#FF9500]",
-    //             status === "Unavailable" && "bg-[#FF3B30]"
-    //           )}
-    //         />
-    //         {status}
-    //       </Badge>
-    //     );
-    //   },
-    // },
     {
       header: "Actions",
       accessorKey: "action",
@@ -310,7 +223,11 @@ function RouteComponent() {
   const renderContent = () => {
     switch (activeSection) {
       case 'admin-management':
-        return <AppTable data={paginatedData} columns={columns} />;
+        return isLoadingUsers ? (
+          <div className="p-8 text-center">Loading...</div>
+        ) : (
+          <AppTable data={users} columns={columns} />
+        );
       case 'api-keys-management':
         return <div className="p-8 text-center text-gray-500">API Keys Management content goes here</div>;
       case 'language-management':
@@ -370,9 +287,7 @@ function RouteComponent() {
         <div className="mb-4">
           <h2 className="text-xl font-semibold mb-4 capitalize text-primary">{activeSection.replace(/-/g, ' ')}</h2>
           <div className="flex justify-between mb-4">
-            <SearchBar
-              variant="bordered"
-            />
+            <SearchBar variant="bordered" />
             <div className="flex gap-2">
               <Button variant="gray">
                 <Rows3 /> Columns
@@ -398,11 +313,8 @@ function RouteComponent() {
       </div>
 
       {/* Data Info & Pagination */}
-      {activeSection === 'admin-management' && (
+      {activeSection === 'admin-management' && !isLoadingUsers && (
         <div className="flex items-center justify-between px-4">
-          {/* <div className="text-sm text-gray-600">
-            Showing {startIndex + 1} to {Math.min(startIndex + ITEMS_PER_PAGE, DUMMY_DATA.length)} of {DUMMY_DATA.length} admins
-          </div> */}
           <AppPagination
             currentPage={currentPage}
             totalPages={totalPages}
@@ -434,14 +346,13 @@ function RouteComponent() {
         </DialogContent>
       </Dialog>
 
-
       {/* Create/Update Sheet */}
       <FormAdmin
         open={form.type === "create" || form.type === "update"}
         onClose={() => setForm(FORM_DATA)}
         formData={
           form.type === "update"
-            ? DUMMY_DATA.find((user) => user.id === form.id)
+            ? users.find((user) => user.id === form.id)
             : undefined
         }
         onSuccess={() => {
