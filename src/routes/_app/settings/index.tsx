@@ -40,6 +40,7 @@ import {
 import { cn } from "../../../lib/utils";
 import FormAdmin from './-components/form-admin';
 import IconUpdate from '../../../components/svg-icon/icon-update';
+import CardAdmin from './-components/card-admin';
 
 export const Route = createFileRoute('/_app/settings/')({
   component: RouteComponent,
@@ -414,20 +415,25 @@ function RouteComponent() {
       )}
 
       {/* Read Dialog */}
-      <Dialog
+     <Dialog
         open={form.type === "read"}
         onOpenChange={() => setForm(FORM_DATA)}
       >
-        <DialogContent className="w-full max-w-lg">
-          <DialogHeader>
+        <DialogContent className="w-full lg:max-w-4xl max-h-[90vh] flex flex-col p-0">
+          <DialogHeader className="p-4 rounded-t-lg bg-custom-modal-header-bg">
             <DialogTitle>{form.title}</DialogTitle>
             <DialogDescription>{form.description}</DialogDescription>
           </DialogHeader>
-          <div className="p-4 bg-gray-100 rounded-md">
-            <p>Viewing user data for ID: {form.id}</p>
+          <div className="flex-1 overflow-y-auto p-4 min-h-0">
+            {form.id ? (
+              <CardAdmin form_data={{ type: "read", id: form.id }} />
+            ) : (
+              <p className="text-muted-foreground">Admin data not found.</p>
+            )}
           </div>
         </DialogContent>
       </Dialog>
+
 
       {/* Create/Update Sheet */}
       <FormAdmin
