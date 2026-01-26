@@ -7,7 +7,6 @@ import {
 } from "../../../../components/ui/card";
 import type { TForm } from "../../../../types/form";
 
-import { Badge } from "../../../../components/ui/badge";
 
 import Loading from "../../../../components/base/loading";
 import { useGetUser } from "../-api/queries/use-get-user";
@@ -22,7 +21,7 @@ export default function CardAdmin({ form_data }: TProps) {
     },
   });
 
-  const admin = response?.data; // Access the admin from response.data
+  const admin = response;
 
   if (isLoadingAdmin) {
     return <Loading />;

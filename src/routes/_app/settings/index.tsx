@@ -225,7 +225,7 @@ function RouteComponent() {
       accessorKey: "lastTestDate",
     },
 
-   
+
     // {
     //   header: "Status",
     //   accessorKey: "status",
@@ -370,8 +370,8 @@ function RouteComponent() {
         <div className="mb-4">
           <h2 className="text-xl font-semibold mb-4 capitalize text-primary">{activeSection.replace(/-/g, ' ')}</h2>
           <div className="flex justify-between mb-4">
-            <SearchBar 
-            variant="bordered"
+            <SearchBar
+              variant="bordered"
             />
             <div className="flex gap-2">
               <Button variant="gray">
@@ -415,11 +415,11 @@ function RouteComponent() {
       )}
 
       {/* Read Dialog */}
-     <Dialog
+      <Dialog
         open={form.type === "read"}
         onOpenChange={() => setForm(FORM_DATA)}
       >
-        <DialogContent className="w-full lg:max-w-4xl max-h-[90vh] flex flex-col p-0">
+        <DialogContent className="w-full lg:max-w-2xl max-h-[90vh] flex flex-col p-0">
           <DialogHeader className="p-4 rounded-t-lg bg-custom-modal-header-bg">
             <DialogTitle>{form.title}</DialogTitle>
             <DialogDescription>{form.description}</DialogDescription>
