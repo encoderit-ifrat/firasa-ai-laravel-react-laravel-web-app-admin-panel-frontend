@@ -42,7 +42,10 @@ import FormAdmin from './-components/form-admin';
 import IconUpdate from '../../../components/svg-icon/icon-update';
 import CardAdmin from './-components/card-admin';
 import { useGetAllUsers } from './-api/queries/use-get-all-users';
+import { useUpdateUser } from './-api/mutations/use-update-user';
+
 import type { TAdminSchema } from './-type/admin';
+import { useDeleteUser } from './-api/mutations/use-delete-user';
 
 export const Route = createFileRoute('/_app/settings/')({
   component: RouteComponent,
@@ -57,6 +60,9 @@ function RouteComponent() {
   const [activeSection, setActiveSection] = useState<ContentSection>('admin-management');
   const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
+
+  const updateUserMutation = useUpdateUser();
+  const deleteUserMutation = useDeleteUser();
 
   const contentSections = [
     { id: 'admin-management' as ContentSection, label: 'Admin Management' },
@@ -79,6 +85,16 @@ function RouteComponent() {
 
   const users = usersResponse?.data || [];
   const totalPages = usersResponse?.meta?.last_page || 1;
+
+  const handleDelete = () => {
+    if (!form.id) return;
+    
+    deleteUserMutation.mutate(form.id, {
+      onSuccess: () => {
+        setForm(FORM_DATA);
+      },
+    });
+  };
 
   const columns: ColumnDef<TAdminSchema>[] = [
     {
@@ -355,6 +371,7 @@ function RouteComponent() {
             ? users.find((user) => user.id === form.id)
             : undefined
         }
+        updateMutation={updateUserMutation}
         onSuccess={() => {
           console.log("User saved successfully");
           setForm(FORM_DATA);
@@ -382,12 +399,10 @@ function RouteComponent() {
             <Button
               variant="destructive"
               className="capitalize min-w-24 flex items-center gap-2"
-              onClick={() => {
-                console.log("Deleting user:", form.id);
-                setForm(FORM_DATA);
-              }}
+              onClick={handleDelete}
+              disabled={deleteUserMutation.isPending}
             >
-              <Trash2 /> Delete
+              <Trash2 /> {deleteUserMutation.isPending ? "Deleting..." : "Delete"}
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>

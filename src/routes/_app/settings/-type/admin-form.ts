@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 export const AdminFormSchema = z.object({
+  id: z.union([z.string(), z.number()]).optional(),
   name: z.string().min(1, "Name is required"),
   email: z.email("Invalid email"),
   role: z.string().min(1, "Role is required"),
