@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { createFileRoute } from '@tanstack/react-router'
 import type { ColumnDef } from "@tanstack/react-table";
 import {
   Eye,
@@ -8,7 +8,6 @@ import {
   SlidersHorizontal,
   ChevronsUpDown,
   ArrowDown,
- 
 } from "lucide-react";
 import { useState } from "react";
 import type { TForm } from "../../../types/form";
@@ -42,64 +41,90 @@ import FormAdmin from './-components/form-admin';
 import IconUpdate from '../../../components/svg-icon/icon-update';
 import CardAdmin from './-components/card-admin';
 import { useGetAllUsers } from './-api/queries/use-get-all-users';
-import { useUpdateUser } from './-api/mutations/use-update-user';
-
 import type { TAdminSchema } from './-type/admin';
 import { useDeleteUser } from './-api/mutations/use-delete-user';
+import { SearchSchema } from '../../../types/search';
+import { useDebounce } from '../../../hooks/search-hooks';
 
 export const Route = createFileRoute('/_app/settings/')({
   component: RouteComponent,
+  validateSearch: SearchSchema,
 })
 
 type ContentSection = 'admin-management' | 'api-keys-management' | 'language-management';
 
-const ITEMS_PER_PAGE = 100;
-
 function RouteComponent() {
   const [form, setForm] = useState<TForm>(FORM_DATA);
   const [activeSection, setActiveSection] = useState<ContentSection>('admin-management');
-  const [currentPage, setCurrentPage] = useState(1);
   const params = Route.useSearch();
-  const navigate = useNavigate();
+  const navigate = Route.useNavigate();
 
-  const updateUserMutation = useUpdateUser();
+  // Search state with debouncing
+  const [search, setSearch] = useState("");
+  const debouncedSearch = useDebounce(search, 500); // 500ms delay
+
   const contentSections = [
     { id: 'admin-management' as ContentSection, label: 'Admin Management' },
     { id: 'api-keys-management' as ContentSection, label: 'API Keys Management' },
     { id: 'language-management' as ContentSection, label: 'Language Management' },
   ];
 
-  const { data: usersResponse, isLoading: isLoadingUsers, refetch } = useGetAllUsers({
+  // Pass debouncedSearch along with params from URL
+  const { data: users, isLoading: isLoading, refetch } = useGetAllUsers({
     params: {
-      page: currentPage,
-      per_page: ITEMS_PER_PAGE,
-      search: "",
-      order:"desc",
-      order_by:"id",
+      ...params, // This includes page and per_page from URL
+      search: debouncedSearch, // Use debounced search here
+      order: "desc",
+      order_by: "id",
     },
     options: {
       enabled: activeSection === "admin-management",
     },
   });
-  // const { data: usersResponse, isLoading: isLoadingUsers, refetch } = useGetAllUsers({
-  //   params: {
-  //     ...params,
-  
-  //   },
-  //   options: { enabled: true },
-  // });
 
-  console.log("🚀 ~ RouteComponent ~ usersResponse:", usersResponse);
+  console.log("🚀 ~ RouteComponent ~ users:", users);
 
-  const users = usersResponse?.data || [];
-  const totalPages = usersResponse?.meta?.last_page || 1;
+  const { data, meta } = users ?? {};
 
- const { mutate: deleteUser, isPending: isPendingDelete } = useDeleteUser();
+  const { mutate: deleteUser, isPending: isPendingDelete } = useDeleteUser();
 
   const columns: ColumnDef<TAdminSchema>[] = [
-     {
+    // {
+    //   id: "select",
+    //   accessorKey: "id",
+    //   header: ({ table }) => (
+    //     <div className="flex items-center gap-3">
+    //       <Checkbox
+    //         checked={
+    //           table.getIsAllPageRowsSelected() ||
+    //           (table.getIsSomePageRowsSelected() && "indeterminate")
+    //         }
+    //         onCheckedChange={(value) =>
+    //           table.toggleAllPageRowsSelected(!!value)
+    //         }
+    //         aria-label="Select all"
+    //       />
+    //       <div className="flex items-center gap-1">
+    //         <span className="font-medium">ID</span>
+    //         <ArrowDown className="h-4 w-4 text-muted-foreground" />
+    //       </div>
+    //     </div>
+    //   ),
+    //   cell: ({ row }) => (
+    //     <div className="flex items-center gap-3">
+    //       <Checkbox
+    //         checked={row.getIsSelected()}
+    //         onCheckedChange={(value) => row.toggleSelected(!!value)}
+    //         aria-label="Select row"
+    //       />
+    //       <span>{row.original.id}</span>
+    //     </div>
+    //   ),
+    //   enableSorting: false,
+    //   enableHiding: false,
+    // },
+    {
       id: "select",
-      accessorKey: "id",
       header: ({ table }) => (
         <div className="flex items-center gap-3">
           <Checkbox
@@ -113,7 +138,7 @@ function RouteComponent() {
             aria-label="Select all"
           />
           <div className="flex items-center gap-1">
-            <span className="font-medium">ID</span>
+            <span className="font-medium">SL</span>
             <ArrowDown className="h-4 w-4 text-muted-foreground" />
           </div>
         </div>
@@ -125,11 +150,14 @@ function RouteComponent() {
             onCheckedChange={(value) => row.toggleSelected(!!value)}
             aria-label="Select row"
           />
-          <span>{row.original.id}</span>
+          <span className="font-medium">
+            {(params.page - 1) * params.per_page + (row.index + 1)}
+          </span>
         </div>
       ),
       enableSorting: false,
       enableHiding: false,
+      size: 80,
     },
     {
       accessorKey: "name",
@@ -239,10 +267,10 @@ function RouteComponent() {
   const renderContent = () => {
     switch (activeSection) {
       case 'admin-management':
-        return isLoadingUsers ? (
+        return isLoading ? (
           <div className="p-8 text-center">Loading...</div>
         ) : (
-          <AppTable data={users} columns={columns} />
+          <AppTable data={data ?? []} columns={columns} />
         );
       case 'api-keys-management':
         return <div className="p-8 text-center text-gray-500">API Keys Management content goes here</div>;
@@ -281,7 +309,10 @@ function RouteComponent() {
                 key={section.id}
                 onClick={() => {
                   setActiveSection(section.id);
-                  setCurrentPage(1);
+                  // Reset to page 1 when changing sections
+                  navigate({
+                    search: (prev) => ({ ...prev, page: 1 }),
+                  });
                 }}
                 className={cn(
                   "px-4 py-2.5 text-sm font-medium transition-colors relative",
@@ -303,7 +334,7 @@ function RouteComponent() {
         <div className="mb-4">
           <h2 className="text-xl font-semibold mb-4 capitalize text-primary">{activeSection.replace(/-/g, ' ')}</h2>
           <div className="flex justify-between mb-4">
-            <SearchBar variant="bordered" />
+            <SearchBar variant="bordered" searchValue={search} onSearchChange={setSearch} />
             <div className="flex gap-2">
               <Button variant="gray">
                 <Rows3 /> Columns
@@ -317,7 +348,7 @@ function RouteComponent() {
               <Button variant="gray">
                 <SlidersHorizontal /> Filters
               </Button>
-              <Button variant="outline">
+              <Button variant="gray">
                 <IconExport /> Export
               </Button>
             </div>
@@ -329,15 +360,32 @@ function RouteComponent() {
       </div>
 
       {/* Data Info & Pagination */}
-      {activeSection === 'admin-management' && !isLoadingUsers && (
+      {activeSection === 'admin-management' && !isLoading && meta && (
         <div className="flex items-center justify-between px-4">
           <AppPagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            paginationItemsToDisplay={5}
-            onClickPage={(page) => setCurrentPage(page)}
-            onClickPrev={(page) => setCurrentPage(Math.max(page - 1, 1))}
-            onClickNext={(page) => setCurrentPage(Math.min(page + 1, totalPages))}
+            meta={meta}
+            currentPage={meta.current_page}
+            totalPages={meta.last_page}
+            onClickPage={(page) =>
+              navigate({
+                search: { ...params, page },
+              })
+            }
+            onClickPrev={(page) =>
+              navigate({
+                search: { ...params, page: page - 1 },
+              })
+            }
+            onClickNext={(page) =>
+              navigate({
+                search: { ...params, page: page + 1 },
+              })
+            }
+            onPerPageChange={(perPage) =>
+              navigate({
+                search: { ...params, page: 1, per_page: perPage },
+              })
+            }
           />
         </div>
       )}
@@ -368,13 +416,13 @@ function RouteComponent() {
         onClose={() => setForm(FORM_DATA)}
         formData={
           form.type === "update"
-            ? users.find((user) => user.id === form.id)
+            ? data?.find((user) => user.id === form.id)
             : undefined
         }
-        updateMutation={updateUserMutation}
         onSuccess={() => {
           console.log("User saved successfully");
           setForm(FORM_DATA);
+          refetch();
         }}
       />
 
@@ -396,7 +444,7 @@ function RouteComponent() {
             <AlertDialogCancel className="capitalize min-w-24">
               Cancel
             </AlertDialogCancel>
-             <Button
+            <Button
               variant="destructive"
               className="capitalize min-w-24 flex items-center gap-2"
               loading={isPendingDelete}

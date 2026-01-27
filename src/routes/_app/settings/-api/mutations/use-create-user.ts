@@ -8,12 +8,14 @@ import { api } from "../../../../../axios";
 export const useCreateUser = () => {
   const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationKey: ["create-admin"],
-
-    // API call
+ return useMutation({
+    mutationKey: ["create-user"],
     mutationFn: (body: TAdminFormSchema) => {
-      return api.post("/users", omitEmpty(body));
+      console.log("✅ ~ useCreateUser ~ body:", body);
+      const data = omitEmpty({
+        ...body,
+      });
+      return api.post("/users", data);
     },
 
     // Success handling
@@ -22,7 +24,7 @@ export const useCreateUser = () => {
 
       // Refetch the admin list to get updated data
       await queryClient.refetchQueries({
-        queryKey: ["all-admins"],
+        queryKey: ["all-users"],
       });
     },
 

@@ -11,9 +11,6 @@ export const MetaSchema = z.object({
   to: z.number().nullable(),
   per_page: z.number(),
   total: z.number(),
-  order_by:z.string(),
-  order:z.string(),
-
 });
 
 export type TMetaSchema = z.infer<typeof MetaSchema>;

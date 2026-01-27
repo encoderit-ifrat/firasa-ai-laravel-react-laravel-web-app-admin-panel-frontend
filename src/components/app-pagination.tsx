@@ -4,42 +4,59 @@ import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, Pagi
 import { cn } from "../lib/utils";
 import { buttonVariants } from "./ui/button";
 
-
-
 type PaginationProps = {
+  meta?: {
+    first_page_url?: null | string;
+    prev_page_url?: null | string;
+    next_page_url?: null | string;
+    last_page_url?: null | string;
+    path: string;
+    current_page: number;
+    last_page: number;
+    from: number | null;
+    to: number | null;
+    per_page: number;
+    total: number;
+  };
   currentPage: number;
   totalPages: number;
   paginationItemsToDisplay?: number;
   onClickPage: (page: number) => void;
   onClickPrev: (page: number) => void;
   onClickNext: (page: number) => void;
+  onPerPageChange?: (perPage: number) => void;
 };
 
 export default function AppPagination({
+  // meta,
   currentPage,
   totalPages,
-  paginationItemsToDisplay = 10,
+  paginationItemsToDisplay = 5,
   onClickPage,
   onClickPrev,
   onClickNext,
+  // onPerPageChange,
 }: PaginationProps) {
   const { pages, showLeftEllipsis, showRightEllipsis } = usePagination({
     currentPage,
     totalPages,
-    paginationItemsToDisplay,
+    paginationItemsToDisplay: paginationItemsToDisplay || 5,
   });
+
+  // Don't render if no pages
+  if (totalPages <= 0) {
+    return null;
+  }
 
   return (
     <Pagination className="justify-end">
       <PaginationContent className="flex flex-row items-center gap-3">
-        {/* Previous page button */}
+        {/* Previous page button - only show if not on first page */}
         {currentPage > 1 && (
           <PaginationItem>
             <PaginationLink
               className="rounded-md border-none shadow-none text-muted-foreground hover:text-foreground"
               aria-label="Go to previous page"
-              aria-disabled={currentPage === 1 ? true : undefined}
-              role={currentPage === 1 ? "link" : undefined}
               onClick={() => onClickPrev(currentPage)}
               size="default"
             >
@@ -84,25 +101,25 @@ export default function AppPagination({
           )}
         </div>
 
-        {/* Next page button */}
-        <PaginationItem>
-          <PaginationLink
-            className={cn(
-              buttonVariants({
-                variant: "customGradient",
-              }),
-              "rounded-md shadow-sm gap-2 px-4"
-            )}
-            onClick={() => onClickNext(currentPage)}
-            aria-label="Go to next page"
-            aria-disabled={currentPage === totalPages ? true : undefined}
-            role={currentPage === totalPages ? "link" : undefined}
-            size="default"
-          >
-            <span>Next</span>
-            <ArrowRight size={16} aria-hidden="true" />
-          </PaginationLink>
-        </PaginationItem>
+        {/* Next page button - only show if not on last page */}
+        {currentPage < totalPages && (
+          <PaginationItem>
+            <PaginationLink
+              className={cn(
+                buttonVariants({
+                  variant: "customGradient",
+                }),
+                "rounded-md shadow-sm gap-2 px-4"
+              )}
+              onClick={() => onClickNext(currentPage)}
+              aria-label="Go to next page"
+              size="default"
+            >
+              <span>Next</span>
+              <ArrowRight size={16} aria-hidden="true" />
+            </PaginationLink>
+          </PaginationItem>
+        )}
       </PaginationContent>
     </Pagination>
   );

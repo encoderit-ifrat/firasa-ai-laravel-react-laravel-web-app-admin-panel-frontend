@@ -2,6 +2,7 @@ import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "../../lib/utils"
+import { Spinner } from "./spinner"
 
 
 const buttonVariants = cva(
@@ -40,24 +41,40 @@ const buttonVariants = cva(
   }
 )
 
+type TProps = React.ComponentProps<"button"> &
+  VariantProps<typeof buttonVariants> & {
+    asChild?: boolean;
+    loading?: boolean;
+  };
 function Button({
+  children,
   className,
   variant,
   size,
+  loading = false,
   asChild = false,
   ...props
-}: React.ComponentProps<"button"> &
-  VariantProps<typeof buttonVariants> & {
-    asChild?: boolean
-  }) {
-  const Comp = asChild ? Slot : "button"
+}: TProps) {
+  const Comp = asChild ? Slot : "button";
 
   return (
-    <Comp
+    // <Comp
+    //   data-slot="button"
+    //   className={cn(buttonVariants({ variant, size, className }))}
+    //   {...props}
+    // />
+
+       <Comp
       data-slot="button"
-      className={cn(buttonVariants({ variant, size, className }))}
+      className={cn(
+        "hover:cursor-pointer",
+        buttonVariants({ variant, size, className })
+      )}
+      disabled={loading}
       {...props}
-    />
+    >
+      {loading ? <Spinner key="bars" variant="bars" /> : children}
+    </Comp>
   )
 }
 

@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -14,13 +14,11 @@ import {
 import { Input } from "../../../../components/ui/input";
 import { Button } from "../../../../components/ui/button";
 import { DropdownSelect } from "../../../../components/DropdownSelect";
-import type { z } from "zod";
 
 import {
   AdminFormSchema,
   type TAdminFormSchema,
 } from "../-type/admin-form";
-import type { RoleEnum } from "../-type/admin";
 import { useGetAllRoleDropdown } from "../-api/queries/use-dropdown-role";
 import { useCreateUser } from "../-api/mutations/use-create-user";
 import { useUpdateUser } from "../-api/mutations/use-update-user";
@@ -28,13 +26,8 @@ import { useUpdateUser } from "../-api/mutations/use-update-user";
 type TProps = {
   open: boolean;
   onClose: () => void;
-  formData?: Partial<TAdminFormSchema> & { id?: string };
+  formData?: Partial<TAdminFormSchema>;
   onSuccess?: () => void;
-};
-
-export type RoleOption = {
-  label: string;
-  value: z.infer<typeof RoleEnum>;
 };
 
 type RoleData = {
@@ -55,46 +48,45 @@ export default function FormAdmin({
   formData,
   onSuccess,
 }: TProps) {
-  // Form setup
   const form = useForm<TAdminFormSchema>({
     resolver: zodResolver(AdminFormSchema),
     defaultValues: {
       name: "",
       email: "",
-      role: "admin",
+      roles: [],
       ...formData,
     },
   });
 
-  // API mutations
-  const { mutate: createUser, isPending: creating } = useCreateUser();
+  const { mutate: createUser, isPending: creating} = useCreateUser();
   const { mutate: updateUser, isPending: updating } = useUpdateUser();
-
-  // Fetch roles data
-  const { data: rolesResponse } = useGetAllRoleDropdown({});
   
-  // Transform API data to dropdown options
-  const roleOptions = useMemo(() => {
-    if (!rolesResponse?.data) return [];
-    
-    return rolesResponse.data.map((role: RoleData) => ({
-      label: role.name.charAt(0).toUpperCase() + role.name.slice(1),
-      value: role.name,
-    }));
-  }, [rolesResponse]);
+  // Fetch roles - API returns { data: [...], meta: {...} }
+  const { data: rolesResponse } = useGetAllRoleDropdown({});
+  console.log("🚀 ~ FormAdmin ~ rolesResponse:", rolesResponse);
 
   // Determine if this is an update operation
   const isUpdateMode = !!formData?.id;
 
-  // Reset on edit
   useEffect(() => {
     if (formData) {
-      form.reset(formData);
+      // Transform roles from array of objects to array of IDs
+      const transformedData = {
+        ...formData,
+        roles: Array.isArray(formData.roles)
+          ? formData.roles.map((role: number | RoleData) => 
+              typeof role === 'object' ? role.id : role
+            )
+          : formData.roles,
+      };
+      console.log("🚀 ~ Transformed formData for editing:", transformedData);
+      form.reset(transformedData);
     }
   }, [formData, form]);
 
-  // Submit handler
   function onSubmit(values: TAdminFormSchema) {
+    console.log("🚀 ~ Submitting values:", values);
+    
     if (isUpdateMode && formData?.id) {
       // Update existing admin
       updateUser(
@@ -117,6 +109,7 @@ export default function FormAdmin({
           form.reset();
           onClose();
           onSuccess?.();
+         
         },
       });
     }
@@ -184,30 +177,29 @@ export default function FormAdmin({
               <FormItem>
                 <FormLabel>Email *</FormLabel>
                 <FormControl>
-                  <Input
-                    type="email"
-                    placeholder="mail@domain.com"
-                    {...field}
-                  />
+                  <Input type="email" placeholder="mail@domain.com" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
 
-          {/* ROLE */}
+          {/* ROLES */}
           <FormField
             control={form.control}
-            name="role"
+            name="roles"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Role *</FormLabel>
                 <FormControl>
                   <DropdownSelect
-                    value={field.value}
-                    options={roleOptions}
+                    value={field.value?.[0] ? String(field.value[0]) : undefined}
+                    options={rolesResponse?.data?.map((role: RoleData) => ({
+                      label: role.name.charAt(0).toUpperCase() + role.name.slice(1),
+                      value: String(role.id),
+                    })) ?? []}
                     placeholder="Select role"
-                    onChange={field.onChange}
+                    onChange={(value) => field.onChange([Number(value)])}
                     className="w-full"
                   />
                 </FormControl>
