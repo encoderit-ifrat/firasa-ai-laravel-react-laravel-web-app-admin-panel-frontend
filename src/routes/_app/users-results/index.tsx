@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
 import {
   ArrowDown,
@@ -7,6 +7,7 @@ import {
   Plus,
   Rows3,
   SlidersHorizontal,
+  Trash2,
 } from "lucide-react";
 import { useState } from "react";
 import type { TForm } from "../../../types/form";
@@ -21,6 +22,13 @@ import { Checkbox } from "../../../components/ui/checkbox";
 import { Badge } from "../../../components/ui/badge";
 import { cn } from "../../../lib/utils";
 import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "../../../components/ui/dialog";
+import {
   AlertDialog,
   AlertDialogContent,
   AlertDialogHeader,
@@ -30,131 +38,55 @@ import {
   AlertDialogCancel,
 } from "../../../components/ui/alert-dialog";
 import FormUser from "./-components/form-user";
-import IconDelete from "../../../components/svg-icon/icon-delete";
-import AppPagination from "../../../components/app-pagination";
 import IconUpdate from "../../../components/svg-icon/icon-update";
+import AppPagination from "../../../components/app-pagination";
+import { useGetAllUsersResults } from "./-api/queries/use-get-all-users-results";
+import { SearchSchema } from "../../../types/search";
+import { z } from "zod";
+import Loading from "../../../components/base/loading";
+import type { TUsersResultsSchema } from "./-type/users-results";
 
 export const Route = createFileRoute("/_app/users-results/")({
   component: RouteComponent,
+  validateSearch: SearchSchema.extend({
+    plan: z.string().optional(),
+    order_by: z.string().optional(),
+    order: z.string().optional(),
+  }),
 });
 
-type UserData = {
-  id: number;
-  name: string;
-  email: string;
-  gender: string;
-  datetime: string;
-  deviceUsed: string;
-  plan: string;
-  testsTaken: number;
-  lastTestDate: string;
-  status: string;
-  joinDate?: string;
-  lastActive?: string;
-  avatar?: string;
-};
-
-const DUMMY_DATA: UserData[] = [
-  {
-    id: 1,
-    name: "John Doe",
-    email: "john.doe@example.com",
-    gender: "male",
-    datetime: "2024-03-15T10:30",
-    deviceUsed: "Desktop",
-    plan: "Premium",
-    testsTaken: 15,
-    lastTestDate: "2024-03-15",
-    status: "Active",
-    joinDate: "2024-01-15",
-    lastActive: "2024-03-15",
-    avatar: "/image/profilePhoto.png",
-  },
-  {
-    id: 2,
-    name: "Jane Smith",
-    email: "jane.smith@example.com",
-    gender: "female",
-    datetime: "2024-03-10T14:20",
-    deviceUsed: "Mobile",
-    plan: "Unavailable",
-    testsTaken: 8,
-    lastTestDate: "2024-03-10",
-    status: "Unavailable",
-    joinDate: "2024-02-10",
-    lastActive: "2024-03-10",
-    avatar: "/image/profilePhoto.png",
-  },
-  {
-    id: 3,
-    name: "Mike Johnson",
-    email: "mike.johnson@example.com",
-    gender: "male",
-    datetime: "2024-03-18T09:15",
-    deviceUsed: "Tablet",
-    plan: "Premium",
-    testsTaken: 22,
-    lastTestDate: "2024-03-18",
-    status: "Suspended",
-    joinDate: "2023-12-18",
-    lastActive: "2024-02-18",
-    avatar: "/image/profilePhoto.png",
-  },
-  {
-    id: 4,
-    name: "Sarah Williams",
-    email: "sarah.williams@example.com",
-    gender: "female",
-    datetime: "2024-03-20T16:45",
-    deviceUsed: "Desktop",
-    plan: "Pro",
-    testsTaken: 30,
-    lastTestDate: "2024-03-20",
-    status: "Active",
-    joinDate: "2023-11-20",
-    lastActive: "2024-03-20",
-    avatar: "/image/profilePhoto.png",
-  },
-  {
-    id: 5,
-    name: "David Brown",
-    email: "david.brown@example.com",
-    gender: "male",
-    datetime: "2024-03-05T11:00",
-    deviceUsed: "Mobile",
-    plan: "Basic",
-    testsTaken: 5,
-    lastTestDate: "2024-03-05",
-    status: "Active",
-    joinDate: "2024-02-05",
-    lastActive: "2024-03-05",
-    avatar: "/image/profilePhoto.png",
-  },
-];
-
-const ITEMS_PER_PAGE = 4;
+const statusVariantMap = {
+  active: "active",
+  suspended: "suspended",
+  inactive: "unavailable",
+} as const;
 
 function RouteComponent() {
   const [form, setForm] = useState<TForm>(FORM_DATA);
-  const [currentPage, setCurrentPage] = useState(1);
-  const navigate = useNavigate();
+  const navigate = Route.useNavigate();
+  const params = Route.useSearch();
 
-  const totalPages = Math.ceil(DUMMY_DATA.length / ITEMS_PER_PAGE);
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const paginatedData = DUMMY_DATA.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  // Search state
+  const [search, setSearch] = useState("");
 
-  const statusVariantMap = {
-    Active: "active",
-    Suspended: "suspended",
-    Unavailable: "unavailable",
-  } as const;
+  // API queries
+  const { data: usersResultsResponse, isLoading, refetch } = useGetAllUsersResults({
+    params: {
+      ...params,
+      search,
+      order_by: params.order_by || "id",
+      order: params.order || "desc",
+    },
+    options: {
+      enabled: true,
+    },
+  });
 
+  const { data, meta } = usersResultsResponse ?? {};
 
-
-  const columns: ColumnDef<UserData>[] = [
+  const columns: ColumnDef<TUsersResultsSchema>[] = [
     {
       id: "select",
-      accessorKey: "id",
       header: ({ table }) => (
         <div className="flex items-center gap-3">
           <Checkbox
@@ -168,7 +100,7 @@ function RouteComponent() {
             aria-label="Select all"
           />
           <div className="flex items-center gap-1">
-            <span className="font-medium">ID</span>
+            <span className="font-medium">SL</span>
             <ArrowDown className="h-4 w-4 text-muted-foreground" />
           </div>
         </div>
@@ -180,11 +112,14 @@ function RouteComponent() {
             onCheckedChange={(value) => row.toggleSelected(!!value)}
             aria-label="Select row"
           />
-          <span>{row.original.id}</span>
+          <span className="font-medium">
+            {(params.page - 1) * params.per_page + (row.index + 1)}
+          </span>
         </div>
       ),
       enableSorting: false,
       enableHiding: false,
+      size: 80,
     },
     {
       accessorKey: "name",
@@ -198,10 +133,10 @@ function RouteComponent() {
         </Button>
       ),
       cell: ({ row }) => (
-        <div className="lowercase">{row.getValue("name")}</div>
+        <div className="font-medium">{row.getValue("name")}</div>
       ),
+      size: 200,
     },
-
     {
       header: ({ column }) => (
         <Button
@@ -214,6 +149,10 @@ function RouteComponent() {
         </Button>
       ),
       accessorKey: "email",
+      cell: ({ row }) => (
+        <div className="font-medium">{row.getValue("email")}</div>
+      ),
+      size: 250,
     },
     {
       header: ({ column }) => (
@@ -226,7 +165,13 @@ function RouteComponent() {
           <ChevronsUpDown className="h-4 w-4" />
         </Button>
       ),
-      accessorKey: "deviceUsed",
+      accessorKey: "last_device_used",
+      cell: ({ row }) => (
+        <div className="font-medium">
+          {row.getValue("last_device_used") || "N/A"}
+        </div>
+      ),
+      size: 150,
     },
     {
       header: ({ column }) => (
@@ -243,18 +188,21 @@ function RouteComponent() {
       cell: ({ row }) => {
         const plan = row.getValue("plan") as string;
         const planColors = {
-          Pro: "bg-gradient text-[#585051]",
+          pro: "bg-gradient text-[#585051]",
+          premium: "bg-gradient text-[#585051]",
+          free: "bg-gray-100 text-gray-600",
         };
 
         return (
           <Badge
             variant="outline"
-            className={cn(planColors[plan as keyof typeof planColors])}
+            className={cn(planColors[plan?.toLowerCase() as keyof typeof planColors])}
           >
-            {plan}
+            {plan?.charAt(0).toUpperCase() + plan?.slice(1) || "N/A"}
           </Badge>
         );
       },
+      size: 120,
     },
     {
       header: ({ column }) => (
@@ -267,7 +215,11 @@ function RouteComponent() {
           <ChevronsUpDown className="h-4 w-4" />
         </Button>
       ),
-      accessorKey: "testsTaken",
+      accessorKey: "analysis_taken_count",
+      cell: ({ row }) => (
+        <div className="font-medium">{row.getValue("analysis_taken_count")}</div>
+      ),
+      size: 120,
     },
     {
       header: ({ column }) => (
@@ -280,7 +232,16 @@ function RouteComponent() {
           <ChevronsUpDown className="h-4 w-4" />
         </Button>
       ),
-      accessorKey: "lastTestDate",
+      accessorKey: "last_analysis_date",
+      cell: ({ row }) => {
+        const date = row.getValue("last_analysis_date") as string | null;
+        return (
+          <div className="font-medium">
+            {date ? new Date(date).toLocaleDateString() : "N/A"}
+          </div>
+        );
+      },
+      size: 150,
     },
     {
       header: ({ column }) => (
@@ -295,24 +256,25 @@ function RouteComponent() {
       ),
       accessorKey: "status",
       cell: ({ row }) => {
-        const status = row.getValue("status") as keyof typeof statusVariantMap;
+        const status = row.getValue("status") as string;
+        const statusKey = status?.toLowerCase() as keyof typeof statusVariantMap;
 
         return (
-          <Badge variant={statusVariantMap[status]}>
+          <Badge variant={statusVariantMap[statusKey] || "unavailable"}>
             <span
               className={cn(
                 "w-1.5 h-1.5 rounded-full",
-                status === "Active" && "bg-[#34C759]",
-                status === "Suspended" && "bg-[#FF9500]",
-                status === "Unavailable" && "bg-[#FF3B30]"
+                statusKey === "active" && "bg-[#34C759]",
+                statusKey === "suspended" && "bg-[#FF9500]",
+                statusKey === "inactive" && "bg-[#FF3B30]"
               )}
             />
-            {status}
+            {status?.charAt(0).toUpperCase() + status?.slice(1) || "N/A"}
           </Badge>
         );
       },
+      size: 120,
     },
-
     {
       header: "Actions",
       accessorKey: "action",
@@ -326,7 +288,6 @@ function RouteComponent() {
                 name: "view",
                 icon: Eye,
                 props: {
-                  variant: "update",
                   onClick: () =>
                     navigate({
                       to: "/users-results/$userId",
@@ -339,62 +300,75 @@ function RouteComponent() {
                 name: "edit",
                 icon: IconUpdate,
                 props: {
-                  variant: "update",
                   onClick: () =>
                     setForm({
-
                       type: "update",
                       title: "Update User Result",
                       description: "",
-                      id: data.id,
+                      id: String(data.id),
                     }),
                 },
               },
               {
                 type: "delete",
                 name: "delete",
-                icon: IconDelete,
+                icon: Trash2,
                 props: {
-                  variant: "delete",
+                  className: "text-custom-footer-text-red",
                   onClick: () =>
                     setForm({
                       type: "delete",
                       title: "",
                       description: "",
-                      id: data.id,
+                      id: String(data.id),
                     }),
                 },
-              }
+              },
             ]}
           />
         );
       },
+      size: 100,
     },
   ];
 
+  if (isLoading) return <Loading />;
+
   return (
-    <div className="space-y-4 p-4">
-      <div>
-        <div className="flex justify-between mb-6 mt-6">
-          <h1 className="text-primary text-3xl font-bold leading-12">Users & Results</h1>
-          <Button
-            size="icon-lg"
-            variant="customGradient"
-            onClick={() =>
-              setForm({
-                type: "create",
-                title: "Add New User",
-                description: "",
-              })
-            }
-          >
-            <Plus /> Add New User
-          </Button>
-        </div>
-        <div className="flex justify-between mb-4">
-          <SearchBar
-            variant="bordered"
-          />
+    <div className="p-4">
+      <div className="flex justify-between mb-6">
+        <h1 className="text-custom-header-text text-2xl font-semibold">
+          Users & Results
+        </h1>
+        <Button
+          variant="customGradient"
+          className="border-custom-footer-text-red text-custom-footer-text-red hover:bg-red-50 whitespace-nowrap"
+          onClick={() =>
+            setForm({
+              type: "create",
+              title: "Add New User",
+              description: "",
+            })
+          }
+        >
+          <Plus /> Add New User
+        </Button>
+      </div>
+
+      <div className="mb-4">
+        <div className="flex items-center justify-between w-full gap-3">
+          <div className="flex items-center gap-3 w-full">
+            <SearchBar
+              searchValue={search}
+              onSearchChange={(value) => {
+                setSearch(value);
+                navigate({
+                  search: { ...params, page: 1 },
+                });
+              }}
+              variant="bordered"
+            />
+          </div>
           <div className="flex gap-2">
             <Button variant="gray">
               <Rows3 /> Columns
@@ -408,44 +382,76 @@ function RouteComponent() {
             <Button variant="gray">
               <SlidersHorizontal /> Filters
             </Button>
-            <Button variant="outline" >
+            <Button variant="outline">
               <IconExport /> Export
             </Button>
           </div>
         </div>
       </div>
 
-      <AppTable data={paginatedData} columns={columns} />
-      <div className="flex items-end justify-between px-4">
-        {/* <div className="text-sm text-gray-600">
-          Showing {startIndex + 1} to {Math.min(startIndex + ITEMS_PER_PAGE, DUMMY_DATA.length)} of {DUMMY_DATA.length} users
-        </div> */}
-        <AppPagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          paginationItemsToDisplay={5}
-          onClickPage={(page) => setCurrentPage(page)}
-          onClickPrev={(page) => setCurrentPage(Math.max(page - 1, 1))}
-          onClickNext={(page) => setCurrentPage(Math.min(page + 1, totalPages))}
-        />
+      <div className="mt-4">
+        <AppTable data={data ?? []} columns={columns} />
       </div>
 
-      {/* Create/Update Sheet */}
-      <FormUser
-        open={form.type === "create" || form.type === "update"}
-        onClose={() => setForm(FORM_DATA)}
-        formData={
-          form.type === "update"
-            ? DUMMY_DATA.find((user) => user.id === form.id)
-            : undefined
-        }
-        onSuccess={() => {
-          console.log("User saved successfully");
-          setForm(FORM_DATA);
-        }}
-      />
+      {meta && (
+        <div className="px-4 py-4 rounded-b-lg bg-custom-background-white">
+          <AppPagination
+            meta={meta}
+            currentPage={meta?.current_page}
+            totalPages={meta?.last_page}
+            onClickPage={(val) =>
+              navigate({
+                search: { ...params, page: val },
+              })
+            }
+            onClickPrev={(val) =>
+              navigate({
+                search: { ...params, page: val },
+              })
+            }
+            onClickNext={(val) =>
+              navigate({
+                search: { ...params, page: val },
+              })
+            }
+            onPerPageChange={(perPage) =>
+              navigate({
+                search: { ...params, page: 1, per_page: perPage },
+              })
+            }
+          />
+        </div>
+      )}
 
-      {/* Delete Alert */}
+      {/* Create / Update Dialog */}
+      <Dialog
+        open={form.type === "create" || form.type === "update"}
+        onOpenChange={() => setForm(FORM_DATA)}
+      >
+        <DialogContent className="w-full max-w-xl lg:max-w-xl max-h-[90vh] flex flex-col p-0">
+          <DialogHeader className="p-4 rounded-t-lg bg-custom-modal-header-bg">
+            <DialogTitle>{form.title}</DialogTitle>
+            <DialogDescription>{form.description}</DialogDescription>
+          </DialogHeader>
+          <div className="flex-1 overflow-y-auto p-4">
+            <FormUser
+              open={form.type === "create" || form.type === "update"}
+              onClose={() => setForm(FORM_DATA)}
+              formData={
+                form.type === "update" && form.id
+                  ? data?.find((user) => String(user.id) === form.id)
+                  : undefined
+              }
+              onSuccess={() => {
+                setForm(FORM_DATA);
+                refetch();
+              }}
+            />
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Dialog */}
       <AlertDialog
         open={form.type === "delete"}
         onOpenChange={() => setForm(FORM_DATA)}
@@ -456,23 +462,34 @@ function RouteComponent() {
               Are you sure you want to delete?
             </AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete this user? This action cannot be
-              undone.
+              This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
-          <AlertDialogFooter className="flex gap-2">
+
+          <AlertDialogFooter>
             <AlertDialogCancel className="capitalize min-w-24">
               Cancel
             </AlertDialogCancel>
+
             <Button
               variant="destructive"
               className="capitalize min-w-24 flex items-center gap-2"
               onClick={() => {
                 console.log("Deleting user:", form.id);
+                // TODO: Implement delete mutation when available
+                // deleteUser(
+                //   { id: form.id! },
+                //   {
+                //     onSuccess: () => {
+                //       setForm(FORM_DATA);
+                //       refetch();
+                //     },
+                //   }
+                // )
                 setForm(FORM_DATA);
               }}
             >
-              <IconDelete /> Delete
+              <Trash2 /> Delete
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
