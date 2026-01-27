@@ -73,6 +73,7 @@ function RouteComponent() {
   const { data: users, isLoading: isLoading, refetch } = useGetAllUsers({
     params: {
       ...params, // This includes page and per_page from URL
+      page: debouncedSearch ? -1 : params?.page,
       search: debouncedSearch, // Use debounced search here
       order: "desc",
       order_by: "id",
