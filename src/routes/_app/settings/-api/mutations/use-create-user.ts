@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { omitEmpty } from "../../../../../lib/omit-empties";
 import { api } from "../../../../../axios";
 
-export const useCreateAdmin = () => {
+export const useCreateUser = () => {
   const queryClient = useQueryClient();
 
   return useMutation({

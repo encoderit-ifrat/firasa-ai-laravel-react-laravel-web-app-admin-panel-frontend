@@ -22,12 +22,13 @@ import {
 } from "../-type/admin-form";
 import type { RoleEnum } from "../-type/admin";
 import { useGetAllRoleDropdown } from "../-api/queries/use-dropdown-role";
-import { useCreateAdmin } from "../-api/mutations/use-create-admin";
+import { useCreateUser } from "../-api/mutations/use-create-user";
+import { useUpdateUser } from "../-api/mutations/use-update-user";
 
 type TProps = {
   open: boolean;
   onClose: () => void;
-  formData?: Partial<TAdminFormSchema>;
+  formData?: Partial<TAdminFormSchema> & { id?: string };
   onSuccess?: () => void;
 };
 
@@ -66,7 +67,8 @@ export default function FormAdmin({
   });
 
   // API mutations
-  const createAdmin = useCreateAdmin();
+  const { mutate: createUser, isPending: creating } = useCreateUser();
+  const { mutate: updateUser, isPending: updating } = useUpdateUser();
 
   // Fetch roles data
   const { data: rolesResponse } = useGetAllRoleDropdown({});
@@ -76,12 +78,13 @@ export default function FormAdmin({
     if (!rolesResponse?.data) return [];
     
     return rolesResponse.data.map((role: RoleData) => ({
-      label: role.name,
+      label: role.name.charAt(0).toUpperCase() + role.name.slice(1),
       value: role.name,
     }));
   }, [rolesResponse]);
 
-  console.log("🚀 ~ FormAdmin ~ roleOptions:", roleOptions);
+  // Determine if this is an update operation
+  const isUpdateMode = !!formData?.id;
 
   // Reset on edit
   useEffect(() => {
@@ -91,16 +94,31 @@ export default function FormAdmin({
   }, [formData, form]);
 
   // Submit handler
-  async function onSubmit(values: TAdminFormSchema) {
-    try {
-      await createAdmin.mutateAsync(values);
-      
-      form.reset();
-      onClose();
-      onSuccess?.();
-    } catch (error) {
-      // Error is already handled in the mutation's onError
-      console.error("Failed to submit admin:", error);
+  function onSubmit(values: TAdminFormSchema) {
+    if (isUpdateMode && formData?.id) {
+      // Update existing admin
+      updateUser(
+        {
+          ...values,
+          id: formData.id,
+        },
+        {
+          onSuccess: () => {
+            form.reset();
+            onClose();
+            onSuccess?.();
+          },
+        }
+      );
+    } else {
+      // Create new admin
+      createUser(values, {
+        onSuccess: () => {
+          form.reset();
+          onClose();
+          onSuccess?.();
+        },
+      });
     }
   }
 
@@ -108,7 +126,7 @@ export default function FormAdmin({
     <AppSheet
       open={open}
       onOpenChange={onClose}
-      title={formData ? "Update Admin" : "Add New Admin"}
+      title={isUpdateMode ? "Update Admin" : "Add New Admin"}
       actions={
         <div className="flex items-center gap-2">
           <Button
@@ -128,11 +146,11 @@ export default function FormAdmin({
             size="lg"
             variant="customGradient"
             form="admin-form"
-            disabled={createAdmin.isPending}
+            disabled={creating || updating}
           >
-            {createAdmin.isPending 
-              ? "Creating..." 
-              : formData ? "Update Admin" : "Invite Admin"}
+            {creating || updating
+              ? isUpdateMode ? "Updating..." : "Creating..."
+              : isUpdateMode ? "Update Admin" : "Invite Admin"}
           </Button>
         </div>
       }

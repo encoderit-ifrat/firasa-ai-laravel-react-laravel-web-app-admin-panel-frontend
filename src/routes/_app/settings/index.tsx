@@ -53,51 +53,51 @@ export const Route = createFileRoute('/_app/settings/')({
 
 type ContentSection = 'admin-management' | 'api-keys-management' | 'language-management';
 
-const ITEMS_PER_PAGE = 5;
+const ITEMS_PER_PAGE = 100;
 
 function RouteComponent() {
   const [form, setForm] = useState<TForm>(FORM_DATA);
   const [activeSection, setActiveSection] = useState<ContentSection>('admin-management');
   const [currentPage, setCurrentPage] = useState(1);
+  const params = Route.useSearch();
   const navigate = useNavigate();
 
   const updateUserMutation = useUpdateUser();
-  const deleteUserMutation = useDeleteUser();
-
   const contentSections = [
     { id: 'admin-management' as ContentSection, label: 'Admin Management' },
     { id: 'api-keys-management' as ContentSection, label: 'API Keys Management' },
     { id: 'language-management' as ContentSection, label: 'Language Management' },
   ];
 
-  const { data: usersResponse, isLoading: isLoadingUsers } = useGetAllUsers({
+  const { data: usersResponse, isLoading: isLoadingUsers, refetch } = useGetAllUsers({
     params: {
       page: currentPage,
       per_page: ITEMS_PER_PAGE,
       search: "",
+      order:"desc",
+      order_by:"id",
     },
     options: {
       enabled: activeSection === "admin-management",
     },
   });
+  // const { data: usersResponse, isLoading: isLoadingUsers, refetch } = useGetAllUsers({
+  //   params: {
+  //     ...params,
+  
+  //   },
+  //   options: { enabled: true },
+  // });
 
   console.log("🚀 ~ RouteComponent ~ usersResponse:", usersResponse);
 
   const users = usersResponse?.data || [];
   const totalPages = usersResponse?.meta?.last_page || 1;
 
-  const handleDelete = () => {
-    if (!form.id) return;
-    
-    deleteUserMutation.mutate(form.id, {
-      onSuccess: () => {
-        setForm(FORM_DATA);
-      },
-    });
-  };
+ const { mutate: deleteUser, isPending: isPendingDelete } = useDeleteUser();
 
   const columns: ColumnDef<TAdminSchema>[] = [
-    {
+     {
       id: "select",
       accessorKey: "id",
       header: ({ table }) => (
@@ -396,13 +396,23 @@ function RouteComponent() {
             <AlertDialogCancel className="capitalize min-w-24">
               Cancel
             </AlertDialogCancel>
-            <Button
+             <Button
               variant="destructive"
               className="capitalize min-w-24 flex items-center gap-2"
-              onClick={handleDelete}
-              disabled={deleteUserMutation.isPending}
+              loading={isPendingDelete}
+              onClick={() =>
+                deleteUser(
+                  { id: form.id! },
+                  {
+                    onSuccess: () => {
+                      setForm(FORM_DATA);
+                      refetch();
+                    },
+                  }
+                )
+              }
             >
-              <Trash2 /> {deleteUserMutation.isPending ? "Deleting..." : "Delete"}
+              <Trash2 /> Delete
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
