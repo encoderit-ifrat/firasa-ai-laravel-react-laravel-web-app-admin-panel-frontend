@@ -350,7 +350,7 @@ function RouteComponent() {
               <Button variant="gray">
                 <SlidersHorizontal /> Filters
               </Button>
-              <Button variant="gray">
+              <Button variant="outline">
                 <IconExport /> Export
               </Button>
             </div>
