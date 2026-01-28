@@ -1,5 +1,5 @@
 import type { ColumnDef } from "@tanstack/react-table";
-import { ArrowLeft, ArrowUpDown, ChevronRight, Eye } from "lucide-react";
+import { ArrowDown, ArrowLeft, ArrowUpDown, ChevronRight, Eye } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
 import AppTable from "../../../../components/app-table";
 import { Button } from "../../../../components/ui/button";
@@ -10,6 +10,7 @@ import IconDelete from "../../../../components/svg-icon/icon-delete";
 import IconUpdate from "../../../../components/svg-icon/icon-update";
 import ViewReportModal from "./view-report-modal";
 import { useState } from "react";
+import { Checkbox } from "../../../../components/ui/checkbox";
 
 type UserData = {
   id: number;
@@ -73,22 +74,40 @@ export default function UserProfileDetail({
   // Columns for reports table - using ReportData structure from API
   const reportColumns: ColumnDef<ReportData>[] = [
     {
-      accessorKey: "id",
-      header: ({ column }) => (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          className="h-auto p-0 font-medium"
-        >
-          ID
-          <ArrowUpDown className="ml-2 h-4 w-4" />
-        </Button>
-      ),
-      cell: ({ row }) => (
-        <div className="max-w-[80px] truncate" title={String(row.getValue("id"))}>
-          {String(row.getValue("id")).slice(0, 8)}...
+      id: "select",
+      header: ({ table }) => (
+        <div className="flex items-center gap-3">
+          <Checkbox
+            checked={
+              table.getIsAllPageRowsSelected() ||
+              (table.getIsSomePageRowsSelected() && "indeterminate")
+            }
+            onCheckedChange={(value) =>
+              table.toggleAllPageRowsSelected(!!value)
+            }
+            aria-label="Select all"
+          />
+          <div className="flex items-center gap-1">
+            <span className="font-medium">SL</span>
+            <ArrowDown className="h-4 w-4 text-muted-foreground" />
+          </div>
         </div>
       ),
+      cell: ({ row }) => (
+        <div className="flex items-center gap-3">
+          <Checkbox
+            checked={row.getIsSelected()}
+            onCheckedChange={(value) => row.toggleSelected(!!value)}
+            aria-label="Select row"
+          />
+          <span className="font-medium">
+            {row.index + 1}
+          </span>
+        </div>
+      ),
+      enableSorting: false,
+      enableHiding: false,
+      size: 80,
     },
     {
       id: "reportTitle",

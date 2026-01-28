@@ -45,6 +45,7 @@ import { SearchSchema } from "../../../types/search";
 import { z } from "zod";
 import Loading from "../../../components/base/loading";
 import type { TUsersResultsSchema } from "./-type/users-results";
+import IconDelete from "../../../components/svg-icon/icon-delete";
 
 export const Route = createFileRoute("/_app/users-results/")({
   component: RouteComponent,
@@ -312,9 +313,9 @@ function RouteComponent() {
               {
                 type: "delete",
                 name: "delete",
-                icon: Trash2,
+                icon: IconDelete,
                 props: {
-                  className: "text-custom-footer-text-red",
+                  variant: "delete",
                   onClick: () =>
                     setForm({
                       type: "delete",

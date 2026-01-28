@@ -57,7 +57,7 @@ export default function AppPagination({
             <PaginationLink
               className="rounded-md border-none shadow-none text-muted-foreground hover:text-foreground"
               aria-label="Go to previous page"
-              onClick={() => onClickPrev(currentPage)}
+              onClick={() => onClickPrev(currentPage - 1)}
               size="default"
             >
               <ChevronLeftIcon size={16} aria-hidden="true" />
@@ -111,7 +111,7 @@ export default function AppPagination({
                 }),
                 "rounded-md shadow-sm gap-2 px-4"
               )}
-              onClick={() => onClickNext(currentPage)}
+              onClick={() => onClickNext(currentPage + 1)}
               aria-label="Go to next page"
               size="default"
             >
