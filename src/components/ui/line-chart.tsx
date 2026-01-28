@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
 import {
@@ -13,6 +14,7 @@ import {
   type ChartConfig,
 } from "./chart";
 import { DropdownSelector, type DropdownOption } from "../dropdown";
+import { useGetDashboardConversionFunnel } from "../../routes/_app/_dashboard/-api/queries/use-dashboard-conversion-funnel";
 
 export const description = "A stacked bar chart showing conversion funnel";
 
@@ -20,34 +22,6 @@ const days: DropdownOption<number>[] = [
   { value: 7, label: "Last 7 Days" },
   { value: 14, label: "Last 14 Days" },
   { value: 30, label: "Last 30 Days" },
-];
-
-// Stacked bar chart data: conversion (pink) + non-conversion (grey)
-const chartData = [
-  { 
-    category: "Visitors", 
-    conversion: 89, 
-    nonConversion: 11,
-    total: 100
-  },
-  { 
-    category: "Test Started", 
-    conversion: 60, 
-    nonConversion: 40,
-    total: 100
-  },
-  { 
-    category: "Test Completed", 
-    conversion: 40, 
-    nonConversion: 60,
-    total: 100
-  },
-  { 
-    category: "Upgraded", 
-    conversion: 80, 
-    nonConversion: 20,
-    total: 100
-  },
 ];
 
 const chartConfig = {
@@ -62,6 +36,36 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export function LineChart() {
+  const { data: dashboardConversionFunnel } = useGetDashboardConversionFunnel({
+    params: {
+      range: "yearly",
+    },
+    options: {
+      enabled: true,
+    },
+  });
+
+  // Build chart data dynamically from API response
+  const chartData = useMemo(() => {
+    const visitors = dashboardConversionFunnel?.visitors ?? 0;
+    const testStarted = dashboardConversionFunnel?.test_started ?? 0;
+    const testCompleted = dashboardConversionFunnel?.test_completed ?? 0;
+    const upgraded = dashboardConversionFunnel?.upgraded ?? 0;
+
+    return [
+      { category: "Visitors", conversion: visitors },
+      { category: "Test Started", conversion: testStarted },
+      { category: "Test Completed", conversion: testCompleted },
+      { category: "Upgraded", conversion: upgraded },
+    ];
+  }, [dashboardConversionFunnel]);
+
+  // Calculate max value for Y-axis domain
+  const maxValue = useMemo(() => {
+    const max = Math.max(...chartData.map((d) => d.conversion));
+    return Math.ceil(max / 10) * 10 || 100; // Round up to nearest 10, default to 100
+  }, [chartData]);
+
   return (
     <Card>
       <CardHeader>
@@ -88,11 +92,10 @@ export function LineChart() {
             />
             <YAxis
               axisLine={true}
-              domain={[0, 100]}
+              domain={[0, maxValue]}
             />
             <ChartTooltip content={<ChartTooltipContent hideLabel />} />
-            <Bar dataKey="conversion" stackId="a" fill="#FFA1E6" />
-            <Bar dataKey="nonConversion" stackId="a" fill="#E5E5E5" />
+            <Bar dataKey="conversion" fill="#FFA1E6" />
           </BarChart>
         </ChartContainer>
         <div className="flex justify-center mt-4">

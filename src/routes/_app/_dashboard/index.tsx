@@ -8,8 +8,10 @@ import IconConversion from "../../../components/svg-icon/icon-conversion";
 import { CircleChart } from "../../../components/ui/pie-chart";
 import { LineChart } from "../../../components/ui/line-chart";
 import { ChevronsUpDown } from "lucide-react";
-
 import { MiniAreaChart } from "../../../components/app-mini-chart-area";
+import { useGetDashboardOverview } from "./-api/queries/use-dashboard-overview";
+
+
 
 
 
@@ -18,45 +20,55 @@ export const Route = createFileRoute("/_app/_dashboard/")({
   component: RouteComponent,
 });
 
-const dashboardCards = [
-  {
-    id: 1,
-    icon: IconUser,
-    value: "5000",
-    label: "Total Users",
-    trend: MiniAreaChart,
-    trendType: "positive" as const,
-  },
-  {
-    id: 2,
-    icon: IconComplete,
-    value: "200",
-    label: "Completed Tests",
-    trend: MiniAreaChart,
-    trendType: "positive" as const,
-  },
-  {
-    id: 3,
-    icon: IconUpgrade,
-    value: "20",
-    label: "Upgrade to Pro",
-    trend: MiniAreaChart,
-    trendType: "positive" as const,
-  },
-  {
-    id: 4,
-    icon: IconConversion,
-    value: "45%",
-    label: "Conversion",
-    trend: MiniAreaChart,
-    trendType: "negative" as const, 
-  },
-];
-
 
 
 function RouteComponent() {
-  
+  const { data: dashboardOverview } = useGetDashboardOverview({
+    params: {
+      range: "yearly",
+    },
+    options: {
+      enabled: true,
+    },
+  });
+
+
+  // Dashboard cards with real data from API
+  const dashboardCards = [
+    {
+      id: 1,
+      icon: IconUser,
+      value: dashboardOverview?.total_users?.toLocaleString() ?? "0",
+      label: "Total Users",
+      trend: MiniAreaChart,
+      trendType: "positive" as const,
+    },
+    {
+      id: 2,
+      icon: IconComplete,
+      value: dashboardOverview?.completed_tests?.toLocaleString() ?? "0",
+      label: "Completed Tests",
+      trend: MiniAreaChart,
+      trendType: "positive" as const,
+    },
+    {
+      id: 3,
+      icon: IconUpgrade,
+      value: dashboardOverview?.upgraded_to_pro?.toLocaleString() ?? "0",
+      label: "Upgrade to Pro",
+      trend: MiniAreaChart,
+      trendType: "positive" as const,
+    },
+    {
+      id: 4,
+      icon: IconConversion,
+      value: `${dashboardOverview?.conversion_rate ?? 0}%`,
+      label: "Conversion",
+      trend: MiniAreaChart,
+      trendType: (dashboardOverview?.conversion_rate ?? 0) >= 50 ? "positive" as const : "negative" as const,
+    },
+  ];
+
   return (
     <section className="px-4">
       <div className="flex justify-between items-center">

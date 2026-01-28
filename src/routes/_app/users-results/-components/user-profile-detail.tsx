@@ -29,12 +29,27 @@ type UserData = {
 
 type ReportData = {
   id: string | number;
-  reportTitle: string;
-  dateTaken: string;
-  deviceUsed: string;
-  type: string;
-  status: string;
+  name: string;
+  analysis_id: string;
+  user_id: number;
+  job_id: string;
+  device_used: string;
+  personality_type: string;
+  confidence_score: string;
+  is_public: boolean;
+  is_full_report: boolean;
+  created_at: string;
+  updated_at: string;
+  full_result?: {
+    success?: boolean;
+    insights?: {
+      title?: string;
+      description?: string;
+    };
+  };
 };
+
+
 
 interface UserProfileDetailProps {
   user: UserData;
@@ -67,10 +82,15 @@ export default function UserProfileDetail({
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       ),
-      cell: ({ row }) => <div>{row.getValue("id")}</div>,
+      cell: ({ row }) => (
+        <div className="max-w-[80px] truncate" title={String(row.getValue("id"))}>
+          {String(row.getValue("id")).slice(0, 8)}...
+        </div>
+      ),
     },
     {
-      accessorKey: "reportTitle",
+      id: "reportTitle",
+      accessorFn: (row) => row.full_result?.insights?.title || row.personality_type || "Personality Analysis",
       header: ({ column }) => (
         <Button
           variant="ghost"
@@ -84,7 +104,7 @@ export default function UserProfileDetail({
       cell: ({ row }) => <div>{row.getValue("reportTitle")}</div>,
     },
     {
-      accessorKey: "dateTaken",
+      accessorKey: "created_at",
       header: ({ column }) => (
         <Button
           variant="ghost"
@@ -96,12 +116,14 @@ export default function UserProfileDetail({
         </Button>
       ),
       cell: ({ row }) => {
-        const date = row.getValue("dateTaken") as string;
-        return <div>{date || "N/A"}</div>;
+        const dateStr = row.getValue("created_at") as string;
+        if (!dateStr) return <div>N/A</div>;
+        const date = new Date(dateStr);
+        return <div>{date.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}</div>;
       },
     },
     {
-      accessorKey: "deviceUsed",
+      accessorKey: "device_used",
       header: ({ column }) => (
         <Button
           variant="ghost"
@@ -112,10 +134,11 @@ export default function UserProfileDetail({
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       ),
-      cell: ({ row }) => <div>{row.getValue("deviceUsed") || "N/A"}</div>,
+      cell: ({ row }) => <div>{row.getValue("device_used") || "N/A"}</div>,
     },
     {
-      accessorKey: "type",
+      id: "type",
+      accessorFn: (row) => row.is_full_report ? "Full Report" : "Free Report",
       header: ({ column }) => (
         <Button
           variant="ghost"
@@ -126,10 +149,26 @@ export default function UserProfileDetail({
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       ),
-      cell: ({ row }) => <div>{row.getValue("type") || "N/A"}</div>,
+      cell: ({ row }) => {
+        const type = row.getValue("type") as string;
+        const isFullReport = type === "Full Report";
+        return (
+          <Badge
+            variant="default"
+            className={cn(
+              isFullReport
+                ? "bg-purple-100 text-purple-700 border-purple-200 hover:bg-purple-100"
+                : "bg-blue-100 text-blue-700 border-blue-200 hover:bg-blue-100"
+            )}
+          >
+            {type}
+          </Badge>
+        );
+      },
     },
     {
-      accessorKey: "status",
+      id: "status",
+      accessorFn: (row) => row.full_result?.success ? "Completed" : "Pending",
       header: ({ column }) => (
         <Button
           variant="ghost"
@@ -142,23 +181,23 @@ export default function UserProfileDetail({
       ),
       cell: ({ row }) => {
         const status = row.getValue("status") as string;
-        const isCompleted = status?.toLowerCase() === "completed";
+        const isCompleted = status === "Completed";
         return (
           <Badge
             variant="default"
             className={cn(
               isCompleted
                 ? "bg-green-100 text-green-700 border-green-200 hover:bg-green-100"
-                : "bg-gray-100 text-gray-700 border-gray-200 hover:bg-gray-100"
+                : "bg-yellow-100 text-yellow-700 border-yellow-200 hover:bg-yellow-100"
             )}
           >
             <span
               className={cn(
                 "w-1.5 h-1.5 rounded-full mr-1.5",
-                isCompleted ? "bg-green-600" : "bg-gray-600"
+                isCompleted ? "bg-green-600" : "bg-yellow-600"
               )}
             />
-            {status || "N/A"}
+            {status}
           </Badge>
         );
       },

@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { Pie, PieChart, Cell } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "./card";
 import {
@@ -7,6 +8,7 @@ import {
   type ChartConfig,
 } from "./chart";
 import { DropdownSelector, type DropdownOption } from "../dropdown";
+import { useGetDashboardDistribution } from "../../routes/_app/_dashboard/-api/queries/use-dashboard-users-destribution";
 
 export const description = "A simple pie chart";
 
@@ -16,30 +18,7 @@ const days: DropdownOption<number>[] = [
   { value: 30, label: "Last 30 Days" },
 ];
 
-const chartData = [
-  { category: "Free", value: 89, fill: "#FFA1E6" },
-  { category: "Pro", value: 14, fill: "#FA3ABC" },
-  { category: "Subscribers", value: 18, fill: "#CC0A7E" },
-
-];
-
-const chartConfig = {
-  // value: {
-  //   label: "Count",
-  // },
-  // free: {
-  //   label: "Free",
-  //   color: "#FFA1E6",
-  // },
-  // pro: {
-  //   label: "Pro",
-  //   color: "#FA3ABC",
-  // },
-  // subscribers: {
-  //   label: "Subscribers",
-  //   color: "#CC0A7E",
-  // },
-} satisfies ChartConfig;
+const chartConfig = {} satisfies ChartConfig;
 
 const renderCustomLabel = ({
   cx,
@@ -75,6 +54,24 @@ const renderCustomLabel = ({
 };
 
 export function CircleChart() {
+  const { data: dashboardDistribution } = useGetDashboardDistribution({
+    params: {
+      range: "yearly",
+    },
+    options: {
+      enabled: true,
+    },
+  });
+
+  // Build chart data dynamically from API response
+  const chartData = useMemo(() => {
+    return [
+      { category: "Free", value: dashboardDistribution?.free ?? 0, fill: "#FFA1E6" },
+      { category: "Pro", value: dashboardDistribution?.pro ?? 0, fill: "#FA3ABC" },
+      { category: "Subscribers", value: dashboardDistribution?.subscribers ?? 0, fill: "#CC0A7E" },
+    ];
+  }, [dashboardDistribution]);
+
   return (
     <Card>
       <CardHeader>
@@ -110,7 +107,7 @@ export function CircleChart() {
                 </Pie>
               </PieChart>
             </ChartContainer>
-           
+
           </div>
 
           <div className="flex flex-col gap-3 lg:justify-center">
