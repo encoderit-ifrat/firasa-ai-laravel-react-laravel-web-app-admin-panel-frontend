@@ -266,7 +266,7 @@ function RouteComponent() {
                 "w-1.5 h-1.5 rounded-full",
                 statusKey === "active" && "bg-[#34C759]",
                 statusKey === "suspended" && "bg-[#FF9500]",
-                statusKey === "inactive" && "bg-[#FF3B30]"
+                (statusKey === "inactive" || !statusKey) && "bg-[#FF3B30]"
               )}
             />
             {status?.charAt(0).toUpperCase() + status?.slice(1) || "N/A"}

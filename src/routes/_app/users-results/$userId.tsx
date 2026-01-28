@@ -15,86 +15,9 @@ import {
 } from "../../../components/ui/alert-dialog";
 import { Button } from "../../../components/ui/button";
 import IconDelete from "../../../components/svg-icon/icon-delete";
-
-
-// Dummy data - in real app, this would come from an API
-const DUMMY_DATA = [
-  {
-    id: 1,
-    name: "John Doe",
-    email: "john.doe@example.com",
-    gender: "male",
-    datetime: "2024-03-15T10:30",
-    deviceUsed: "Desktop",
-    plan: "Premium",
-    testsTaken: 15,
-    lastTestDate: "2024-03-15",
-    status: "Active",
-    joinDate: "2024-01-15",
-    lastActive: "2024-03-15",
-    avatar: "/image/profilePhoto.png",
-  },
-  {
-    id: 2,
-    name: "Jane Smith",
-    email: "jane.smith@example.com",
-    gender: "female",
-    datetime: "2024-03-10T14:20",
-    deviceUsed: "Mobile",
-    plan: "Basic",
-    testsTaken: 8,
-    lastTestDate: "2024-03-10",
-    status: "Active",
-    joinDate: "2024-02-10",
-    lastActive: "2024-03-10",
-    avatar: "/image/profilePhoto.png",
-  },
-  {
-    id: 3,
-    name: "Mike Johnson",
-    email: "mike.johnson@example.com",
-    gender: "male",
-    datetime: "2024-03-18T09:15",
-    deviceUsed: "Tablet",
-    plan: "Premium",
-    testsTaken: 22,
-    lastTestDate: "2024-03-18",
-    status: "Inactive",
-    joinDate: "2023-12-18",
-    lastActive: "2024-02-18",
-    avatar: "/image/profilePhoto.png",
-  },
-  {
-    id: 4,
-    name: "Sarah Williams",
-    email: "sarah.williams@example.com",
-    gender: "female",
-    datetime: "2024-03-20T16:45",
-    deviceUsed: "Desktop",
-    plan: "Pro",
-    testsTaken: 30,
-    lastTestDate: "2024-03-20",
-    status: "Active",
-    joinDate: "2023-11-20",
-    lastActive: "2024-03-20",
-    avatar: "/image/profilePhoto.png",
-  },
-  {
-    id: 5,
-    name: "David Brown",
-    email: "david.brown@example.com",
-    gender: "male",
-    datetime: "2024-03-05T11:00",
-    deviceUsed: "Mobile",
-    plan: "Basic",
-    testsTaken: 5,
-    lastTestDate: "2024-03-05",
-    status: "Active",
-    joinDate: "2024-02-05",
-    lastActive: "2024-03-05",
-    avatar: "/image/profilePhoto.png",
-  },
-];
+import { useGetUser } from "../settings/-api/queries/use-get-user";
+import { useGetUserReports } from "./-api/queries/use-get-user-reports";
+import Loading from "../../../components/base/loading";
 
 export const Route = createFileRoute("/_app/users-results/$userId")({
   component: RouteComponent,
@@ -104,12 +27,42 @@ function RouteComponent() {
   const { userId } = Route.useParams();
   const [form, setForm] = useState<TForm>(FORM_DATA);
 
-  
-
   const userIdNumber = parseInt(userId, 10);
-  const user = DUMMY_DATA.find((u) => u.id === userIdNumber);
 
-  if (!user) {
+  // Fetch single user data using useGetUser
+  const { data: userData, isLoading: isLoadingUser, refetch: refetchUser } = useGetUser({
+    id: userIdNumber,
+    options: {
+      enabled: !isNaN(userIdNumber),
+    },
+  });
+
+  // Fetch user reports using the dynamic userId
+  const { data: userReportsResponse, isLoading: isLoadingReports } = useGetUserReports({
+    userId: userIdNumber,
+    params: {
+      page: 1,
+      per_page: 10,
+      search: "",
+      order_by: "id",
+      order: "desc",
+    },
+    options: {
+      enabled: !isNaN(userIdNumber),
+    },
+  });
+
+  // Extract reports from useGetUserReports
+  const reports = userReportsResponse?.data || [];
+
+  console.log("🚀 ~ RouteComponent ~ userData:", userData);
+  console.log("🚀 ~ RouteComponent ~ reports:", reports);
+
+  if (isLoadingUser || isLoadingReports) {
+    return <Loading />;
+  }
+
+  if (!userData) {
     return (
       <div className="p-4">
         <div className="text-center py-12">
@@ -122,12 +75,26 @@ function RouteComponent() {
     );
   }
 
+  // Transform API data to match component expectations
+  // Note: useGetUser returns TAdminSchema, so some fields may not be available
+  const user = {
+    id: typeof userData.id === 'number' ? userData.id : Number(userData.id) || 0,
+    name: userData.name,
+    email: userData.email,
+    plan: (userData as Record<string, unknown>).plan as string || "Free",
+    testsTaken: (userData as Record<string, unknown>).analysis_taken_count as number || 0,
+    lastTestDate: (userData as Record<string, unknown>).last_analysis_date as string || null,
+    status: (userData as Record<string, unknown>).status as string || "Active",
+    deviceUsed: (userData as Record<string, unknown>).last_device_used as string || "N/A",
+    avatar: "/image/profilePhoto.png",
+  };
+
   return (
     <>
       <UserProfileDetail
         user={user}
+        reports={reports}
         onEdit={(id) =>
-          
           setForm({
             type: "update",
             title: "Update User Result",
@@ -149,14 +116,11 @@ function RouteComponent() {
       <FormUser
         open={form.type === "create" || form.type === "update"}
         onClose={() => setForm(FORM_DATA)}
-        formData={
-          form.type === "update"
-            ? DUMMY_DATA.find((u) => u.id === form.id)
-            : undefined
-        }
+        formData={form.type === "update" ? userData : undefined}
         onSuccess={() => {
           console.log("User saved successfully");
           setForm(FORM_DATA);
+          refetchUser();
         }}
       />
 

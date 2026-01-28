@@ -15,20 +15,20 @@ type UserData = {
   id: number;
   name: string;
   email: string;
-  gender: string;
-  datetime: string;
+  gender?: string;
+  datetime?: string;
   deviceUsed: string;
   plan: string;
   testsTaken: number;
-  lastTestDate: string;
+  lastTestDate: string | null;
   status: string;
   joinDate?: string;
   lastActive?: string;
   avatar?: string;
 };
 
-type PersonalityTestResult = {
-  id: string;
+type ReportData = {
+  id: string | number;
   reportTitle: string;
   dateTaken: string;
   deviceUsed: string;
@@ -36,48 +36,25 @@ type PersonalityTestResult = {
   status: string;
 };
 
-const PERSONALITY_TEST_RESULTS: PersonalityTestResult[] = [
-  {
-    id: "100001",
-    reportTitle: "Self-Awareness Insight",
-    dateTaken: "2020-05-30",
-    deviceUsed: "Web",
-    type: "Full Report",
-    status: "Completed",
-  },
-  {
-    id: "100001",
-    reportTitle: "Leadership Traits",
-    dateTaken: "2020-06-29",
-    deviceUsed: "Android",
-    type: "Snapshot",
-    status: "Completed",
-  },
-  {
-    id: "100001",
-    reportTitle: "CareerFit Analysis",
-    dateTaken: "2020-05-06",
-    deviceUsed: "IOS",
-    type: "Full Report",
-    status: "Completed",
-  },
-];
-
 interface UserProfileDetailProps {
   user: UserData;
+  reports?: ReportData[];
   onEdit?: (userId: number) => void;
   onDelete?: (userId: number) => void;
 }
 
 export default function UserProfileDetail({
   user,
+  reports,
   onEdit,
   onDelete,
 }: UserProfileDetailProps) {
   const navigate = useNavigate();
   const [viewReportOpen, setViewReportOpen] = useState(false);
+  const [selectedReport, setSelectedReport] = useState<ReportData | null>(null);
 
-  const personalityTestColumns: ColumnDef<PersonalityTestResult>[] = [
+  // Columns for reports table - using ReportData structure from API
+  const reportColumns: ColumnDef<ReportData>[] = [
     {
       accessorKey: "id",
       header: ({ column }) => (
@@ -118,7 +95,10 @@ export default function UserProfileDetail({
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       ),
-      cell: ({ row }) => <div>{row.getValue("dateTaken")}</div>,
+      cell: ({ row }) => {
+        const date = row.getValue("dateTaken") as string;
+        return <div>{date || "N/A"}</div>;
+      },
     },
     {
       accessorKey: "deviceUsed",
@@ -132,7 +112,7 @@ export default function UserProfileDetail({
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       ),
-      cell: ({ row }) => <div>{row.getValue("deviceUsed")}</div>,
+      cell: ({ row }) => <div>{row.getValue("deviceUsed") || "N/A"}</div>,
     },
     {
       accessorKey: "type",
@@ -146,7 +126,7 @@ export default function UserProfileDetail({
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       ),
-      cell: ({ row }) => <div>{row.getValue("type")}</div>,
+      cell: ({ row }) => <div>{row.getValue("type") || "N/A"}</div>,
     },
     {
       accessorKey: "status",
@@ -162,19 +142,23 @@ export default function UserProfileDetail({
       ),
       cell: ({ row }) => {
         const status = row.getValue("status") as string;
+        const isCompleted = status?.toLowerCase() === "completed";
         return (
           <Badge
             variant="default"
             className={cn(
-              "bg-green-100 text-green-700 border-green-200 hover:bg-green-100"
+              isCompleted
+                ? "bg-green-100 text-green-700 border-green-200 hover:bg-green-100"
+                : "bg-gray-100 text-gray-700 border-gray-200 hover:bg-gray-100"
             )}
           >
             <span
               className={cn(
-                "w-1.5 h-1.5 rounded-full bg-green-600 mr-1.5"
+                "w-1.5 h-1.5 rounded-full mr-1.5",
+                isCompleted ? "bg-green-600" : "bg-gray-600"
               )}
             />
-            {status}
+            {status || "N/A"}
           </Badge>
         );
       },
@@ -182,13 +166,14 @@ export default function UserProfileDetail({
     {
       header: "Actions",
       accessorKey: "action",
-      cell: () => (
+      cell: ({ row }) => (
         <div className="flex items-center gap-2">
           <Button
             variant="update"
             size="icon"
             className="h-8 w-8"
             onClick={() => {
+              setSelectedReport(row.original);
               setViewReportOpen(true);
             }}
           >
@@ -322,8 +307,8 @@ export default function UserProfileDetail({
       <div className="space-y-4">
         <h3 className="text-xl font-semibold">Personality Test Results</h3>
         <AppTable
-          data={PERSONALITY_TEST_RESULTS}
-          columns={personalityTestColumns}
+          data={reports || []}
+          columns={reportColumns}
         />
       </div>
       <ViewReportModal
