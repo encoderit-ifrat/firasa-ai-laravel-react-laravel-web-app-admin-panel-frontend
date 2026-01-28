@@ -29,7 +29,7 @@ type UserData = {
 
 type ReportData = {
   id: string | number;
-  name: string;
+  name?: string;
   analysis_id: string;
   user_id: number;
   job_id: string;
@@ -67,6 +67,8 @@ export default function UserProfileDetail({
   const navigate = useNavigate();
   const [viewReportOpen, setViewReportOpen] = useState(false);
   const [selectedReport, setSelectedReport] = useState<ReportData | null>(null);
+  console.log("🚀 ~ UserProfileDetail ~ selectedReport:", selectedReport)
+
 
   // Columns for reports table - using ReportData structure from API
   const reportColumns: ColumnDef<ReportData>[] = [

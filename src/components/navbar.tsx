@@ -4,7 +4,6 @@ import type { DropdownOption } from "./dropdown";
 import { useIsMobile } from "../hooks/use-mobile";
 import SearchBar from "./ui/search-bar";
 import { SidebarMenuButton, SidebarTrigger } from "./ui/sidebar";
-import { NavUser } from "./nav-user";
 import IconNotification from "./svg-icon/icon-notification";
 import i18n from "../i18n";
 import { DropdownSelect } from "./DropdownSelect";

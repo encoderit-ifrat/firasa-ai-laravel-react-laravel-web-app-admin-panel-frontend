@@ -5,13 +5,13 @@ import type { TMetaSchema } from "../../../../../types/meta";
 
 import { api } from "../../../../../axios";
 import type { TSearchSchema } from "../../../../../types/search";
-import type { TUsersResultsSchema } from "../../-type/users-results";
+import type { TUserReportSchema } from "../../-type/users-results";
 
 
 
 
 type TApiResponse = {
-    data: TUsersResultsSchema[];
+    data: TUserReportSchema[];
     meta: TMetaSchema;
 };
 

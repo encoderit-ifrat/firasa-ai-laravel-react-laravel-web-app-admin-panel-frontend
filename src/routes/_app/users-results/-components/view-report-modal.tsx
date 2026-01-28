@@ -55,7 +55,7 @@ function ProgressBar({
     );
 }
 
-function SectionHeader({ title, onEdit }: { title: string; onEdit?: () => void }) {
+function SectionHeader({ title }: { title: string; onEdit?: () => void }) {
     return (
         <div className="flex items-center justify-between mb-4">
             <h3 className="font-semibold text-lg">{title}</h3>

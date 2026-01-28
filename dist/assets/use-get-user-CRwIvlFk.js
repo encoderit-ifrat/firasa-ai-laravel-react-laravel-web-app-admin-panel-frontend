@@ -1,0 +1,1 @@
+import{u as t,a}from"./axios-TjEtQJHv.js";const n=({id:s,options:r})=>t({...r,queryKey:["users",s],queryFn:async()=>{const e=await a.get(`/users/${s}`);console.log("🚀 ~ useGetUser ~ users:",e);const{data:{data:u}}=e;return u}});export{n as u};

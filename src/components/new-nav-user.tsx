@@ -1,19 +1,14 @@
 import {
     BadgeCheck,
     Bell,
-    ChevronDown,
+
     // ChevronsDown,
     // ChevronsUpDown,
     CreditCard,
     LogOut,
     Sparkles,
 } from "lucide-react";
-import {
-    SidebarMenu,
-    SidebarMenuButton,
-    SidebarMenuItem,
-    useSidebar,
-} from "./ui/sidebar";
+
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -24,10 +19,11 @@ import {
     DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { useTranslation } from "react-i18next";
+
 import { createContext, useContext, type PropsWithChildren } from "react";
 import { t } from "i18next";
 import { cn } from "../lib/utils";
+import { useSidebar } from "./ui/sidebar";
 
 type UserType = {
     name: string,

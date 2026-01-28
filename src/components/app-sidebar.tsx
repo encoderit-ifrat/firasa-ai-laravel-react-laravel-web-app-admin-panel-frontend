@@ -20,7 +20,6 @@ import IconContent from "./svg-icon/icon-content";
 import IconPublicApi from "./svg-icon/icon-public-api";
 import IconHead from "./svg-icon/icon-head";
 import IconHeaderName from "./svg-icon/icon-header-name";
-import { NavUser } from "./nav-user";
 import { NewNavUser, NewNavUserAvatar, NewNavUserInfo } from "./new-nav-user";
 import { ChevronsUpDown } from "lucide-react";
 import { cn } from "../lib/utils";
