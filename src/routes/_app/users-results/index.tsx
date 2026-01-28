@@ -4,7 +4,6 @@ import {
   ArrowDown,
   ChevronsUpDown,
   Eye,
-  Plus,
   Rows3,
   SlidersHorizontal,
   Trash2,
@@ -289,6 +288,7 @@ function RouteComponent() {
                 name: "view",
                 icon: Eye,
                 props: {
+                   className:"text-primary",
                   onClick: () =>
                     navigate({
                       to: "/users-results/$userId",
@@ -300,7 +300,9 @@ function RouteComponent() {
                 type: "update",
                 name: "edit",
                 icon: IconUpdate,
+                
                 props: {
+                  className:"text-primary",
                   onClick: () =>
                     setForm({
                       type: "update",
@@ -341,7 +343,7 @@ function RouteComponent() {
         <h1 className="text-custom-header-text text-2xl font-semibold">
           Users & Results
         </h1>
-        <Button
+        {/* <Button
           variant="customGradient"
           className="border-custom-footer-text-red text-custom-footer-text-red hover:bg-red-50 whitespace-nowrap"
           onClick={() =>
@@ -353,7 +355,7 @@ function RouteComponent() {
           }
         >
           <Plus /> Add New User
-        </Button>
+        </Button> */}
       </div>
 
       <div className="mb-4">

@@ -303,14 +303,14 @@ export default function UserProfileDetail({
             variant="outline"
             onClick={() => onEdit?.(user.id)}
           >
-            <IconUpdate className="h-4 w-4 mr-2" />
+            <IconUpdate/>
             Edit
           </Button>
           <Button
             variant="destructive"
             onClick={() => onDelete?.(user.id)}
           >
-            <IconDelete className="h-4 w-4 mr-2" />
+            <IconDelete  />
             Delete
           </Button>
         </div>
