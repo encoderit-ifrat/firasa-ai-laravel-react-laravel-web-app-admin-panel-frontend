@@ -54,7 +54,7 @@ export function DropdownSelect({
             {SelectedIcon && <SelectedIcon className="text-base leading-none" />}
             <span>{selectedOption?.label || placeholder}</span>
           </div>
-          <ChevronDownIcon size={16} className="opacity-50" />
+          <ChevronDownIcon size={16} className="text-primary" />
         </button>
       </PopoverTrigger>
 

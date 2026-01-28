@@ -45,6 +45,7 @@ import type { TAdminSchema } from './-type/admin';
 import { useDeleteUser } from './-api/mutations/use-delete-user';
 import { SearchSchema } from '../../../types/search';
 import { useDebounce } from '../../../hooks/search-hooks';
+import Loading from '../../../components/base/loading';
 
 export const Route = createFileRoute('/_app/settings/')({
   component: RouteComponent,
@@ -269,7 +270,7 @@ function RouteComponent() {
     switch (activeSection) {
       case 'admin-management':
         return isLoading ? (
-          <div className="p-8 text-center">Loading...</div>
+          <div className="p-8 text-center"><Loading/></div>
         ) : (
           <AppTable data={data ?? []} columns={columns} />
         );
@@ -286,7 +287,7 @@ function RouteComponent() {
     <div className="space-y-4 p-4">
       <div className="px-4">
         <div className="flex justify-between mb-6 mt-6">
-          <h1 className="text-primary text-3xl font-bold leading-12">Settings</h1>
+          <h1 className="text-primary text-custom-header-text text-4xl font-bold">Settings</h1>
           <Button
             size="icon-lg"
             variant="customGradient"

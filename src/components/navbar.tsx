@@ -2,7 +2,6 @@ import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import type { DropdownOption } from "./dropdown";
 import { useIsMobile } from "../hooks/use-mobile";
-import SearchBar from "./ui/search-bar";
 import { SidebarMenuButton, SidebarTrigger } from "./ui/sidebar";
 import IconNotification from "./svg-icon/icon-notification";
 import i18n from "../i18n";
@@ -66,15 +65,15 @@ export default function Navbar() {
 
       <div className="flex items-center justify-between w-full gap-4">
         <div className="flex-1 max-w-md">
-          <SearchBar
+          {/* <SearchBar
             searchPlaceholder="Search..."
             variant="default"
-          />
+          /> */}
         </div>
 
         <div className="flex items-center gap-3">
           <DropdownSelect
-            className="min-w-[120px] min-h-14 bg-[#F4F2F3] rounded-full text-primary"
+            className="min-h-14 bg-[#F4F2F3] rounded-full text-primary"
             options={LANGUAGES.map((lang) => ({
               label: lang.label,
               value: lang.value,
@@ -96,11 +95,11 @@ export default function Navbar() {
           <NewNavUser user={user}>
             <SidebarMenuButton
               size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-primary border-2 min-h-14 rounded-full bg-[#F4F2F3]"
+              className="min-h-14 flex items-center justify-between gap-2 rounded-full border px-3 py-2 text-sm text-custom-header-text shadow-sm bg-[#F4F2F3] hover:bg-accent transition-colors"
             >
               <NewNavUserAvatar className="h-12 w-12" />
 
-              <ChevronDown className="ml-auto size-4" />
+              <ChevronDown className="ml-auto size-4 text-primary" />
             </SidebarMenuButton>
           </NewNavUser>
         </div>

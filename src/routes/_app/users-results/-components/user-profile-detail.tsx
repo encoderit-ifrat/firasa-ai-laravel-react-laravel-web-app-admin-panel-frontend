@@ -288,7 +288,7 @@ export default function UserProfileDetail({
           </Avatar>
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <h3 className="text-primary text-2xl font-semibold">{user.name}</h3>
+              <h3 className="text-muted-foreground text-2xl font-semibold">{user.name}</h3>
               {user.plan === "Pro" && (
                 <Badge className="bg-gradient text-black border-0">
                   Pro
@@ -300,6 +300,7 @@ export default function UserProfileDetail({
         </div>
         <div className="flex items-center gap-2">
           <Button
+           size="lg"
             variant="outline"
             onClick={() => onEdit?.(user.id)}
           >
@@ -307,6 +308,7 @@ export default function UserProfileDetail({
             Edit
           </Button>
           <Button
+           size="lg"
             variant="destructive"
             onClick={() => onDelete?.(user.id)}
           >

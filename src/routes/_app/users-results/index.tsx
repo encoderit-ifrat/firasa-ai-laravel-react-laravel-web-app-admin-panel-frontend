@@ -340,7 +340,7 @@ function RouteComponent() {
   return (
     <div className="p-4">
       <div className="flex justify-between mb-6">
-        <h1 className="text-custom-header-text text-2xl font-semibold">
+        <h1 className="text-primary text-custom-header-text text-4xl font-bold">
           Users & Results
         </h1>
         {/* <Button

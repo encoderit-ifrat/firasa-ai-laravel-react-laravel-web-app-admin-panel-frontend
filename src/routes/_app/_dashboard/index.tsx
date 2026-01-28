@@ -72,7 +72,7 @@ function RouteComponent() {
   return (
     <section className="px-4">
       <div className="flex justify-between items-center">
-        <h1 className="max-h-28 text-3xl font-bold leading-12 text-primary">Dashboard</h1>
+        <h1 className="text-primary text-custom-header-text text-4xl font-bold">Dashboard</h1>
         <Button size="lg" variant="gray">
           Daily <ChevronsUpDown className="ml-auto size-4" />
         </Button>
