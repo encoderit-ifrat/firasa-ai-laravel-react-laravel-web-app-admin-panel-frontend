@@ -39,6 +39,7 @@ import {
 import { cn } from "../../../lib/utils";
 import FormAdmin from './-components/form-admin';
 import IconUpdate from '../../../components/svg-icon/icon-update';
+import IconDelete from '../../../components/svg-icon/icon-delete';
 import CardAdmin from './-components/card-admin';
 import { useGetAllUsers } from './-api/queries/use-get-all-users';
 import type { TAdminSchema } from './-type/admin';
@@ -247,7 +248,7 @@ function RouteComponent() {
               {
                 type: "delete",
                 name: "delete",
-                icon: Trash2,
+                icon: IconDelete,
                 props: {
                   variant: "delete",
                   onClick: () =>
@@ -270,7 +271,7 @@ function RouteComponent() {
     switch (activeSection) {
       case 'admin-management':
         return isLoading ? (
-          <div className="p-8 text-center"><Loading/></div>
+          <div className="p-8 text-center"><Loading /></div>
         ) : (
           <AppTable data={data ?? []} columns={columns} />
         );

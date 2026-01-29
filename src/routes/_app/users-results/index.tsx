@@ -45,6 +45,7 @@ import { z } from "zod";
 import Loading from "../../../components/base/loading";
 import type { TUsersResultsSchema } from "./-type/users-results";
 import IconDelete from "../../../components/svg-icon/icon-delete";
+import { useDeleteUserResult } from "./-api/mutations/use-delete-user-result";
 
 export const Route = createFileRoute("/_app/users-results/")({
   component: RouteComponent,
@@ -83,6 +84,8 @@ function RouteComponent() {
   });
 
   const { data, meta } = usersResultsResponse ?? {};
+
+  const { mutate: deleteUser, isPending: isPendingDelete } = useDeleteUserResult();
 
   const columns: ColumnDef<TUsersResultsSchema>[] = [
     {
@@ -288,7 +291,7 @@ function RouteComponent() {
                 name: "view",
                 icon: Eye,
                 props: {
-                   className:"text-primary",
+                  className: "text-primary",
                   onClick: () =>
                     navigate({
                       to: "/users-results/$userId",
@@ -300,9 +303,9 @@ function RouteComponent() {
                 type: "update",
                 name: "edit",
                 icon: IconUpdate,
-                
+
                 props: {
-                  className:"text-primary",
+                  className: "text-primary",
                   onClick: () =>
                     setForm({
                       type: "update",
@@ -477,19 +480,19 @@ function RouteComponent() {
             <Button
               variant="destructive"
               className="capitalize min-w-24 flex items-center gap-2"
+              loading={isPendingDelete}
               onClick={() => {
-                console.log("Deleting user:", form.id);
-                // TODO: Implement delete mutation when available
-                // deleteUser(
-                //   { id: form.id! },
-                //   {
-                //     onSuccess: () => {
-                //       setForm(FORM_DATA);
-                //       refetch();
-                //     },
-                //   }
-                // )
-                setForm(FORM_DATA);
+                if (form.id) {
+                  deleteUser(
+                    { id: form.id },
+                    {
+                      onSuccess: () => {
+                        setForm(FORM_DATA);
+                        refetch();
+                      },
+                    }
+                  );
+                }
               }}
             >
               <Trash2 /> Delete
