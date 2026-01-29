@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
 import {
@@ -18,10 +18,13 @@ import { useGetDashboardConversionFunnel } from "../../routes/_app/_dashboard/-a
 
 export const description = "A stacked bar chart showing conversion funnel";
 
-const days: DropdownOption<number>[] = [
-  { value: 7, label: "Last 7 Days" },
-  { value: 14, label: "Last 14 Days" },
-  { value: 30, label: "Last 30 Days" },
+type ChartRange = "daily" | "last_7_days" | "monthly" | "yearly" | "all";
+
+const rangeOptions: DropdownOption<ChartRange>[] = [
+  { label: "Daily", value: "daily" },
+  { label: "Last 7 days", value: "last_7_days" },
+  { label: "Month", value: "monthly" },
+  { label: "Year", value: "yearly" },
 ];
 
 const chartConfig = {
@@ -36,9 +39,11 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export function LineChart() {
+  const [range, setRange] = useState<ChartRange>("yearly");
+
   const { data: dashboardConversionFunnel } = useGetDashboardConversionFunnel({
     params: {
-      range: "yearly",
+      range: range,
     },
     options: {
       enabled: true,
@@ -73,7 +78,11 @@ export function LineChart() {
           <CardTitle className="text-3xl font-semibold">
             Conversion Funnel
           </CardTitle>
-          <DropdownSelector options={days} defaultValue={days[0]} />
+          <DropdownSelector
+            options={rangeOptions}
+            defaultValue={rangeOptions.find(opt => opt.value === range)}
+            onChange={(opt) => setRange(opt.value)}
+          />
         </div>
       </CardHeader>
       <CardContent>

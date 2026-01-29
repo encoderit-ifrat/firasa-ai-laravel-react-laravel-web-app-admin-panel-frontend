@@ -10,6 +10,22 @@ import { LineChart } from "../../../components/ui/line-chart";
 import { ChevronsUpDown } from "lucide-react";
 import { MiniAreaChart } from "../../../components/app-mini-chart-area";
 import { useGetDashboardOverview } from "./-api/queries/use-dashboard-overview";
+import { useState } from "react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../../../components/ui/dropdown-menu";
+
+const rangeOptions = [
+  { label: "Daily", value: "daily" },
+  { label: "Last 7 days", value: "last_7_days" },
+  { label: "Month", value: "monthly" },
+  { label: "Year", value: "yearly" },
+] as const;
+
+type TRangeValue = (typeof rangeOptions)[number]["value"];
 
 
 
@@ -23,9 +39,11 @@ export const Route = createFileRoute("/_app/_dashboard/")({
 
 
 function RouteComponent() {
+  const [range, setRange] = useState<TRangeValue>("daily");
+
   const { data: dashboardOverview } = useGetDashboardOverview({
     params: {
-      range: "yearly",
+      range: range,
     },
     options: {
       enabled: true,
@@ -73,9 +91,24 @@ function RouteComponent() {
     <section className="px-4">
       <div className="flex justify-between items-center">
         <h1 className="text-primary text-custom-header-text text-4xl font-bold">Dashboard</h1>
-        <Button size="lg" variant="gray">
-          Daily <ChevronsUpDown className="ml-auto size-4" />
-        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button size="lg" variant="gray">
+              {rangeOptions.find((opt) => opt.value === range)?.label}{" "}
+              <ChevronsUpDown className="ml-auto size-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            {rangeOptions.map((option) => (
+              <DropdownMenuItem
+                key={option.value}
+                onClick={() => setRange(option.value)}
+              >
+                {option.label}
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
       <div className="mt-6 mb-10">
         <h6 className="text-xl font-semibold text-primary leading-[150%]">

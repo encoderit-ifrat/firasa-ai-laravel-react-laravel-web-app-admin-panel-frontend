@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Pie, PieChart, Cell } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "./card";
 import {
@@ -12,10 +12,13 @@ import { useGetDashboardDistribution } from "../../routes/_app/_dashboard/-api/q
 
 export const description = "A simple pie chart";
 
-const days: DropdownOption<number>[] = [
-  { value: 7, label: "Last 7 Days" },
-  { value: 14, label: "Last 14 Days" },
-  { value: 30, label: "Last 30 Days" },
+type ChartRange = "daily" | "last_7_days" | "monthly" | "yearly" | "all";
+
+const rangeOptions: DropdownOption<ChartRange>[] = [
+  { label: "Daily", value: "daily" },
+  { label: "Last 7 days", value: "last_7_days" },
+  { label: "Month", value: "monthly" },
+  { label: "Year", value: "yearly" },
 ];
 
 const chartConfig = {} satisfies ChartConfig;
@@ -54,9 +57,11 @@ const renderCustomLabel = ({
 };
 
 export function CircleChart() {
+  const [range, setRange] = useState<ChartRange>("yearly");
+
   const { data: dashboardDistribution } = useGetDashboardDistribution({
     params: {
-      range: "yearly",
+      range: range,
     },
     options: {
       enabled: true,
@@ -77,7 +82,11 @@ export function CircleChart() {
       <CardHeader>
         <div className="flex items-center justify-between gap-4">
           <CardTitle className="text-3xl font-semibold">Users</CardTitle>
-          <DropdownSelector options={days} defaultValue={days[0]} />
+          <DropdownSelector
+            options={rangeOptions}
+            defaultValue={rangeOptions.find(opt => opt.value === range)}
+            onChange={(opt) => setRange(opt.value)}
+          />
         </div>
       </CardHeader>
 
