@@ -147,15 +147,89 @@ const Ring = ({ size = 24, ...props }: SpinnerVariantProps) => (
   </svg>
 );
 
-const Bars = ({ size = 24, ...props }: SpinnerVariantProps) => (
+// const Bars = ({ size = 24, ...props }: SpinnerVariantProps) => (
+//   <svg
+//     height={size}
+//     viewBox="0 0 24 24"
+//     width={size}
+//     xmlns="http://www.w3.org/2000/svg"
+//     {...props}
+//   >
+//     <title>Loading...</title>
+//     <style>{`
+//       .spinner-bar {
+//         animation: spinner-bars-animation .8s linear infinite;
+//         animation-delay: -.8s;
+//       }
+//       .spinner-bars-2 {
+//         animation-delay: -.65s;
+//       }
+//       .spinner-bars-3 {
+//         animation-delay: -0.5s;
+//       }
+//       @keyframes spinner-bars-animation {
+//         0% {
+//           y: 1px;
+//           height: 22px;
+//         }
+//         93.75% {
+//           y: 5px;
+//           height: 14px;
+//           opacity: 0.2;
+//         }
+//       }
+//     `}</style>
+//     <rect
+//       className="spinner-bar"
+//       fill="currentColor"
+//       height="22"
+//       width="6"
+//       x="1"
+//       y="1"
+//     />
+//     <rect
+//       className="spinner-bar spinner-bars-2"
+//       fill="currentColor"
+//       height="22"
+//       width="6"
+//       x="9"
+//       y="1"
+//     />
+//     <rect
+//       className="spinner-bar spinner-bars-3"
+//       fill="currentColor"
+//       height="22"
+//       width="6"
+//       x="17"
+//       y="1"
+//     />
+//   </svg>
+// );
+
+const Bars = ({ size = 24, className, ...props }: SpinnerVariantProps) => (
   <svg
     height={size}
     viewBox="0 0 24 24"
     width={size}
     xmlns="http://www.w3.org/2000/svg"
+    className={className}
     {...props}
   >
     <title>Loading...</title>
+    <defs>
+      <linearGradient id="spinner-gradient-1" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stopColor="#FF77D7" />
+        <stop offset="100%" stopColor="#FA6C12" />
+      </linearGradient>
+      <linearGradient id="spinner-gradient-2" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stopColor="#FF77D7" />
+        <stop offset="100%" stopColor="#FA6C12" />
+      </linearGradient>
+      <linearGradient id="spinner-gradient-3" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stopColor="#FF77D7" />
+        <stop offset="100%" stopColor="#FA6C12" />
+      </linearGradient>
+    </defs>
     <style>{`
       .spinner-bar {
         animation: spinner-bars-animation .8s linear infinite;
@@ -181,7 +255,7 @@ const Bars = ({ size = 24, ...props }: SpinnerVariantProps) => (
     `}</style>
     <rect
       className="spinner-bar"
-      fill="currentColor"
+      fill="url(#spinner-gradient-1)"
       height="22"
       width="6"
       x="1"
@@ -189,7 +263,7 @@ const Bars = ({ size = 24, ...props }: SpinnerVariantProps) => (
     />
     <rect
       className="spinner-bar spinner-bars-2"
-      fill="currentColor"
+      fill="url(#spinner-gradient-2)"
       height="22"
       width="6"
       x="9"
@@ -197,7 +271,7 @@ const Bars = ({ size = 24, ...props }: SpinnerVariantProps) => (
     />
     <rect
       className="spinner-bar spinner-bars-3"
-      fill="currentColor"
+      fill="url(#spinner-gradient-3)"
       height="22"
       width="6"
       x="17"
