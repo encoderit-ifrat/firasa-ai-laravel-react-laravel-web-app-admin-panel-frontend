@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import type { ColumnDef, VisibilityState } from "@tanstack/react-table";
+import type { ColumnDef, VisibilityState, RowSelectionState } from "@tanstack/react-table";
 import {
   ArrowDown,
   ChevronsUpDown,
@@ -56,6 +56,8 @@ import type { TUsersResultsSchema } from "./-type/users-results";
 import IconDelete from "../../../components/svg-icon/icon-delete";
 import { useDeleteUserResult } from "./-api/mutations/use-delete-user-result";
 import { useDebounce } from "../../../hooks/search-hooks";
+import { toast } from "sonner";
+import { useExport } from "../../../hooks/use-export";
 
 export const Route = createFileRoute("/_app/users-results/")({
   component: RouteComponent,
@@ -75,6 +77,7 @@ const statusVariantMap = {
 function RouteComponent() {
   const [form, setForm] = useState<TForm>(FORM_DATA);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const navigate = Route.useNavigate();
   const params = Route.useSearch();
 
@@ -99,6 +102,30 @@ function RouteComponent() {
   const { data, meta } = usersResultsResponse ?? {};
 
   const { mutate: deleteUser, isPending: isPendingDelete } = useDeleteUserResult();
+  const { exportData } = useExport();
+
+  const handleExport = async () => {
+    try {
+      const selectedIds = Object.keys(rowSelection)
+        .map((index) => data?.[Number(index)]?.id)
+        .filter((id) => id !== undefined && id !== null);
+
+      const exportParams = {
+        ids: selectedIds.join(","),
+      };
+
+      await exportData(
+        {
+          endpoint: "/export-user-results",
+          filename: "users-results.xlsx",
+        },
+        exportParams
+      );
+    } catch (error) {
+      console.error("Export failed:", error);
+      toast.error("Failed to export users results");
+    }
+  };
 
   const columns: ColumnDef<TUsersResultsSchema>[] = [
     {
@@ -488,7 +515,7 @@ function RouteComponent() {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <Button variant="outline">
+            <Button variant="outline" onClick={handleExport}>
               <IconExport /> Export
             </Button>
           </div>
@@ -500,6 +527,8 @@ function RouteComponent() {
           columns={columns}
           columnVisibility={columnVisibility}
           onColumnVisibilityChange={setColumnVisibility}
+          rowSelection={rowSelection}
+          onRowSelectionChange={setRowSelection}
         />
       </div>
       {meta && (

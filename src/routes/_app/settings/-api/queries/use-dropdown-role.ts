@@ -22,15 +22,13 @@ export const useGetAllRoleDropdown = ({
     queryKey: ["get-role-dropdown-query", omitEmptyParams],
     enabled,
     refetchOnMount,
-      queryFn: async () => {
-    
-      return (
-        await api.get(`/roles`, {
-          params: omitEmptyParams,
-        })
-      ).data?.data;
+    queryFn: async () => {
+      const response = await api.get(`/roles`, {
+        params: omitEmptyParams,
+      });
+      return response.data;
     },
   });
-  
+
   return { ...query };
 };

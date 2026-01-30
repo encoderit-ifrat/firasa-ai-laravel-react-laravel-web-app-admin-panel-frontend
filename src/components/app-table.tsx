@@ -9,6 +9,7 @@ import {
   getSortedRowModel,
   type VisibilityState,
   type OnChangeFn,
+  type RowSelectionState,
 } from "@tanstack/react-table";
 import {
   Table,
@@ -24,6 +25,8 @@ interface AppTableProps<T> {
   columns: ColumnDef<T>[];
   columnVisibility?: VisibilityState;
   onColumnVisibilityChange?: OnChangeFn<VisibilityState>;
+  rowSelection?: RowSelectionState;
+  onRowSelectionChange?: OnChangeFn<RowSelectionState>;
 }
 
 export default function AppTable<T>({
@@ -31,14 +34,18 @@ export default function AppTable<T>({
   columns,
   columnVisibility,
   onColumnVisibilityChange,
+  rowSelection,
+  onRowSelectionChange,
 }: AppTableProps<T>) {
   const table = useReactTable({
     data: data ?? [],
     columns,
     state: {
       columnVisibility,
+      rowSelection,
     },
     onColumnVisibilityChange,
+    onRowSelectionChange,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
   });

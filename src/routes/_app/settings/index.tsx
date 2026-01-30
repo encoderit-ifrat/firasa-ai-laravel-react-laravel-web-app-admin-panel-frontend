@@ -5,12 +5,11 @@ import {
   Trash2,
   Plus,
   Rows3,
-  SlidersHorizontal,
   ChevronsUpDown,
   ArrowDown,
 } from "lucide-react";
 import { useState } from "react";
-import type { VisibilityState } from "@tanstack/react-table";
+import type { VisibilityState, RowSelectionState } from "@tanstack/react-table";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -58,6 +57,7 @@ import { useDeleteUser } from './-api/mutations/use-delete-user';
 import { SearchSchema } from '../../../types/search';
 import { useDebounce } from '../../../hooks/search-hooks';
 import Loading from '../../../components/base/loading';
+import { useExport } from '../../../hooks/use-export';
 
 export const Route = createFileRoute('/_app/settings/')({
   component: RouteComponent,
@@ -69,6 +69,7 @@ type ContentSection = 'admin-management' | 'api-keys-management' | 'language-man
 function RouteComponent() {
   const [form, setForm] = useState<TForm>(FORM_DATA);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
   const [activeSection, setActiveSection] = useState<ContentSection>('admin-management');
   const params = Route.useSearch();
   const navigate = Route.useNavigate();
@@ -102,6 +103,29 @@ function RouteComponent() {
   const { data, meta } = users ?? {};
 
   const { mutate: deleteUser, isPending: isPendingDelete } = useDeleteUser();
+  const { exportData } = useExport();
+
+  const handleExport = async () => {
+    try {
+      const selectedIds = Object.keys(rowSelection)
+        .map((index) => data?.[Number(index)]?.id)
+        .filter((id) => id !== undefined && id !== null);
+
+      const exportParams = {
+        ids: selectedIds.join(","),
+      };
+
+      await exportData(
+        {
+          endpoint: "/users/export", // Assuming this is the endpoint for admin export
+          filename: "admins.xlsx",
+        },
+        exportParams
+      );
+    } catch (error) {
+      console.error("Export failed:", error);
+    }
+  };
 
   const columns: ColumnDef<TAdminSchema>[] = [
     // {
@@ -310,6 +334,8 @@ function RouteComponent() {
             columns={columns}
             columnVisibility={columnVisibility}
             onColumnVisibilityChange={setColumnVisibility}
+            rowSelection={rowSelection}
+            onRowSelectionChange={setRowSelection}
           />
         );
       case 'api-keys-management':
@@ -436,7 +462,7 @@ function RouteComponent() {
                 </DropdownMenuContent>
               </DropdownMenu>
 
-              <Button variant="outline">
+              <Button variant="outline" onClick={handleExport}>
                 <IconExport /> Export
               </Button>
             </div>
@@ -461,12 +487,12 @@ function RouteComponent() {
             }
             onClickPrev={(page) =>
               navigate({
-                search: { ...params, page: page - 1 },
+                search: { ...params, page },
               })
             }
             onClickNext={(page) =>
               navigate({
-                search: { ...params, page: page + 1 },
+                search: { ...params, page },
               })
             }
             onPerPageChange={(perPage) =>
@@ -504,7 +530,7 @@ function RouteComponent() {
         onClose={() => setForm(FORM_DATA)}
         formData={
           form.type === "update"
-            ? data?.find((user) => user.id === form.id)
+            ? data?.find((user) => String(user.id) === form.id)
             : undefined
         }
         onSuccess={() => {

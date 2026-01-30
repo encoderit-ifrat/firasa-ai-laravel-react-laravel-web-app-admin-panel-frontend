@@ -17,10 +17,10 @@ type TApiResponse = {
 
 type TProps = {
   params: TSearchSchema & {
-      status?: number;
-      order_by?:string,
-      order?:string,
-      plan?:string,
+    status?: number;
+    order_by?: string,
+    order?: string,
+    plan?: string,
   },
 
   options: Omit<
@@ -28,7 +28,7 @@ type TProps = {
       TApiResponse,
       Error,
       TApiResponse
-      
+
     >,
     "queryKey" | "queryFn"
   >;
@@ -36,20 +36,15 @@ type TProps = {
 
 export const useGetAllUsersResults = ({ params, options }: TProps) => {
 
-  const { page, per_page, search,order_by,order,plan} = params;
-   
+  const { page, per_page, search, order_by, order, plan } = params;
+
 
   return useQuery({
     ...options,
-    queryKey: ["users", page, per_page, search,order_by,order,plan],
+    queryKey: ["users", page, per_page, search, order_by, order, plan],
     queryFn: async (): Promise<TApiResponse> => {
       const response = await api.get("/user-results", { params });
-      
-      const {
-        data: { data },
-      } = response;
-      console.log("🚀 ~ useGetAllUsers ~ params:", params)
-      return data;
+      return response.data.data;
     },
   });
 };
