@@ -26,7 +26,7 @@ export const useGetAllRoleDropdown = ({
       const response = await api.get(`/roles`, {
         params: omitEmptyParams,
       });
-      return response.data;
+      return response.data.data;
     },
   });
 

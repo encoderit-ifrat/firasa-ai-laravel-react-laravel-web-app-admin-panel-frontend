@@ -5,6 +5,7 @@ import { Toaster } from "./components/ui/sonner";
 import { I18nextProvider } from "react-i18next";
 import i18n from "./i18n";
 import "./i18n";
+import { PusherProvider } from "./context/PusherContext";
 
 const queryClient = new QueryClient();
 
@@ -19,11 +20,15 @@ declare module "@tanstack/react-router" {
 
 export default function App() {
   return (
+
     <I18nextProvider i18n={i18n}>
       <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
-        <Toaster richColors position="top-right" />
+        <PusherProvider>
+          <RouterProvider router={router} />
+          <Toaster richColors position="top-right" />
+        </PusherProvider>
       </QueryClientProvider>
     </I18nextProvider>
+
   );
 }

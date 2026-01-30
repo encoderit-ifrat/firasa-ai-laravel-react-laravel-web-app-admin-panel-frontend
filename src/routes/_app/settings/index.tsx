@@ -113,11 +113,14 @@ function RouteComponent() {
 
       const exportParams = {
         ids: selectedIds.join(","),
+        search: params.search,
+        order_by: params.order_by,
+        order: params.order,
       };
 
       await exportData(
         {
-          endpoint: "/users/export", // Assuming this is the endpoint for admin export
+          endpoint: "export/system-users", // Assuming this is the endpoint for admin export
           filename: "admins.xlsx",
         },
         exportParams

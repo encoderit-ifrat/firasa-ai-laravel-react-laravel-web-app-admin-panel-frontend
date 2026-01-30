@@ -112,6 +112,10 @@ function RouteComponent() {
 
       const exportParams = {
         ids: selectedIds.join(","),
+        search: params.search,
+        order_by: params.order_by,
+        order: params.order,
+        plan: params.plan,
       };
 
       await exportData(

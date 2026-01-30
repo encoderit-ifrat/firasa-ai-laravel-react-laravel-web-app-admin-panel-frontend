@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect,useRef,useState, type Dispatch, type SetStateAction } from "react";
+import { createContext, useContext, useEffect, useRef, useState, type Dispatch, type SetStateAction } from "react";
 import Pusher, { Channel } from "pusher-js";
 import { API_BASE_URL, PUSHER_CLUSTER, PUSHER_KEY } from "../consts";
 
@@ -36,10 +36,12 @@ export const PusherProvider = ({ children }: { children: React.ReactNode }) => {
     pusherRef.current = new Pusher(PUSHER_KEY, {
       cluster: PUSHER_CLUSTER || "ap2",
       // 🔐 REQUIRED FOR PRIVATE CHANNEL AUTH
-      authEndpoint: `${API_BASE_URL}/api/broadcasting/auth`,
+      authEndpoint: `${API_BASE_URL}/broadcasting/auth`,
       auth: {
         headers: {
           Authorization: `Bearer ${token}`,
+          Origin: "http://localhost:5173",
+          Accept: 'application/json',
         },
       },
     });
@@ -63,20 +65,18 @@ export const PusherProvider = ({ children }: { children: React.ReactNode }) => {
     // });
 
     channelRef.current = pusherRef.current!.subscribe(
-        "private-service.status"
+      `private-notifications.admins.${currentUser?.id}`
     );
-    channelRef.current!.bind("service.status", () => {
-      console.log("🚀 ~ PusherProvider ~ service.status")
-
-      setIsStatusUpdate(true);
+    channelRef.current!.bind("notifications.admins.created", (res) => {
+      console.log("🚀 ~ PusherProvider ~ service.status", res);
     });
 
   }, [])
 
   return (
-      <PusherContext.Provider value={{isConnected, isStatusUpdate, setIsStatusUpdate}}>
-        {children}
-      </PusherContext.Provider>
+    <PusherContext.Provider value={{ isConnected, isStatusUpdate, setIsStatusUpdate }}>
+      {children}
+    </PusherContext.Provider>
   );
 };
 
