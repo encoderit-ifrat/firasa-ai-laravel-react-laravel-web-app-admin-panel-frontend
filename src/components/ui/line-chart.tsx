@@ -86,7 +86,7 @@ export function LineChart() {
         </div>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig}>
+        <ChartContainer config={chartConfig} className="min-h-[300px]">
           <BarChart
             accessibilityLayer
             data={chartData}

@@ -93,8 +93,8 @@ export function CircleChart() {
       <CardContent>
         <div className="flex flex-col lg:flex-row items-center gap-8">
           <div className="lg:flex-1">
-            <ChartContainer config={chartConfig}>
-              <PieChart width={300} height={300}>
+            <ChartContainer config={chartConfig} className="min-h-[350px]">
+              <PieChart>
                 <ChartTooltip
                   cursor={false}
                   content={<ChartTooltipContent hideLabel />}
@@ -107,8 +107,8 @@ export function CircleChart() {
                   endAngle={-270}
                   label={renderCustomLabel}
                   labelLine={false}
-                  innerRadius={0}
-                  outerRadius={150}
+                  innerRadius="0%"
+                  outerRadius="100%"
                 >
                   {chartData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.fill} />
