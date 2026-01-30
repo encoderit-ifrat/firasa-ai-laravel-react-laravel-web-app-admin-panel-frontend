@@ -1,23 +1,41 @@
-// components/mini-area-chart.tsx
-
-import { AreaChart, Area } from "recharts";
+import { AreaChart, Area, ResponsiveContainer } from "recharts";
 
 const miniDataPositive = [
-  { value: 186 },
-  { value: 305 },
-  { value: 237 },
-  { value: 73 },
-  { value: 209 },
-  { value: 214 },
+  { value: 15 },
+  { value: 35 },
+  { value: 45 },
+  { value: 25 },
+  { value: 30 },
+  { value: 35 },
+  { value: 15 },
+  { value: 40 },
+  { value: 45 },
+  { value: 40 },
+  { value: 55 },
+  { value: 25 },
+  { value: 30 },
+  { value: 35 },
+  { value: 25 },
+  { value: 15 },
 ];
 
 const miniDataNegative = [
-  { value: 214 },
-  { value: 209 },
-  { value: 73 },
-  { value: 237 },
-  { value: 305 },
-  { value: 186 },
+  { value: 15 },
+  { value: 25 },
+  { value: 35 },
+  { value: 20 },
+  { value: 25 },
+  { value: 30 },
+  { value: 25 },
+  { value: 22 },
+  { value: 28 },
+  { value: 25 },
+  { value: 35 },
+  { value: 28 },
+  { value: 32 },
+  { value: 55 },
+  { value: 35 },
+  { value: 15 },
 ];
 
 interface MiniAreaChartProps {
@@ -26,17 +44,33 @@ interface MiniAreaChartProps {
 
 export function MiniAreaChart({ trend = "positive" }: MiniAreaChartProps) {
   const data = trend === "positive" ? miniDataPositive : miniDataNegative;
-  const color = trend === "positive" ? "#22c55e" : "#ef4444"; // green-500 or red-500
+  const strokeColor = trend === "positive" ? "#26BF94" : "#FF3B30";
+  const gradientId = `color${trend.charAt(0).toUpperCase() + trend.slice(1)}`;
 
   return (
-    <AreaChart width={80} height={40} data={data}>
-      <Area
-        dataKey="value"
-        type="natural"
-        stroke={color}
-        fill={color}
-        fillOpacity={0.4}
-      />
-    </AreaChart>
+    <ResponsiveContainer width="100%" height={40}>
+      <AreaChart data={data} margin={{ top: 5, right: 0, left: 0, bottom: 0 }}>
+        <defs>
+          <linearGradient id="colorPositive" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#26BF94" stopOpacity={0.59} />
+            <stop offset="100%" stopColor="#26BF94" stopOpacity={0} />
+          </linearGradient>
+          <linearGradient id="colorNegative" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="23.13%" stopColor="#FF3B30" stopOpacity={0.6} />
+            <stop offset="100%" stopColor="#FF3B30" stopOpacity={0} />
+          </linearGradient>
+        </defs>
+        <Area
+          dataKey="value"
+          type="natural"
+          stroke={strokeColor}
+          strokeWidth={2}
+          fill={`url(#${gradientId})`}
+          fillOpacity={1}
+          dot={false}
+          activeDot={false}
+        />
+      </AreaChart>
+    </ResponsiveContainer>
   );
 }
