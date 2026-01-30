@@ -46,6 +46,7 @@ import Loading from "../../../components/base/loading";
 import type { TUsersResultsSchema } from "./-type/users-results";
 import IconDelete from "../../../components/svg-icon/icon-delete";
 import { useDeleteUserResult } from "./-api/mutations/use-delete-user-result";
+import { useDebounce } from "../../../hooks/search-hooks";
 
 export const Route = createFileRoute("/_app/users-results/")({
   component: RouteComponent,
@@ -69,12 +70,14 @@ function RouteComponent() {
 
   // Search state
   const [search, setSearch] = useState("");
+  const debouncedSearch = useDebounce(search, 500); 
 
   // API queries
   const { data: usersResultsResponse, isLoading, refetch } = useGetAllUsersResults({
     params: {
       ...params,
-      search,
+       page: debouncedSearch ? -1 : params?.page,
+      search: debouncedSearch, // Use debounced search here
       order_by: params.order_by || "id",
       order: params.order || "desc",
     },

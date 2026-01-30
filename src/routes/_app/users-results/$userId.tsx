@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import type { TForm } from "../../../types/form";
 import { FORM_DATA } from "../../../data/form";
@@ -18,6 +18,7 @@ import IconDelete from "../../../components/svg-icon/icon-delete";
 import { useGetUser } from "../settings/-api/queries/use-get-user";
 import { useGetUserReports } from "./-api/queries/use-get-user-reports";
 import Loading from "../../../components/base/loading";
+import { useDeleteUser } from "../settings/-api/mutations/use-delete-user";
 
 export const Route = createFileRoute("/_app/users-results/$userId")({
   component: RouteComponent,
@@ -25,6 +26,7 @@ export const Route = createFileRoute("/_app/users-results/$userId")({
 
 function RouteComponent() {
   const { userId } = Route.useParams();
+  const navigate = useNavigate();
   const [form, setForm] = useState<TForm>(FORM_DATA);
 
   const userIdNumber = parseInt(userId, 10);
@@ -37,6 +39,7 @@ function RouteComponent() {
     },
   });
 
+  const { mutate: deleteUser, isPending: isPendingDelete } = useDeleteUser();
   // Fetch user reports using the dynamic userId
   const { data: userReportsResponse, isLoading: isLoadingReports } = useGetUserReports({
     userId: userIdNumber,
@@ -74,6 +77,20 @@ function RouteComponent() {
       </div>
     );
   }
+
+  const handleDelete = () => {
+    if (form.id) {
+      deleteUser(
+        { id: form.id },
+        {
+          onSuccess: () => {
+            setForm(FORM_DATA);
+            navigate({ to: "/users-results" });
+          },
+        }
+      );
+    }
+  };
 
   // Transform API data to match component expectations
   // Note: useGetUser returns TAdminSchema, so some fields may not be available
@@ -146,10 +163,8 @@ function RouteComponent() {
             <Button
               variant="destructive"
               className="capitalize min-w-24 flex items-center gap-2"
-              onClick={() => {
-                console.log("Deleting user:", form.id);
-                setForm(FORM_DATA);
-              }}
+              onClick={handleDelete}
+              loading={isPendingDelete}
             >
               <IconDelete /> Delete
             </Button>
