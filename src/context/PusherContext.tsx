@@ -40,8 +40,6 @@ export const PusherProvider = ({ children }: { children: React.ReactNode }) => {
       auth: {
         headers: {
           Authorization: `Bearer ${token}`,
-          Origin: "http://localhost:5173",
-          Accept: 'application/json',
         },
       },
     });
@@ -65,7 +63,7 @@ export const PusherProvider = ({ children }: { children: React.ReactNode }) => {
     // });
 
     channelRef.current = pusherRef.current!.subscribe(
-      `private-notifications.admins.${currentUser?.id}`
+      `private-notifications.admins.33`
     );
     channelRef.current!.bind("notifications.admins.created", (res) => {
       console.log("🚀 ~ PusherProvider ~ service.status", res);

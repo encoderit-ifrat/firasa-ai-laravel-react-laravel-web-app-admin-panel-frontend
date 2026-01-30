@@ -8,6 +8,7 @@ import i18n from "../i18n";
 import { DropdownSelect } from "./DropdownSelect";
 import { NewNavUser, NewNavUserAvatar } from "./new-nav-user";
 import { ChevronDown } from "lucide-react";
+import { NotificationDropdown } from "./notification-dropdown";
 
 // Custom flag components
 const USFlag = ({ className }: { className?: string }) => (
@@ -83,12 +84,8 @@ export default function Navbar() {
             onChange={handleLanguageChange}
           />
 
-          <div className="relative" title={t("notifications")}>
-            <IconNotification className="size-12 cursor-pointer hover:opacity-70 transition-opacity" />
-            {/* Notification badge */}
-            <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-medium text-white">
-              3
-            </span>
+          <div className="relative">
+            <NotificationDropdown />
           </div>
 
           {/* <NavUser /> */}
