@@ -9,7 +9,11 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as AuthRouteRouteImport } from './routes/_auth/route'
 import { Route as AppRouteRouteImport } from './routes/_app/route'
+import { Route as AuthResetPasswordIndexRouteImport } from './routes/_auth/reset-password/index'
+import { Route as AuthLoginIndexRouteImport } from './routes/_auth/login/index'
+import { Route as AuthForgotPasswordIndexRouteImport } from './routes/_auth/forgot-password/index'
 import { Route as AppUsersResultsIndexRouteImport } from './routes/_app/users-results/index'
 import { Route as AppSettingsIndexRouteImport } from './routes/_app/settings/index'
 import { Route as AppPublicApiManagementIndexRouteImport } from './routes/_app/public-api-management/index'
@@ -17,9 +21,28 @@ import { Route as AppContentManagementIndexRouteImport } from './routes/_app/con
 import { Route as AppDashboardIndexRouteImport } from './routes/_app/_dashboard/index'
 import { Route as AppUsersResultsUserIdRouteImport } from './routes/_app/users-results/$userId'
 
+const AuthRouteRoute = AuthRouteRouteImport.update({
+  id: '/_auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AppRouteRoute = AppRouteRouteImport.update({
   id: '/_app',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthResetPasswordIndexRoute = AuthResetPasswordIndexRouteImport.update({
+  id: '/reset-password/',
+  path: '/reset-password/',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
+const AuthLoginIndexRoute = AuthLoginIndexRouteImport.update({
+  id: '/login/',
+  path: '/login/',
+  getParentRoute: () => AuthRouteRoute,
+} as any)
+const AuthForgotPasswordIndexRoute = AuthForgotPasswordIndexRouteImport.update({
+  id: '/forgot-password/',
+  path: '/forgot-password/',
+  getParentRoute: () => AuthRouteRoute,
 } as any)
 const AppUsersResultsIndexRoute = AppUsersResultsIndexRouteImport.update({
   id: '/users-results/',
@@ -61,6 +84,9 @@ export interface FileRoutesByFullPath {
   '/public-api-management': typeof AppPublicApiManagementIndexRoute
   '/settings': typeof AppSettingsIndexRoute
   '/users-results': typeof AppUsersResultsIndexRoute
+  '/forgot-password': typeof AuthForgotPasswordIndexRoute
+  '/login': typeof AuthLoginIndexRoute
+  '/reset-password': typeof AuthResetPasswordIndexRoute
 }
 export interface FileRoutesByTo {
   '/users-results/$userId': typeof AppUsersResultsUserIdRoute
@@ -69,16 +95,23 @@ export interface FileRoutesByTo {
   '/public-api-management': typeof AppPublicApiManagementIndexRoute
   '/settings': typeof AppSettingsIndexRoute
   '/users-results': typeof AppUsersResultsIndexRoute
+  '/forgot-password': typeof AuthForgotPasswordIndexRoute
+  '/login': typeof AuthLoginIndexRoute
+  '/reset-password': typeof AuthResetPasswordIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_app': typeof AppRouteRouteWithChildren
+  '/_auth': typeof AuthRouteRouteWithChildren
   '/_app/users-results/$userId': typeof AppUsersResultsUserIdRoute
   '/_app/_dashboard/': typeof AppDashboardIndexRoute
   '/_app/content-management/': typeof AppContentManagementIndexRoute
   '/_app/public-api-management/': typeof AppPublicApiManagementIndexRoute
   '/_app/settings/': typeof AppSettingsIndexRoute
   '/_app/users-results/': typeof AppUsersResultsIndexRoute
+  '/_auth/forgot-password/': typeof AuthForgotPasswordIndexRoute
+  '/_auth/login/': typeof AuthLoginIndexRoute
+  '/_auth/reset-password/': typeof AuthResetPasswordIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -89,6 +122,9 @@ export interface FileRouteTypes {
     | '/public-api-management'
     | '/settings'
     | '/users-results'
+    | '/forgot-password'
+    | '/login'
+    | '/reset-password'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/users-results/$userId'
@@ -97,29 +133,65 @@ export interface FileRouteTypes {
     | '/public-api-management'
     | '/settings'
     | '/users-results'
+    | '/forgot-password'
+    | '/login'
+    | '/reset-password'
   id:
     | '__root__'
     | '/_app'
+    | '/_auth'
     | '/_app/users-results/$userId'
     | '/_app/_dashboard/'
     | '/_app/content-management/'
     | '/_app/public-api-management/'
     | '/_app/settings/'
     | '/_app/users-results/'
+    | '/_auth/forgot-password/'
+    | '/_auth/login/'
+    | '/_auth/reset-password/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   AppRouteRoute: typeof AppRouteRouteWithChildren
+  AuthRouteRoute: typeof AuthRouteRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/_auth': {
+      id: '/_auth'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AuthRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_app': {
       id: '/_app'
       path: ''
       fullPath: ''
       preLoaderRoute: typeof AppRouteRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_auth/reset-password/': {
+      id: '/_auth/reset-password/'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof AuthResetPasswordIndexRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
+    '/_auth/login/': {
+      id: '/_auth/login/'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof AuthLoginIndexRouteImport
+      parentRoute: typeof AuthRouteRoute
+    }
+    '/_auth/forgot-password/': {
+      id: '/_auth/forgot-password/'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof AuthForgotPasswordIndexRouteImport
+      parentRoute: typeof AuthRouteRoute
     }
     '/_app/users-results/': {
       id: '/_app/users-results/'
@@ -188,8 +260,25 @@ const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
   AppRouteRouteChildren,
 )
 
+interface AuthRouteRouteChildren {
+  AuthForgotPasswordIndexRoute: typeof AuthForgotPasswordIndexRoute
+  AuthLoginIndexRoute: typeof AuthLoginIndexRoute
+  AuthResetPasswordIndexRoute: typeof AuthResetPasswordIndexRoute
+}
+
+const AuthRouteRouteChildren: AuthRouteRouteChildren = {
+  AuthForgotPasswordIndexRoute: AuthForgotPasswordIndexRoute,
+  AuthLoginIndexRoute: AuthLoginIndexRoute,
+  AuthResetPasswordIndexRoute: AuthResetPasswordIndexRoute,
+}
+
+const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
+  AuthRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   AppRouteRoute: AppRouteRouteWithChildren,
+  AuthRouteRoute: AuthRouteRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

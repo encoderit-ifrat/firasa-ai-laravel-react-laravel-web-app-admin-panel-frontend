@@ -24,6 +24,7 @@ import { createContext, useContext, type PropsWithChildren } from "react";
 import { t } from "i18next";
 import { cn } from "../lib/utils";
 import { useSidebar } from "./ui/sidebar";
+import { useLogout } from "../hooks/use-logout";
 
 type UserType = {
     name: string,
@@ -88,6 +89,7 @@ export function NewNavUserInfo() {
 
 export function NewNavUser({ user, children }: NavUserType & PropsWithChildren) {
     const { isMobile } = useSidebar();
+    const logout = useLogout();
 
     return <NavUserContext.Provider value={user}>
         <DropdownMenu>
@@ -161,9 +163,9 @@ export function NewNavUser({ user, children }: NavUserType & PropsWithChildren) 
 
                 <DropdownMenuSeparator />
 
-                <DropdownMenuItem>
+                <DropdownMenuItem onClick={() => logout.mutate()} disabled={logout.isPending}>
                     <LogOut />
-                    {t("navbar.logout", "Log out")}
+                    {logout.isPending ? t("navbar.loggingOut", "Logging out...") : t("navbar.logout", "Log out")}
                 </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>

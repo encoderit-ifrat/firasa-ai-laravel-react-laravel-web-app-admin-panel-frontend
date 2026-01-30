@@ -15,27 +15,46 @@ const PusherContext = createContext<PusherContextType | null>(null);
 
 
 export const PusherProvider = ({ children }: { children: React.ReactNode }) => {
-  const user = localStorage.getItem("user");
-  // console.log("🚀 ~ PusherProvider ~ user:", user)
+  const [user, setUser] = useState<string | null>(localStorage.getItem("user"));
   const currentUser = user ? JSON.parse(user) : null;
-  console.log("🚀 ~ PusherProvider ~ currentUser:", currentUser)
-  // console.log("🚀 ~ PusherProvider ~ currentUser:", currentUser?.id)
   const pusherRef = useRef<Pusher | null>(null);
   const channelRef = useRef<Channel | null>(null);
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [isStatusUpdate, setIsStatusUpdate] = useState(false);
 
+  // Sync state with localStorage on mount and when changed
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setUser(localStorage.getItem("user"));
+    };
+    window.addEventListener("storage", handleStorageChange);
+    // Also check periodically or via custom event since navigate might not fire storage event on same tab
+    const interval = setInterval(handleStorageChange, 1000);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+      clearInterval(interval);
+    };
+  }, []);
+
 
 
 
   useEffect(() => {
-    // Example: You probably get your auth token from localStorage or cookies
     const token = localStorage.getItem("token");
 
-    // Initialize PRIVATE Pusher
-    pusherRef.current = new Pusher(PUSHER_KEY, {
+    if (!token || !currentUser?.id) {
+      if (pusherRef.current) {
+        pusherRef.current.disconnect();
+        pusherRef.current = null;
+        setIsConnected(false);
+      }
+      return;
+    }
+
+    // Initialize Pusher
+    const pusher = new Pusher(PUSHER_KEY, {
       cluster: PUSHER_CLUSTER || "ap2",
-      // 🔐 REQUIRED FOR PRIVATE CHANNEL AUTH
       authEndpoint: `${API_BASE_URL}/broadcasting/auth`,
       auth: {
         headers: {
@@ -43,33 +62,32 @@ export const PusherProvider = ({ children }: { children: React.ReactNode }) => {
         },
       },
     });
-    // Connection state handlers
-    pusherRef.current!.connection.bind("connected", () => {
+
+    pusherRef.current = pusher;
+
+    pusher.connection.bind("connected", () => {
       console.log("Pusher connected");
       setIsConnected(true);
     });
 
-    pusherRef.current!.connection.bind("disconnected", () => {
+    pusher.connection.bind("disconnected", () => {
       console.log("Pusher disconnected");
       setIsConnected(false);
     });
 
-    // 🔐 Subscribe to PRIVATE channel
-    // channelRef.current = pusherRef.current!.subscribe(
-    //     `private-notification.user.${currentUser?.id}`
-    // );
-    // channelRef.current!.bind(`notification.user.${currentUser?.id}`, (data) => {
-    //   console.log("🚀 ~ notification.user ~ data:", data)
-    // });
+    const channel = pusher.subscribe(`private-notifications.admins.33`);
+    channelRef.current = channel;
 
-    channelRef.current = pusherRef.current!.subscribe(
-      `private-notifications.admins.33`
-    );
-    channelRef.current!.bind("notifications.admins.created", (res) => {
+    channel.bind("notifications.admins.created", (res: any) => {
       console.log("🚀 ~ PusherProvider ~ service.status", res);
     });
 
-  }, [])
+    return () => {
+      pusher.disconnect();
+      pusherRef.current = null;
+      setIsConnected(false);
+    };
+  }, [user]);
 
   return (
     <PusherContext.Provider value={{ isConnected, isStatusUpdate, setIsStatusUpdate }}>
