@@ -10,6 +10,17 @@ import {
   ArrowDown,
 } from "lucide-react";
 import { useState } from "react";
+import type { VisibilityState } from "@tanstack/react-table";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+} from "../../../components/ui/dropdown-menu";
 import type { TForm } from "../../../types/form";
 import { FORM_DATA } from "../../../data/form";
 import AppActionsDropdown from "../../../components/app-actions-dropdown";
@@ -57,6 +68,7 @@ type ContentSection = 'admin-management' | 'api-keys-management' | 'language-man
 
 function RouteComponent() {
   const [form, setForm] = useState<TForm>(FORM_DATA);
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [activeSection, setActiveSection] = useState<ContentSection>('admin-management');
   const params = Route.useSearch();
   const navigate = Route.useNavigate();
@@ -77,8 +89,8 @@ function RouteComponent() {
       ...params, // This includes page and per_page from URL
       page: debouncedSearch ? -1 : params?.page,
       search: debouncedSearch, // Use debounced search here
-      order: "desc",
-      order_by: "id",
+      order_by: params.order_by || "id",
+      order: params.order || "desc",
     },
     options: {
       enabled: activeSection === "admin-management",
@@ -164,10 +176,16 @@ function RouteComponent() {
     },
     {
       accessorKey: "name",
-      header: ({ column }) => (
+      header: () => (
         <Button
           variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={() => {
+            const isCurrent = params.order_by === "name";
+            const newOrder = isCurrent && params.order === "asc" ? "desc" : "asc";
+            navigate({
+              search: { ...params, order_by: "name", order: newOrder },
+            });
+          }}
         >
           Name
           <ArrowDown />
@@ -178,10 +196,17 @@ function RouteComponent() {
       ),
     },
     {
-      header: ({ column }) => (
+      header: () => (
         <Button
           variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={() => {
+            const isCurrent = params.order_by === "email";
+            const newOrder =
+              isCurrent && params.order === "asc" ? "desc" : "asc";
+            navigate({
+              search: { ...params, order_by: "email", order: newOrder },
+            });
+          }}
           className="flex items-center gap-1"
         >
           Email
@@ -191,10 +216,17 @@ function RouteComponent() {
       accessorKey: "email",
     },
     {
-      header: ({ column }) => (
+      header: () => (
         <Button
           variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={() => {
+            const isCurrent = params.order_by === "created_at";
+            const newOrder =
+              isCurrent && params.order === "asc" ? "desc" : "asc";
+            navigate({
+              search: { ...params, order_by: "created_at", order: newOrder },
+            });
+          }}
           className="flex items-center gap-1"
         >
           Created At
@@ -204,7 +236,7 @@ function RouteComponent() {
       accessorKey: "created_at",
       cell: ({ row }) => {
         const date = new Date(row.getValue("created_at"));
-        return <div>{date.toLocaleDateString()}</div>;
+        return <div className="font-medium px-4">{date.toLocaleDateString()}</div>;
       },
     },
     {
@@ -273,7 +305,12 @@ function RouteComponent() {
         return isLoading ? (
           <div className="p-8 text-center"><Loading /></div>
         ) : (
-          <AppTable data={data ?? []} columns={columns} />
+          <AppTable
+            data={data ?? []}
+            columns={columns}
+            columnVisibility={columnVisibility}
+            onColumnVisibilityChange={setColumnVisibility}
+          />
         );
       case 'api-keys-management':
         return <div className="p-8 text-center text-gray-500">API Keys Management content goes here</div>;
@@ -339,18 +376,66 @@ function RouteComponent() {
           <div className="flex justify-between mb-4">
             <SearchBar variant="bordered" searchValue={search} onSearchChange={setSearch} />
             <div className="flex gap-2">
-              <Button variant="gray">
-                <Rows3 /> Columns
-              </Button>
-              <Button variant="gray">
-                <Eye /> View
-              </Button>
-              <Button variant="gray">
-                <IconSort /> Sort
-              </Button>
-              <Button variant="gray">
-                <SlidersHorizontal /> Filters
-              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="gray">
+                    <Rows3 /> Columns
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-[150px]">
+                  <DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  {(columns as any[])
+                    .filter((column) => typeof column.accessorKey === "string")
+                    .map((column) => {
+                      return (
+                        <DropdownMenuCheckboxItem
+                          key={column.accessorKey}
+                          className="capitalize"
+                          checked={
+                            columnVisibility[column.accessorKey] !== false
+                          }
+                          onCheckedChange={(value) =>
+                            setColumnVisibility((prev) => ({
+                              ...prev,
+                              [column.accessorKey]: !!value,
+                            }))
+                          }
+                        >
+                          {column.accessorKey.replace(/_/g, " ")}
+                        </DropdownMenuCheckboxItem>
+                      );
+                    })}
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="gray">
+                    <IconSort /> Sort
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-[150px]">
+                  <DropdownMenuLabel>Sort Order</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuRadioGroup
+                    value={params.order || "desc"}
+                    onValueChange={(value) =>
+                      navigate({
+                        search: { ...params, order: value },
+                      })
+                    }
+                  >
+                    <DropdownMenuRadioItem value="asc">
+                      Ascending
+                    </DropdownMenuRadioItem>
+                    <DropdownMenuRadioItem value="desc">
+                      Descending
+                    </DropdownMenuRadioItem>
+                  </DropdownMenuRadioGroup>
+                </DropdownMenuContent>
+              </DropdownMenu>
+
               <Button variant="outline">
                 <IconExport /> Export
               </Button>

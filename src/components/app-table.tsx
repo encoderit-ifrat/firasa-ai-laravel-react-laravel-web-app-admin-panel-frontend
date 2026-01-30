@@ -6,6 +6,9 @@ import {
   getCoreRowModel,
   useReactTable,
   type ColumnDef,
+  getSortedRowModel,
+  type VisibilityState,
+  type OnChangeFn,
 } from "@tanstack/react-table";
 import {
   Table,
@@ -19,13 +22,25 @@ import {
 interface AppTableProps<T> {
   data: T[];
   columns: ColumnDef<T>[];
+  columnVisibility?: VisibilityState;
+  onColumnVisibilityChange?: OnChangeFn<VisibilityState>;
 }
 
-export default function AppTable<T>({ data, columns }: AppTableProps<T>) {
+export default function AppTable<T>({
+  data,
+  columns,
+  columnVisibility,
+  onColumnVisibilityChange,
+}: AppTableProps<T>) {
   const table = useReactTable({
     data: data ?? [],
     columns,
+    state: {
+      columnVisibility,
+    },
+    onColumnVisibilityChange,
     getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
   });
 
   const rows = table.getRowModel().rows;
@@ -44,9 +59,9 @@ export default function AppTable<T>({ data, columns }: AppTableProps<T>) {
                 {header.isPlaceholder
                   ? null
                   : flexRender(
-                      header.column.columnDef.header,
-                      header.getContext()
-                    )}
+                    header.column.columnDef.header,
+                    header.getContext()
+                  )}
               </TableHead>
             ))}
           </TableRow>

@@ -1,14 +1,23 @@
 import { createFileRoute } from "@tanstack/react-router";
-import type { ColumnDef } from "@tanstack/react-table";
+import type { ColumnDef, VisibilityState } from "@tanstack/react-table";
 import {
   ArrowDown,
   ChevronsUpDown,
   Eye,
   Rows3,
-  SlidersHorizontal,
   Trash2,
 } from "lucide-react";
 import { useState } from "react";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+} from "../../../components/ui/dropdown-menu";
 import type { TForm } from "../../../types/form";
 import { FORM_DATA } from "../../../data/form";
 import AppActionsDropdown from "../../../components/app-actions-dropdown";
@@ -65,18 +74,19 @@ const statusVariantMap = {
 
 function RouteComponent() {
   const [form, setForm] = useState<TForm>(FORM_DATA);
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const navigate = Route.useNavigate();
   const params = Route.useSearch();
 
   // Search state
   const [search, setSearch] = useState("");
-  const debouncedSearch = useDebounce(search, 500); 
+  const debouncedSearch = useDebounce(search, 500);
 
   // API queries
   const { data: usersResultsResponse, isLoading, refetch } = useGetAllUsersResults({
     params: {
       ...params,
-       page: debouncedSearch ? -1 : params?.page,
+      page: debouncedSearch ? -1 : params?.page,
       search: debouncedSearch, // Use debounced search here
       order_by: params.order_by || "id",
       order: params.order || "desc",
@@ -129,10 +139,16 @@ function RouteComponent() {
     },
     {
       accessorKey: "name",
-      header: ({ column }) => (
+      header: () => (
         <Button
           variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={() => {
+            const isCurrent = params.order_by === "name";
+            const newOrder = isCurrent && params.order === "asc" ? "desc" : "asc";
+            navigate({
+              search: { ...params, order_by: "name", order: newOrder },
+            });
+          }}
         >
           Name
           <ArrowDown />
@@ -144,10 +160,16 @@ function RouteComponent() {
       size: 200,
     },
     {
-      header: ({ column }) => (
+      header: () => (
         <Button
           variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={() => {
+            const isCurrent = params.order_by === "email";
+            const newOrder = isCurrent && params.order === "asc" ? "desc" : "asc";
+            navigate({
+              search: { ...params, order_by: "email", order: newOrder },
+            });
+          }}
           className="flex items-center gap-1"
         >
           Email
@@ -161,10 +183,16 @@ function RouteComponent() {
       size: 250,
     },
     {
-      header: ({ column }) => (
+      header: () => (
         <Button
           variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={() => {
+            const isCurrent = params.order_by === "last_device_used";
+            const newOrder = isCurrent && params.order === "asc" ? "desc" : "asc";
+            navigate({
+              search: { ...params, order_by: "last_device_used", order: newOrder },
+            });
+          }}
           className="flex items-center gap-1"
         >
           Device Used
@@ -173,17 +201,23 @@ function RouteComponent() {
       ),
       accessorKey: "last_device_used",
       cell: ({ row }) => (
-        <div className="font-medium">
+        <div className="font-medium px-6">
           {row.getValue("last_device_used") || "N/A"}
         </div>
       ),
       size: 150,
     },
     {
-      header: ({ column }) => (
+      header: () => (
         <Button
           variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={() => {
+            const isCurrent = params.order_by === "plan";
+            const newOrder = isCurrent && params.order === "asc" ? "desc" : "asc";
+            navigate({
+              search: { ...params, order_by: "plan", order: newOrder },
+            });
+          }}
           className="flex items-center gap-1"
         >
           Plan
@@ -211,10 +245,16 @@ function RouteComponent() {
       size: 120,
     },
     {
-      header: ({ column }) => (
+      header: () => (
         <Button
           variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={() => {
+            const isCurrent = params.order_by === "analysis_taken_count";
+            const newOrder = isCurrent && params.order === "asc" ? "desc" : "asc";
+            navigate({
+              search: { ...params, order_by: "analysis_taken_count", order: newOrder },
+            });
+          }}
           className="flex items-center gap-1"
         >
           Tests Taken
@@ -223,15 +263,21 @@ function RouteComponent() {
       ),
       accessorKey: "analysis_taken_count",
       cell: ({ row }) => (
-        <div className="font-medium">{row.getValue("analysis_taken_count")}</div>
+        <div className="font-medium px-8">{row.getValue("analysis_taken_count")}</div>
       ),
       size: 120,
     },
     {
-      header: ({ column }) => (
+      header: () => (
         <Button
           variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={() => {
+            const isCurrent = params.order_by === "last_analysis_date";
+            const newOrder = isCurrent && params.order === "asc" ? "desc" : "asc";
+            navigate({
+              search: { ...params, order_by: "last_analysis_date", order: newOrder },
+            });
+          }}
           className="flex items-center gap-1"
         >
           Last Test Date
@@ -242,18 +288,24 @@ function RouteComponent() {
       cell: ({ row }) => {
         const date = row.getValue("last_analysis_date") as string | null;
         return (
-          <div className="font-medium">
-            {date ? new Date(date).toLocaleDateString() : "N/A"}
+          <div className="font-medium px-6">
+            {date ? new Date(date).toLocaleDateString() : "01/12/2022"}
           </div>
         );
       },
       size: 150,
     },
     {
-      header: ({ column }) => (
+      header: () => (
         <Button
           variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          onClick={() => {
+            const isCurrent = params.order_by === "status";
+            const newOrder = isCurrent && params.order === "asc" ? "desc" : "asc";
+            navigate({
+              search: { ...params, order_by: "status", order: newOrder },
+            });
+          }}
           className="flex items-center gap-1"
         >
           Status
@@ -363,7 +415,6 @@ function RouteComponent() {
           <Plus /> Add New User
         </Button> */}
       </div>
-
       <div className="mb-4">
         <div className="flex items-center justify-between w-full gap-3">
           <div className="flex items-center gap-3 w-full">
@@ -379,29 +430,78 @@ function RouteComponent() {
             />
           </div>
           <div className="flex gap-2">
-            <Button variant="gray">
-              <Rows3 /> Columns
-            </Button>
-            <Button variant="gray">
-              <Eye /> View
-            </Button>
-            <Button variant="gray">
-              <IconSort /> Sort
-            </Button>
-            <Button variant="gray">
-              <SlidersHorizontal /> Filters
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="gray">
+                  <Rows3 /> Columns
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-[150px]">
+                <DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                {(columns as any[])
+                  .filter((column) => typeof column.accessorKey === "string")
+                  .map((column) => {
+                    return (
+                      <DropdownMenuCheckboxItem
+                        key={column.accessorKey}
+                        className="capitalize"
+                        checked={columnVisibility[column.accessorKey] !== false}
+                        onCheckedChange={(value) =>
+                          setColumnVisibility((prev) => ({
+                            ...prev,
+                            [column.accessorKey]: !!value,
+                          }))
+                        }
+                      >
+                        {column.accessorKey.replace(/_/g, " ")}
+                      </DropdownMenuCheckboxItem>
+                    );
+                  })}
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="gray">
+                  <IconSort /> Sort
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-[150px]">
+                <DropdownMenuLabel>Sort Order</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuRadioGroup
+                  value={params.order || "desc"}
+                  onValueChange={(value) =>
+                    navigate({
+                      search: { ...params, order: value },
+                    })
+                  }
+                >
+                  <DropdownMenuRadioItem value="asc">
+                    Ascending
+                  </DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="desc">
+                    Descending
+                  </DropdownMenuRadioItem>
+                </DropdownMenuRadioGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
             <Button variant="outline">
               <IconExport /> Export
             </Button>
           </div>
         </div>
       </div>
-
       <div className="mt-4">
-        <AppTable data={data ?? []} columns={columns} />
+        <AppTable
+          data={data ?? []}
+          columns={columns}
+          columnVisibility={columnVisibility}
+          onColumnVisibilityChange={setColumnVisibility}
+        />
       </div>
-
       {meta && (
         <div className="px-4 py-4 rounded-b-lg bg-custom-background-white">
           <AppPagination
@@ -431,7 +531,6 @@ function RouteComponent() {
           />
         </div>
       )}
-
       {/* Create / Update Dialog */}
       <Dialog
         open={form.type === "create" || form.type === "update"}
@@ -459,7 +558,6 @@ function RouteComponent() {
           </div>
         </DialogContent>
       </Dialog>
-
       {/* Delete Dialog */}
       <AlertDialog
         open={form.type === "delete"}
@@ -504,5 +602,5 @@ function RouteComponent() {
         </AlertDialogContent>
       </AlertDialog>
     </div>
-  );
+  )
 }
