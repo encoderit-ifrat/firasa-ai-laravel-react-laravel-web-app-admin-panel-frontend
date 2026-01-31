@@ -70,7 +70,7 @@ export function NewNavUserAvatar({ className }: NewNavUserAvatarProps) {
         <Avatar className={cn("h-8 w-8 rounded-lg", className)}>
             <AvatarImage src={user.avatar} alt={user.name} />
             <AvatarFallback className="rounded-full">
-                {user.name[0]}
+                {user.name?.charAt(0) || "U"}
             </AvatarFallback>
         </Avatar>
     )
@@ -103,7 +103,7 @@ export function NewNavUser({ user, children }: NavUserType & PropsWithChildren) 
                     <Avatar className="h-8 w-8 rounded-lg">
                         <AvatarImage src={user.avatar} alt={user.name} />
                         <AvatarFallback className="rounded-full">
-                            {user.name[0]}
+                            {user.name?.charAt(0) || "U"}
                         </AvatarFallback>
                     </Avatar>
                     <div className="grid flex-1 text-left">
@@ -125,7 +125,7 @@ export function NewNavUser({ user, children }: NavUserType & PropsWithChildren) 
                         <Avatar className="h-8 w-8 rounded-lg">
                             <AvatarImage src={user.avatar} alt={user.name} />
                             <AvatarFallback className="rounded-lg">
-                                {user.name[0]}
+                                {user.name?.charAt(0) || "U"}
                             </AvatarFallback>
                         </Avatar>
                         <div className="grid flex-1 text-left text-sm leading-tight">
@@ -202,7 +202,7 @@ export function NewNavUser({ user, children }: NavUserType & PropsWithChildren) 
 //               <Avatar className="h-8 w-8 rounded-lg">
 //                 <AvatarImage src={user.avatar} alt={user.name} />
 //                 <AvatarFallback className="rounded-full">
-//                   {user.name[0]}
+//                   {user.name?.charAt(0) || "U"}
 //                 </AvatarFallback>
 //               </Avatar>
 //               <div className="grid flex-1 text-left">
@@ -224,7 +224,7 @@ export function NewNavUser({ user, children }: NavUserType & PropsWithChildren) 
 //                 <Avatar className="h-8 w-8 rounded-lg">
 //                   <AvatarImage src={user.avatar} alt={user.name} />
 //                   <AvatarFallback className="rounded-lg">
-//                     {user.name[0]}
+//                     {user.name?.charAt(0) || "U"}
 //                   </AvatarFallback>
 //                 </Avatar>
 //                 <div className="grid flex-1 text-left text-sm leading-tight">

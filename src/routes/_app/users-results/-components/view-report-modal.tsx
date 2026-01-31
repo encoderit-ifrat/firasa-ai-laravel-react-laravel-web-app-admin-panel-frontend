@@ -3,6 +3,7 @@ import { Button } from "../../../../components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "../../../../components/ui/avatar";
 import { cn } from "../../../../lib/utils";
 import IconUpdate from "../../../../components/svg-icon/icon-update";
+import type { TUserReportSchema } from "../-type/users-results";
 
 interface ViewReportModalProps {
     open: boolean;
@@ -11,6 +12,7 @@ interface ViewReportModalProps {
         name: string;
         avatar?: string;
     };
+    report?: TUserReportSchema | null;
 }
 
 // Dummy data for the report
@@ -70,7 +72,17 @@ export default function ViewReportModal({
     open,
     onOpenChange,
     user,
+    report,
 }: ViewReportModalProps) {
+    const personalityTitle = report?.full_result?.insights?.title ||
+        report?.free_result?.insights?.title ||
+        report?.personality_type ||
+        REPORT_DATA.personalityTitle;
+
+    const personalityDescription = report?.full_result?.insights?.description ||
+        report?.free_result?.insights?.description ||
+        REPORT_DATA.personalityDescription;
+
     return (
         <AppSheet
             open={open}
@@ -82,15 +94,15 @@ export default function ViewReportModal({
                 <div className="relative mb-4">
                     <Avatar className="h-24 w-24 border-4 border-white shadow-sm">
                         <AvatarImage src={user.avatar} alt={user.name} />
-                        <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                        <AvatarFallback>{user.name ? user.name.charAt(0) : "U"}</AvatarFallback>
                     </Avatar>
                 </div>
 
                 <p className="text-xs text-muted-foreground uppercase tracking-wider mb-1">Personality</p>
-                <h2 className="text-2xl font-bold mb-3">{REPORT_DATA.personalityTitle}</h2>
+                <h2 className="text-2xl font-bold mb-3">{personalityTitle}</h2>
 
                 <p className="text-sm text-muted-foreground leading-relaxed max-w-md mb-6">
-                    {REPORT_DATA.personalityDescription}
+                    {personalityDescription}
                 </p>
 
                 <Button variant="outline" className="rounded-full gap-2 px-6">

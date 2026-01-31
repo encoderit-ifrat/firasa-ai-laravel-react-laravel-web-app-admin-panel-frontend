@@ -11,6 +11,7 @@ import IconUpdate from "../../../../components/svg-icon/icon-update";
 import ViewReportModal from "./view-report-modal";
 import { useState } from "react";
 import { Checkbox } from "../../../../components/ui/checkbox";
+import type { TUserReportSchema } from "../-type/users-results";
 
 type UserData = {
   id: number;
@@ -28,71 +29,32 @@ type UserData = {
   avatar?: string;
 };
 
-type ReportData = {
-  id: string | number;
-  name?: string;
-  analysis_id: string;
-  user_id: number;
-  job_id: string;
-  device_used: string;
-  personality_type: string;
-  confidence_score: string;
-  is_public: boolean;
-  is_full_report: boolean;
-  created_at: string;
-  updated_at: string;
-  full_result?: {
-    success?: boolean;
-    insights?: {
-      title?: string;
-      description?: string;
-    };
-  };
-};
 
 
 
 interface UserProfileDetailProps {
   user: UserData;
-  reports?: ReportData[];
+  reports?: TUserReportSchema[];
   onEdit?: (userId: number) => void;
   onDelete?: (userId: number) => void;
 }
 
 export default function UserProfileDetail({
   user,
-  reports,
+  reports = [], // Add default value
   onEdit,
   onDelete,
 }: UserProfileDetailProps) {
   const navigate = useNavigate();
   const [viewReportOpen, setViewReportOpen] = useState(false);
-  const [selectedReport, setSelectedReport] = useState<ReportData | null>(null);
-  console.log("🚀 ~ UserProfileDetail ~ selectedReport:", selectedReport)
+  const [selectedReport, setSelectedReport] = useState<TUserReportSchema | null>(null);
 
 
-  // Columns for reports table - using ReportData structure from API
-  const reportColumns: ColumnDef<ReportData>[] = [
+  // Columns for reports table - using TUserReportSchema structure from API
+  const reportColumns: ColumnDef<TUserReportSchema>[] = [
     {
       id: "select",
-      header: ({ table }) => (
-        <div className="flex items-center gap-3">
-          <Checkbox
-            checked={
-              table.getIsAllPageRowsSelected() ||
-              (table.getIsSomePageRowsSelected() && "indeterminate")
-            }
-            onCheckedChange={(value) =>
-              table.toggleAllPageRowsSelected(!!value)
-            }
-            aria-label="Select all"
-          />
-          <div className="flex items-center gap-1">
-            <span className="font-medium">SL</span>
-            <ArrowDown className="h-4 w-4 text-muted-foreground" />
-          </div>
-        </div>
-      ),
+      header: "SL",
       cell: ({ row }) => (
         <div className="flex items-center gap-3">
           <Checkbox
@@ -111,7 +73,7 @@ export default function UserProfileDetail({
     },
     {
       id: "reportTitle",
-      accessorFn: (row) => row.full_result?.insights?.title || row.personality_type || "Personality Analysis",
+      accessorFn: (row) => row.full_result?.insights?.title || row.free_result?.insights?.title || row.personality_type || "Personality Analysis",
       header: ({ column }) => (
         <Button
           variant="ghost"
@@ -189,7 +151,7 @@ export default function UserProfileDetail({
     },
     {
       id: "status",
-      accessorFn: (row) => row.full_result?.success ? "Completed" : "Pending",
+      accessorFn: (row) => (row.full_result || row.free_result) ? "Completed" : "Pending",
       header: ({ column }) => (
         <Button
           variant="ghost"
@@ -280,16 +242,20 @@ export default function UserProfileDetail({
           <Avatar className="h-20 w-20">
             <AvatarImage src={user.avatar} alt={user.name} />
             <AvatarFallback className="text-lg">
-              {user.name
-                .split(" ")
-                .map((n) => n[0])
-                .join("")}
+              {user?.name && typeof user.name === "string"
+                ? user.name
+                  .split(" ")
+                  .filter(Boolean)
+                  .map((n) => (n ? n.charAt(0) : ""))
+                  .join("")
+                  .toUpperCase()
+                : "U"}
             </AvatarFallback>
           </Avatar>
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <h3 className="text-muted-foreground text-2xl font-semibold">{user.name}</h3>
-              {user.plan === "Pro" && (
+              {user.plan?.toLowerCase() === "pro" && (
                 <Badge className="bg-gradient text-black border-0">
                   Pro
                 </Badge>
@@ -300,19 +266,19 @@ export default function UserProfileDetail({
         </div>
         <div className="flex items-center gap-2">
           <Button
-           size="lg"
+            size="lg"
             variant="outline"
             onClick={() => onEdit?.(user.id)}
           >
-            <IconUpdate/>
+            <IconUpdate />
             Edit
           </Button>
           <Button
-           size="lg"
+            size="lg"
             variant="destructive"
             onClick={() => onDelete?.(user.id)}
           >
-            <IconDelete  />
+            <IconDelete />
             Delete
           </Button>
         </div>
@@ -346,7 +312,7 @@ export default function UserProfileDetail({
             <Badge
               variant="default"
               className={cn(
-                user.status === "Active"
+                user.status?.toLowerCase() === "active"
                   ? "bg-green-100 text-green-700 border-green-200 hover:bg-green-100"
                   : "bg-gray-100 text-gray-700 border-gray-200 hover:bg-gray-100"
               )}
@@ -354,7 +320,7 @@ export default function UserProfileDetail({
               <span
                 className={cn(
                   "w-1.5 h-1.5 rounded-full mr-1.5",
-                  user.status === "Active"
+                  user.status?.toLowerCase() === "active"
                     ? "bg-green-600"
                     : "bg-gray-600"
                 )}
@@ -377,6 +343,7 @@ export default function UserProfileDetail({
         open={viewReportOpen}
         onOpenChange={setViewReportOpen}
         user={{ name: user.name, avatar: user.avatar }}
+        report={selectedReport}
       />
     </div>
   );

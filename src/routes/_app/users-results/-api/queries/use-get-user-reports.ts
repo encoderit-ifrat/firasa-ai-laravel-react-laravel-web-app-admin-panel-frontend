@@ -37,21 +37,16 @@ type TProps = {
 };
 
 export const useGetUserReports = ({ userId, params, options }: TProps) => {
-
     const { page, per_page, search, order_by, order, plan } = params;
-
 
     return useQuery({
         ...options,
-        queryKey: ["users", page, per_page, search, order_by, order, plan, userId],
+        queryKey: ["user-reports", userId, page, per_page, search, order_by, order, plan],
         queryFn: async (): Promise<TApiResponse> => {
-            const response = await api.post(`/user-results/reports/${userId}`, { params });
+            const response = await api.post(`/user-results/reports/${userId}`, params);
 
-            const {
-                data: { data },
-            } = response;
-            console.log("🚀 ~ useGetAllUsers ~ params:", params)
-            return data;
+            // response.data contains { data: [...], meta: {...} }
+            return response.data.data;
         },
     });
 };

@@ -1,6 +1,5 @@
 // @disable-react-compiler
 "use client";
-import { nanoid } from "nanoid";
 import {
   flexRender,
   getCoreRowModel,
@@ -11,6 +10,7 @@ import {
   type OnChangeFn,
   type RowSelectionState,
 } from "@tanstack/react-table";
+import { useState } from "react";
 import {
   Table,
   TableBody,
@@ -32,11 +32,19 @@ interface AppTableProps<T> {
 export default function AppTable<T>({
   data,
   columns,
-  columnVisibility,
-  onColumnVisibilityChange,
-  rowSelection,
-  onRowSelectionChange,
+  columnVisibility: propColumnVisibility,
+  onColumnVisibilityChange: propOnColumnVisibilityChange,
+  rowSelection: propRowSelection,
+  onRowSelectionChange: propOnRowSelectionChange,
 }: AppTableProps<T>) {
+  const [internalColumnVisibility, setInternalColumnVisibility] = useState<VisibilityState>({});
+  const [internalRowSelection, setInternalRowSelection] = useState<RowSelectionState>({});
+
+  const columnVisibility = propColumnVisibility ?? internalColumnVisibility;
+  const onColumnVisibilityChange = propOnColumnVisibilityChange ?? setInternalColumnVisibility;
+  const rowSelection = propRowSelection ?? internalRowSelection;
+  const onRowSelectionChange = propOnRowSelectionChange ?? setInternalRowSelection;
+
   const table = useReactTable({
     data: data ?? [],
     columns,
@@ -60,7 +68,7 @@ export default function AppTable<T>({
           <TableRow key={headerGroup.id}>
             {headerGroup.headers.map((header) => (
               <TableHead
-                key={nanoid()}
+                key={header.id}
                 className="text-start text-muted-foreground px-2 py-1"
               >
                 {header.isPlaceholder
@@ -77,18 +85,29 @@ export default function AppTable<T>({
 
       {/* Table Body */}
       <TableBody className="bg-white">
-        {rows.map((row) => (
-          <TableRow key={row.id} className="hover:bg-gray-50 ">
-            {row.getVisibleCells().map((cell) => (
-              <TableCell
-                key={nanoid()}
-                className="whitespace-nowrap truncate px-2 py-1"
-              >
-                {flexRender(cell.column.columnDef.cell, cell.getContext())}
-              </TableCell>
-            ))}
+        {rows && rows.length > 0 ? (
+          rows.map((row) => (
+            <TableRow key={row.id} className="hover:bg-gray-50 ">
+              {row.getVisibleCells().map((cell) => (
+                <TableCell
+                  key={cell.id}
+                  className="whitespace-nowrap truncate px-2 py-1"
+                >
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </TableCell>
+              ))}
+            </TableRow>
+          ))
+        ) : (
+          <TableRow>
+            <TableCell
+              colSpan={columns.length}
+              className="h-24 text-center text-muted-foreground"
+            >
+              No results found.
+            </TableCell>
           </TableRow>
-        ))}
+        )}
       </TableBody>
     </Table>
   );

@@ -33,7 +33,13 @@ export const UserReportSchema = z.object({
       title: z.string().optional(),
       description: z.string().optional(),
     }).optional(),
-  }).optional(),
+  }).nullable().optional(),
+  free_result: z.object({
+    insights: z.object({
+      title: z.string().optional(),
+      description: z.string().optional(),
+    }).optional(),
+  }).nullable().optional(),
 });
 
 export type TUserReportSchema = z.infer<typeof UserReportSchema>;

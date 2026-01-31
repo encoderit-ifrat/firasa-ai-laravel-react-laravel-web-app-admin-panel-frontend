@@ -31,17 +31,26 @@ function RouteComponent() {
 
   const userIdNumber = parseInt(userId, 10);
 
-  // Fetch single user data using useGetUser
-  const { data: userData, isLoading: isLoadingUser, refetch: refetchUser } = useGetUser({
+  // Fetch single user data
+  const {
+    data: userData,
+    isLoading: isLoadingUser,
+    refetch: refetchUser
+  } = useGetUser({
     id: userIdNumber,
     options: {
       enabled: !isNaN(userIdNumber),
     },
   });
 
+  // Delete user mutation
   const { mutate: deleteUser, isPending: isPendingDelete } = useDeleteUser();
-  // Fetch user reports using the dynamic userId
-  const { data: userReportsResponse, isLoading: isLoadingReports } = useGetUserReports({
+
+  // Fetch user reports
+  const {
+    data: reportsResponse,
+    isLoading: isLoadingReports
+  } = useGetUserReports({
     userId: userIdNumber,
     params: {
       page: 1,
@@ -55,16 +64,17 @@ function RouteComponent() {
     },
   });
 
-  // Extract reports from useGetUserReports
-  const reports = userReportsResponse?.data || [];
+  // CRITICAL: Extract the reports array from the response
+  // reportsResponse is { data: [...], meta: {...} }
+  // We need to access reportsResponse.data to get the array
+  const reports = reportsResponse?.data || [];
 
-  console.log("🚀 ~ RouteComponent ~ userData:", userData);
-  console.log("🚀 ~ RouteComponent ~ reports:", reports);
-
+  // Show loading state
   if (isLoadingUser || isLoadingReports) {
     return <Loading />;
   }
 
+  // Handle user not found
   if (!userData) {
     return (
       <div className="p-4">
@@ -93,16 +103,22 @@ function RouteComponent() {
   };
 
   // Transform API data to match component expectations
-  // Note: useGetUser returns TAdminSchema, so some fields may not be available
+  const rawUser = userData as Record<string, any>;
   const user = {
-    id: typeof userData.id === 'number' ? userData.id : Number(userData.id) || 0,
-    name: userData.name,
-    email: userData.email,
-    plan: (userData as Record<string, unknown>).plan as string || "Free",
-    testsTaken: (userData as Record<string, unknown>).analysis_taken_count as number || 0,
-    lastTestDate: (userData as Record<string, unknown>).last_analysis_date as string || null,
-    status: (userData as Record<string, unknown>).status as string || "Active",
-    deviceUsed: (userData as Record<string, unknown>).last_device_used as string || "N/A",
+    id: typeof rawUser.id === 'number' ? rawUser.id : Number(rawUser.id) || 0,
+    name: rawUser.name || "Unknown User",
+    email: rawUser.email || "N/A",
+    plan: rawUser.plan || "Free",
+    testsTaken: Number(rawUser.analysis_taken_count) || 0,
+    lastTestDate: rawUser.last_analysis_date || null,
+    status: rawUser.status || "Active",
+    deviceUsed: rawUser.last_device_used || "N/A",
+    joinDate: rawUser.created_at
+      ? new Date(rawUser.created_at).toLocaleDateString()
+      : "N/A",
+    lastActive: rawUser.updated_at
+      ? new Date(rawUser.updated_at).toLocaleDateString()
+      : "N/A",
     avatar: "/image/profilePhoto.png",
   };
 
