@@ -12,8 +12,15 @@ import { useGetAllNotifications, type NotificationResponse } from "../queries/us
 import { useMarkNotificationAsRead } from "../queries/mutations/use-mark-notification-as-read";
 
 
-const getIconByType = (type: string) => {
+const getShortType = (type: string) => {
+  return type.split("\\").pop() || type;
+};
+
+const getIconByType = (rawType: string) => {
+  const type = getShortType(rawType);
   switch (type) {
+    case "UserRegisteredNotification":
+      return <UserCheck className="w-4 h-4 text-indigo-500" />;
     case "incident_created":
       return <AlertCircle className="w-4 h-4 text-gray-500" />;
     case "incident_updated":
@@ -33,8 +40,10 @@ const getIconByType = (type: string) => {
   }
 };
 
-const getTypeLabel = (type: string): string => {
+const getTypeLabel = (rawType: string): string => {
+  const type = getShortType(rawType);
   const labels: { [key: string]: string } = {
+    UserRegisteredNotification: "New User",
     incident_created: "Incident Created",
     incident_updated: "Incident Updated",
     incident_deleted: "Incident Deleted",
@@ -69,15 +78,34 @@ export function NotificationDropdown() {
   const queryClient = useQueryClient();
   const { pusher, isConnected } = usePusherContext();
   const { data: notificationResponse, isLoading, refetch } = useGetAllNotifications({
-    params: { page: 1, per_page: 5, search: "", order_by: "created_at", order: "desc" },
+    params: { page: 1, per_page: 100, search: "", order_by: "created_at", order: "desc" },
     options: { enabled: true },
   });
+
+  console.log("notification data", notificationResponse?.data);
+
   const markAsReadMutation = useMarkNotificationAsRead();
   const channelRef = useRef<Channel | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  const notifications = notificationResponse?.data?.notifications?.data ?? [];
-  const unreadCount = notificationResponse?.data?.unread_count ?? 0;
+  const notifications: any[] = Array.isArray(notificationResponse?.data)
+    ? notificationResponse.data
+    : (notificationResponse?.data as any)?.data ?? [];
+
+  const unreadCount =
+    notificationResponse?.unread_count ||
+    (notificationResponse?.data as any)?.unread_count ||
+    notificationResponse?.meta?.unread_count ||
+    (notificationResponse?.data as any)?.meta?.unread_count ||
+    notifications.filter((n: any) => !n.read_at && !n.is_read).length;
+
+  const totalCount =
+    notificationResponse?.total ??
+    (notificationResponse?.data as any)?.total ??
+    notificationResponse?.meta?.total ??
+    (notificationResponse?.data as any)?.meta?.total ??
+    0;
+  console.log("Counts:", { unreadCount, totalCount });
 
   // Initialize audio for notifications
   useEffect(() => {
@@ -122,21 +150,37 @@ export function NotificationDropdown() {
         const newNotification = {
           id: data.id || Math.random().toString(36).substring(2, 11),
           type: data.type || "notification",
-          data: data,
+          data: data.data || data,
+          is_read: false,
           read_at: null,
           created_at: new Date().toISOString()
         };
 
-        newData.data.notifications.data.unshift(newNotification);
-
-        // Trim to per_page if necessary
-        const perPage = newData.data.notifications.meta?.per_page || 10;
-        if (newData.data.notifications.data.length > perPage) {
-          newData.data.notifications.data.pop();
+        const existingData = newData.data;
+        if (Array.isArray(existingData)) {
+          existingData.unshift(newNotification);
+          const perPage = (newData.meta?.per_page as number) || 10;
+          if (existingData.length > perPage) {
+            existingData.pop();
+          }
+        } else if (existingData && typeof existingData === 'object' && Array.isArray(existingData.data)) {
+          existingData.data.unshift(newNotification);
+          const perPage = existingData.meta?.per_page || newData.meta?.per_page || 10;
+          if (existingData.data.length > perPage) {
+            existingData.data.pop();
+          }
+          existingData.unread_count = (existingData.unread_count || 0) + 1;
+          if (existingData.meta) {
+            existingData.meta.unread_count = (existingData.meta.unread_count || 0) + 1;
+          }
+          existingData.total = (existingData.total || 0) + 1;
         }
 
-        newData.data.unread_count = (newData.data.unread_count || 0) + 1;
-        newData.data.total = (newData.data.total || 0) + 1;
+        newData.unread_count = (newData.unread_count || 0) + 1;
+        if (newData.meta) {
+          newData.meta.unread_count = (newData.meta.unread_count || 0) + 1;
+        }
+        newData.total = (newData.total || 0) + 1;
 
         console.log("🚀 ~ Updated Notification Cache:", newData);
         return newData;
@@ -216,38 +260,39 @@ export function NotificationDropdown() {
           {notifications.length > 0 ? (
             <ScrollArea className="flex-1">
               <div className="divide-y">
-                {notifications.map((notification) => (
+                {notifications.slice(0, 5).map((notification) => (
                   <div
                     key={notification.id}
                     onClick={() => handleNotificationClick(notification.id)}
-                    className={`p-4 hover:bg-accent/50 cursor-pointer transition-colors border-l-4 ${notification.read_at
+                    className={`p-4 hover:bg-accent/50 cursor-pointer transition-colors border-l-4 ${notification.read_at || notification.is_read
                       ? "border-l-transparent opacity-60 cursor-default hover:bg-transparent"
                       : "border-l-red-500"
                       }`}
                   >
                     <div className="flex gap-3">
                       <div className="flex-shrink-0 mt-1">
-                        {getIconByType(notification.data.type)}
+                        {getIconByType(notification.type)}
                       </div>
 
                       <div className="flex-1 min-w-0">
                         <div className="flex items-start justify-between gap-2">
                           <div className="flex-1">
-                            <p className="font-medium text-sm leading-tight">
-                              {notification.data.message}
-                            </p>
-                            {notification.data.data?.service?.company_name && (
-                              <p className="text-xs text-muted-foreground mt-1">
-                                {notification.data.data.service.company_name}
+                            {notification.data.title && (
+                              <p className="font-semibold text-xs text-primary/80 uppercase tracking-wider mb-1">
+                                {notification.data.title}
                               </p>
                             )}
+                            <p className="font-medium text-sm leading-tight text-foreground/90">
+                              {notification.data.message}
+                            </p>
                           </div>
-                          <Badge variant="outline" className="text-xs flex-shrink-0">
-                            {getTypeLabel(notification.data.type)}
+                          <Badge variant="outline" className="text-[10px] px-1.5 h-4 flex-shrink-0 bg-muted/50 border-muted">
+                            {getTypeLabel(notification.type)}
                           </Badge>
                         </div>
 
-                        <p className="text-xs text-muted-foreground mt-2">
+                        <p className="text-[10px] text-muted-foreground mt-2 flex items-center gap-1">
+                          <Bell className="w-3 h-3 opacity-50" />
                           {formatTime(notification.created_at)}
                         </p>
                       </div>
@@ -272,7 +317,7 @@ export function NotificationDropdown() {
                 variant="ghost"
                 className="w-full text-xs justify-center"
                 onClick={() => {
-                  navigate({ to: "/", search: { page: 1, per_page: 10 } as any });
+                  navigate({ to: "/notifications", search: { page: 1, per_page: 10 } as any });
                   setIsOpen(false);
                 }}
               >

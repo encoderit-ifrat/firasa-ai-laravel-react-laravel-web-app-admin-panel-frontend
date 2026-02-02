@@ -17,6 +17,7 @@ import { Route as AuthForgotPasswordIndexRouteImport } from './routes/_auth/forg
 import { Route as AppUsersResultsIndexRouteImport } from './routes/_app/users-results/index'
 import { Route as AppSettingsIndexRouteImport } from './routes/_app/settings/index'
 import { Route as AppPublicApiManagementIndexRouteImport } from './routes/_app/public-api-management/index'
+import { Route as AppNotificationsIndexRouteImport } from './routes/_app/notifications/index'
 import { Route as AppContentManagementIndexRouteImport } from './routes/_app/content-management/index'
 import { Route as AppDashboardIndexRouteImport } from './routes/_app/_dashboard/index'
 import { Route as AppUsersResultsUserIdRouteImport } from './routes/_app/users-results/$userId'
@@ -60,6 +61,11 @@ const AppPublicApiManagementIndexRoute =
     path: '/public-api-management/',
     getParentRoute: () => AppRouteRoute,
   } as any)
+const AppNotificationsIndexRoute = AppNotificationsIndexRouteImport.update({
+  id: '/notifications/',
+  path: '/notifications/',
+  getParentRoute: () => AppRouteRoute,
+} as any)
 const AppContentManagementIndexRoute =
   AppContentManagementIndexRouteImport.update({
     id: '/content-management/',
@@ -81,6 +87,7 @@ export interface FileRoutesByFullPath {
   '/users-results/$userId': typeof AppUsersResultsUserIdRoute
   '/': typeof AppDashboardIndexRoute
   '/content-management': typeof AppContentManagementIndexRoute
+  '/notifications': typeof AppNotificationsIndexRoute
   '/public-api-management': typeof AppPublicApiManagementIndexRoute
   '/settings': typeof AppSettingsIndexRoute
   '/users-results': typeof AppUsersResultsIndexRoute
@@ -92,6 +99,7 @@ export interface FileRoutesByTo {
   '/users-results/$userId': typeof AppUsersResultsUserIdRoute
   '/': typeof AppDashboardIndexRoute
   '/content-management': typeof AppContentManagementIndexRoute
+  '/notifications': typeof AppNotificationsIndexRoute
   '/public-api-management': typeof AppPublicApiManagementIndexRoute
   '/settings': typeof AppSettingsIndexRoute
   '/users-results': typeof AppUsersResultsIndexRoute
@@ -106,6 +114,7 @@ export interface FileRoutesById {
   '/_app/users-results/$userId': typeof AppUsersResultsUserIdRoute
   '/_app/_dashboard/': typeof AppDashboardIndexRoute
   '/_app/content-management/': typeof AppContentManagementIndexRoute
+  '/_app/notifications/': typeof AppNotificationsIndexRoute
   '/_app/public-api-management/': typeof AppPublicApiManagementIndexRoute
   '/_app/settings/': typeof AppSettingsIndexRoute
   '/_app/users-results/': typeof AppUsersResultsIndexRoute
@@ -119,6 +128,7 @@ export interface FileRouteTypes {
     | '/users-results/$userId'
     | '/'
     | '/content-management'
+    | '/notifications'
     | '/public-api-management'
     | '/settings'
     | '/users-results'
@@ -130,6 +140,7 @@ export interface FileRouteTypes {
     | '/users-results/$userId'
     | '/'
     | '/content-management'
+    | '/notifications'
     | '/public-api-management'
     | '/settings'
     | '/users-results'
@@ -143,6 +154,7 @@ export interface FileRouteTypes {
     | '/_app/users-results/$userId'
     | '/_app/_dashboard/'
     | '/_app/content-management/'
+    | '/_app/notifications/'
     | '/_app/public-api-management/'
     | '/_app/settings/'
     | '/_app/users-results/'
@@ -214,6 +226,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppPublicApiManagementIndexRouteImport
       parentRoute: typeof AppRouteRoute
     }
+    '/_app/notifications/': {
+      id: '/_app/notifications/'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof AppNotificationsIndexRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
     '/_app/content-management/': {
       id: '/_app/content-management/'
       path: '/content-management'
@@ -242,6 +261,7 @@ interface AppRouteRouteChildren {
   AppUsersResultsUserIdRoute: typeof AppUsersResultsUserIdRoute
   AppDashboardIndexRoute: typeof AppDashboardIndexRoute
   AppContentManagementIndexRoute: typeof AppContentManagementIndexRoute
+  AppNotificationsIndexRoute: typeof AppNotificationsIndexRoute
   AppPublicApiManagementIndexRoute: typeof AppPublicApiManagementIndexRoute
   AppSettingsIndexRoute: typeof AppSettingsIndexRoute
   AppUsersResultsIndexRoute: typeof AppUsersResultsIndexRoute
@@ -251,6 +271,7 @@ const AppRouteRouteChildren: AppRouteRouteChildren = {
   AppUsersResultsUserIdRoute: AppUsersResultsUserIdRoute,
   AppDashboardIndexRoute: AppDashboardIndexRoute,
   AppContentManagementIndexRoute: AppContentManagementIndexRoute,
+  AppNotificationsIndexRoute: AppNotificationsIndexRoute,
   AppPublicApiManagementIndexRoute: AppPublicApiManagementIndexRoute,
   AppSettingsIndexRoute: AppSettingsIndexRoute,
   AppUsersResultsIndexRoute: AppUsersResultsIndexRoute,

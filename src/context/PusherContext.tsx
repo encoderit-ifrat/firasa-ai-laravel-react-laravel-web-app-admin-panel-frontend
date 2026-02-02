@@ -75,7 +75,7 @@ export const PusherProvider = ({ children }: { children: React.ReactNode }) => {
       setIsConnected(false);
     });
 
-    const channel = pusher.subscribe(`private-notifications.admins.33`);
+    const channel = pusher.subscribe(`private-notifications.admins.${currentUser?.id}`);
     channelRef.current = channel;
 
     channel.bind("notifications.admins.created", (res: any) => {

@@ -7,46 +7,32 @@ import { api } from "../axios";
 export interface NotificationData {
   id: string;
   type: string;
+  title?: string;
+  message?: string;
   data: {
-    type: string;
-    data: {
-      service?: {
-        company_name: string;
-      };
-      [key: string]: unknown;
-    };
-    message: string;
-    icon: string;
-    color: string;
-    created_at: string;
+    title?: string;
+    message?: string;
+    user_id?: number | string;
+    [key: string]: any;
   };
+  is_read: boolean;
   read_at: string | null;
   created_at: string;
 }
 
 export interface NotificationResponse {
-  success: boolean;
-  message: string;
-  data: {
-    total: number;
-    unread_count: number;
-    read_count: number;
-    notifications: {
-      data: NotificationData[];
-      meta: {
-        current_page: number;
-        last_page: number;
-        per_page: number;
-        total: number;
-        from: number;
-        to: number;
-        first_page_url: string;
-        prev_page_url: string | null;
-        next_page_url: string | null;
-        last_page_url: string;
-        path: string;
-      };
-    };
+  success?: boolean;
+  message?: string;
+  unread_count?: number;
+  total?: number;
+  meta?: any;
+  data:
+  | NotificationData[]
+  | {
+    data: NotificationData[];
+    unread_count?: number;
+    total?: number;
+    meta?: any;
   };
 }
 

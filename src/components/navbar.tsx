@@ -92,7 +92,7 @@ export default function Navbar() {
           <NewNavUser user={user}>
             <SidebarMenuButton
               size="lg"
-              className="min-h-14 flex items-center justify-between gap-2 rounded-full border px-3 py-2 text-sm text-custom-header-text shadow-sm bg-[#F4F2F3] hover:bg-accent transition-colors"
+              className="min-h-14 flex items-center justify-between gap-2 rounded-full border  py-2 text-sm text-custom-header-text shadow-sm bg-[#F4F2F3] hover:bg-accent transition-colors"
             >
               <NewNavUserAvatar className="h-12 w-12" />
 

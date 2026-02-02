@@ -44,7 +44,7 @@ function ProgressBar({
             <div className="flex items-center justify-between pb-1">
                 <div className="relative w-full h-8 bg-white border rounded-lg overflow-hidden flex items-center">
                     <div
-                        className={cn("h-full absolute left-0 top-0 bg-gradient-to-r", gradientColor)}
+                        className={cn("h-full absolute left-0 top-0 bg-linear-to-r", gradientColor)}
                         style={{ width: `${value}%` }}
                     />
                     <span className="relative z-10 pl-3 text-xs font-bold text-white drop-shadow-md">
@@ -146,10 +146,10 @@ export default function ViewReportModal({
             <div>
                 <SectionHeader title="Worth sharing" />
                 <div className="grid grid-cols-2 gap-4">
-                    <div className="h-24 rounded-xl bg-gradient-to-br from-green-500/20 to-green-600/20 border border-green-100 flex items-end p-3 relative overflow-hidden">
+                    <div className="h-24 rounded-xl bg-linear-to-br from-green-500/20 to-green-600/20 border border-green-100 flex items-end p-3 relative overflow-hidden">
                         <span className="font-bold text-green-700">91%</span>
                     </div>
-                    <div className="h-24 rounded-xl bg-gradient-to-br from-green-500/20 to-green-600/20 border border-green-100 flex items-end p-3 relative overflow-hidden">
+                    <div className="h-24 rounded-xl bg-linear-to-br from-green-500/20 to-green-600/20 border border-green-100 flex items-end p-3 relative overflow-hidden">
                         <span className="font-bold text-green-700">91%</span>
                     </div>
                 </div>

@@ -10,11 +10,11 @@ type PaginationProps = {
     prev_page_url?: null | string;
     next_page_url?: null | string;
     last_page_url?: null | string;
-    path: string;
+    path?: string;
     current_page: number;
     last_page: number;
-    from: number | null;
-    to: number | null;
+    from?: number | null;
+    to?: number | null;
     per_page: number;
     total: number;
   };
