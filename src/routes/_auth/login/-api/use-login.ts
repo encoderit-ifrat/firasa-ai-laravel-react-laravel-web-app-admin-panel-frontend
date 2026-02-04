@@ -22,7 +22,7 @@ export const useLogin = () => {
       const { token, user } = data;
 
       if (user?.is_admin !== "1") {
-        toast.error("Access denied !!! Admins only can login.");
+        toast.error("Wrong email password !");
         return;
       }
 
