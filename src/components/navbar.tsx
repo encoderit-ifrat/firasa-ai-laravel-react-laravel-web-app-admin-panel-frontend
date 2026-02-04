@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next";
 import type { DropdownOption } from "./dropdown";
 import { useIsMobile } from "../hooks/use-mobile";
 import { SidebarMenuButton, SidebarTrigger } from "./ui/sidebar";
-import IconNotification from "./svg-icon/icon-notification";
 import i18n from "../i18n";
 import { DropdownSelect } from "./DropdownSelect";
 import { NewNavUser, NewNavUserAvatar } from "./new-nav-user";

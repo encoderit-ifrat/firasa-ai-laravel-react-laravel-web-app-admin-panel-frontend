@@ -12,14 +12,14 @@ export const useForgotPassword = () => {
 
 
   return useMutation({
-    mutationKey: ["/password/forgot"],
+    mutationKey: ["/auth/password/forgot"],
     mutationFn: (body: TForgotPasswordBody) =>
-      api.post("/password/forgot", body),
+      api.post("/auth/password/forgot", body),
 
     onSuccess: () => {
-    
+
       toast.success("Check Your Email Please!")
-     
+
     },
 
     onError: (error) => {

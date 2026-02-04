@@ -2,7 +2,7 @@ import * as z from "zod";
 
 export const FormSchema = z
   .object({
-    email: z.string(),
+    email: z.string().email("Please enter a valid email address"),
     token: z.string(),
 
     password: z
@@ -16,7 +16,7 @@ export const FormSchema = z
     (data) => data.password === data.password_confirmation,
     {
       message: "Passwords do not match",
-      path: ["password_confirmation"], 
+      path: ["password_confirmation"],
     }
   );
 

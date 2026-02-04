@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button';
+import { Button } from '../../components/ui/button';
 import { createFileRoute, Link, Outlet, useNavigate, useRouterState } from '@tanstack/react-router'
 import { CornerDownLeft } from 'lucide-react';
 
@@ -21,7 +21,12 @@ function RouteComponent() {
     }
 
     return (
-        <div className="min-h-svh overflow-hidden flex items-center justify-center relative">
+        <div
+            className="min-h-svh flex items-center justify-center relative p-4"
+            style={{
+                background: "radial-gradient(100% 100% at 48.92% 100%, rgba(255, 255, 255, 0.16) 0%, rgba(255, 224, 27, 0.16) 100%)"
+            }}
+        >
             {path != "/login" && (
                 <Button
                     variant="outline"
@@ -31,17 +36,12 @@ function RouteComponent() {
                 >
                     <Link to="/login">
                         <CornerDownLeft />
-
                     </Link>
                 </Button>
             )}
-            <div className="w-full max-w-md flex flex-col gap-6">
-                <div className="flex flex-col items-center gap-2">
-
-                </div>
+            <div className="w-full flex justify-center">
                 <Outlet />
             </div>
         </div>
-
-    )
+    );
 }
