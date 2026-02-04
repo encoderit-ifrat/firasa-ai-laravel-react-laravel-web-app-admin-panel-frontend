@@ -20,6 +20,12 @@ export const useLogin = () => {
         data: { data },
       } = res;
       const { token, user } = data;
+
+      if (user?.is_admin !== "1") {
+        toast.error("Access denied !!! Admins only can login.");
+        return;
+      }
+
       if (token?.access_token) {
         localStorage.setItem("token", token.access_token);
         localStorage.setItem("user", JSON.stringify(user));

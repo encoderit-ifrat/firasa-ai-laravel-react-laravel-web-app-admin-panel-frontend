@@ -48,10 +48,13 @@ export default function Navbar() {
     }
   };
 
+  const userStr = localStorage.getItem("user");
+  const userData = userStr ? JSON.parse(userStr) : null;
+
   const user = {
-    name: "Guest",
-    email: "encoderit@gmail.com",
-    avatar: "/image/profilePhoto.png",
+    name: userData?.name || "Guest",
+    email: userData?.email || "encoderit@gmail.com",
+    avatar: userData?.avatar_url || "/image/profilePhoto.png",
   };
 
 

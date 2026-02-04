@@ -79,7 +79,7 @@ export function NewNavUserAvatar({ className }: NewNavUserAvatarProps) {
 export function NewNavUserInfo() {
     const user = useNavUser()
     return (
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-1">
             <span className="truncate font-medium">{user.name}</span>
             <span className="truncate text-xs">{user.email}</span>
         </div>

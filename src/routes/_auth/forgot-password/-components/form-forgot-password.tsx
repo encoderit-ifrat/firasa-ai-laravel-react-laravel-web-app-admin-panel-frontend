@@ -36,7 +36,7 @@ export default function FormForgotPassword() {
   }
 
   return (
-    <div className="w-full max-w-[484px] mx-auto p-12 py-16 bg-white rounded-[24px]">
+    <div className="w-full max-w-[484px] mx-auto p-12 py-16 bg-white rounded-[14px]">
       <div className="flex flex-col gap-6">
         <h1 className="text-3xl font-bold text-center text-[#3D3D3D] mb-4">Forgot Password</h1>
 
@@ -46,18 +46,20 @@ export default function FormForgotPassword() {
               control={control}
               name="email"
               render={({ field }) => (
-                <FormItem className="relative">
-                  <FormLabel className="absolute -top-2 left-3 px-1 text-xs font-medium text-black z-10">
-                    Email *
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      type="email"
-                      placeholder="Enter your email"
-                      className="h-[60px] px-[16px] py-[24px] border-[#E5E7EB] rounded-[6px] focus:ring-0 focus:border-[#FF5B4D] placeholder:text-[#9CA3AF] text-base"
-                      {...field}
-                    />
-                  </FormControl>
+                <FormItem>
+                  <div className="group relative">
+                    <FormLabel className="-translate-y-1/2 absolute start-1 top-0 z-10 block bg-white px-2 text-xs text-[#3D3D3D]">
+                      Email *
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        type="email"
+                        placeholder="Enter your email"
+                        className="h-[60px] px-4 py-6 border-[#E5E7EB] rounded-[6px] focus:ring-0 focus:border-[#FF5B4D] placeholder:text-[#9CA3AF] text-base"
+                        {...field}
+                      />
+                    </FormControl>
+                  </div>
                   <FormMessage />
                 </FormItem>
               )}
@@ -75,10 +77,10 @@ export default function FormForgotPassword() {
           </form>
         </Form>
 
-        <div className="flex justify-center items-center mt-2">
+        <div className="flex justify-center items-center gap-1.5 mt-2 text-sm text-[#6B7280]">
           <Link
             to="/login"
-            className="font-bold text-[#3D3D3D] hover:underline cursor-pointer"
+            className="font-bold text-[#3D3D3D] hover:text-[#3D3D3D] transition-colors hover:underline cursor-pointer"
           >
             Back to Login
           </Link>

@@ -12,8 +12,11 @@ function RouteComponent() {
         select: (state) => state.location.pathname,
     });
     console.log("🚀 ~ RouteComponent ~ path:", path);
+    const userStr = localStorage.getItem("user");
+    const user = userStr ? JSON.parse(userStr) : null;
     const navigate = useNavigate();
-    if (Boolean(token)) {
+
+    if (Boolean(token) && user?.is_admin === "1") {
         navigate({
             to: "/",
             replace: true
@@ -23,9 +26,9 @@ function RouteComponent() {
     return (
         <div
             className="min-h-svh flex items-center justify-center relative p-4"
-            style={{
-                background: "radial-gradient(100% 100% at 48.92% 100%, rgba(255, 255, 255, 0.16) 0%, rgba(255, 224, 27, 0.16) 100%)"
-            }}
+        // style={{
+        //     background: "radial-gradient(100% 100% at 48.92% 100%, rgba(255, 255, 255, 0.16) 0%, rgba(255, 224, 27, 0.16) 100%)"
+        // }}
         >
             {path != "/login" && (
                 <Button
@@ -34,9 +37,9 @@ function RouteComponent() {
                     size={"icon"}
                     className="absolute top-4 left-4"
                 >
-                    <Link to="/login">
+                    {/* <Link to="/login">
                         <CornerDownLeft />
-                    </Link>
+                    </Link> */}
                 </Button>
             )}
             <div className="w-full flex justify-center">

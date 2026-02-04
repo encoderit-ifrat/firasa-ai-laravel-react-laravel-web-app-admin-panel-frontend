@@ -29,11 +29,11 @@ export function FormRegister() {
     };
 
     return (
-        <div className="w-full max-w-[484px] mx-auto p-12 py-16">
+        <div className="w-full max-w-[484px] mx-auto p-12 py-16 bg-white rounded-[14px]">
             <div className="flex flex-col gap-6">
                 <h1 className="text-3xl font-bold text-center text-[#3D3D3D] mb-4">Create Account</h1>
 
-                <div className="flex flex-col gap-3">
+                {/* <div className="flex flex-col gap-3">
                     <Button
                         variant="outline"
                         className="w-full bg-white border-[#E5E7EB] hover:bg-gray-50 h-[66px] rounded-[14px] px-[24px] py-[12px] gap-[12px] text-[#3D3D3D] font-medium text-base shadow-sm border-[1px] opacity-100"
@@ -61,7 +61,7 @@ export function FormRegister() {
                     <div className="flex-grow border-t border-[#E5E7EB]"></div>
                     <span className="flex-shrink mx-4 text-sm text-[#9CA3AF]">Or</span>
                     <div className="flex-grow border-t border-[#E5E7EB]"></div>
-                </div>
+                </div> */}
 
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-5">
@@ -69,17 +69,19 @@ export function FormRegister() {
                             control={form.control}
                             name="name"
                             render={({ field }) => (
-                                <FormItem className="relative">
-                                    <FormLabel className="absolute -top-2 left-3 px-1 text-xs font-medium text-black z-10">
-                                        Full Name *
-                                    </FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            className="h-[60px] px-[16px] py-[24px] border-[#E5E7EB] rounded-[6px] focus:ring-0 focus:border-[#FF5B4D] placeholder:text-[#9CA3AF] text-base"
-                                            placeholder="John Doe"
-                                            {...field}
-                                        />
-                                    </FormControl>
+                                <FormItem>
+                                    <div className="group relative">
+                                        <FormLabel className="-translate-y-1/2 absolute start-1 top-0 z-10 block bg-white px-2 text-xs text-[#3D3D3D]">
+                                            Full Name *
+                                        </FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                className="h-[60px] px-4 py-6 border-[#E5E7EB] rounded-[6px] focus:ring-0 focus:border-[#FF5B4D] placeholder:text-[#9CA3AF] text-base"
+                                                placeholder="John Doe"
+                                                {...field}
+                                            />
+                                        </FormControl>
+                                    </div>
                                     <FormMessage />
                                 </FormItem>
                             )}
@@ -89,18 +91,20 @@ export function FormRegister() {
                             control={form.control}
                             name="email"
                             render={({ field }) => (
-                                <FormItem className="relative">
-                                    <FormLabel className="absolute -top-2 left-3 px-1 text-xs font-medium text-black z-10">
-                                        Email *
-                                    </FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            className="h-[60px] px-[16px] py-[24px] border-[#E5E7EB] rounded-[6px] focus:ring-0 focus:border-[#FF5B4D] placeholder:text-[#9CA3AF] text-base"
-                                            placeholder="mail@domain.com"
-                                            type="email"
-                                            {...field}
-                                        />
-                                    </FormControl>
+                                <FormItem>
+                                    <div className="group relative">
+                                        <FormLabel className="-translate-y-1/2 absolute start-1 top-0 z-10 block bg-white px-2 text-xs text-[#3D3D3D]">
+                                            Email *
+                                        </FormLabel>
+                                        <FormControl>
+                                            <Input
+                                                className="h-[60px] px-4 py-6 border-[#E5E7EB] rounded-[6px] focus:ring-0 focus:border-[#FF5B4D] placeholder:text-[#9CA3AF] text-base"
+                                                placeholder="mail@domain.com"
+                                                type="email"
+                                                {...field}
+                                            />
+                                        </FormControl>
+                                    </div>
                                     <FormMessage />
                                 </FormItem>
                             )}
@@ -110,17 +114,19 @@ export function FormRegister() {
                             control={form.control}
                             name="password"
                             render={({ field }) => (
-                                <FormItem className="relative">
-                                    <FormLabel className="absolute -top-2 left-3 px-1 text-xs font-medium text-black z-10">
-                                        Password *
-                                    </FormLabel>
-                                    <FormControl>
-                                        <PasswordInput
-                                            placeholder="Enter password"
-                                            className="h-[60px] px-[16px] py-[24px] border-[#E5E7EB] rounded-[6px] focus:ring-0 focus:border-[#FF5B4D] placeholder:text-[#9CA3AF] text-base"
-                                            {...field}
-                                        />
-                                    </FormControl>
+                                <FormItem>
+                                    <div className="group relative">
+                                        <FormLabel className="-translate-y-1/2 absolute start-1 top-0 z-10 block bg-white px-2 text-xs text-[#3D3D3D]">
+                                            Password *
+                                        </FormLabel>
+                                        <FormControl>
+                                            <PasswordInput
+                                                placeholder="Enter password"
+                                                className="h-[60px] px-4 py-6 border-[#E5E7EB] rounded-[6px] focus:ring-0 focus:border-[#FF5B4D] placeholder:text-[#9CA3AF] text-base"
+                                                {...field}
+                                            />
+                                        </FormControl>
+                                    </div>
                                     <FormMessage />
                                 </FormItem>
                             )}
@@ -130,17 +136,19 @@ export function FormRegister() {
                             control={form.control}
                             name="password_confirmation"
                             render={({ field }) => (
-                                <FormItem className="relative">
-                                    <FormLabel className="absolute -top-2 left-3 px-1 text-xs font-medium text-black z-10">
-                                        Confirm Password *
-                                    </FormLabel>
-                                    <FormControl>
-                                        <PasswordInput
-                                            placeholder="Confirm password"
-                                            className="h-[60px] px-[16px] py-[24px] border-[#E5E7EB] rounded-[6px] focus:ring-0 focus:border-[#FF5B4D] text-base placeholder:text-[#9CA3AF]"
-                                            {...field}
-                                        />
-                                    </FormControl>
+                                <FormItem>
+                                    <div className="group relative">
+                                        <FormLabel className="-translate-y-1/2 absolute start-1 top-0 z-10 block bg-white px-2 text-xs text-[#3D3D3D]">
+                                            Confirm Password *
+                                        </FormLabel>
+                                        <FormControl>
+                                            <PasswordInput
+                                                placeholder="Confirm password"
+                                                className="h-[60px] px-4 py-6 border-[#E5E7EB] rounded-[6px] focus:ring-0 focus:border-[#FF5B4D] text-base placeholder:text-[#9CA3AF]"
+                                                {...field}
+                                            />
+                                        </FormControl>
+                                    </div>
                                     <FormMessage />
                                 </FormItem>
                             )}

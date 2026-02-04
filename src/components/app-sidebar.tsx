@@ -34,10 +34,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { open } = useSidebar();
   const [isHovered, setIsHovered] = React.useState(false);
 
+  const userStr = localStorage.getItem("user");
+  const userData = userStr ? JSON.parse(userStr) : null;
+
   const user = {
-    name: "Guest",
-    email: "encoderit@gmail.com",
-    avatar: "/image/profilePhoto.png",
+    name: userData?.name || "Guest",
+    email: userData?.email || "encoderit@gmail.com",
+    avatar: userData?.avatar_url || "/image/profilePhoto.png",
   };
 
   // Determine active link
@@ -86,7 +89,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   // RTL support: open sidebar from right for Arabic
   const sidebarSide = i18n.language === "ar" ? "right" : "left";
 
-   const isMobile = useIsMobile();
+  const isMobile = useIsMobile();
 
   return (
     <Sidebar collapsible="icon" side={sidebarSide} {...props}>
@@ -128,11 +131,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NewNavUser user={user}>
           <SidebarMenuButton
             size="lg"
-            className={cn("data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground border-2 rounded-full  bg-[#F4F2F3]",{
-              "p-0 border-none":isMobile
+            className={cn("data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground border-2 rounded-full  bg-[#F4F2F3]", {
+              "p-0 border-none": isMobile
             })}
-             >
-            <NewNavUserAvatar  className="h-8 w-8"/>
+          >
+            <NewNavUserAvatar className="h-8 w-8" />
             <NewNavUserInfo />
             <ChevronsUpDown className="ml-auto size-4" />
           </SidebarMenuButton>
