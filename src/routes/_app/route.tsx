@@ -15,14 +15,10 @@ function RouteComponent() {
   const user = userStr ? JSON.parse(userStr) : null;
 
   useEffect(() => {
-    if (!token || user?.is_admin !== "1") {
+    if (!token || !user?.is_admin) {
       navigate({ to: "/login", replace: true });
     }
   }, [token, user, navigate]);
-
-  if (!token || user?.is_admin !== "1") {
-    return null;
-  }
 
   return <SidebarProvider>
     <div className="flex h-svh w-full overflow-hidden">

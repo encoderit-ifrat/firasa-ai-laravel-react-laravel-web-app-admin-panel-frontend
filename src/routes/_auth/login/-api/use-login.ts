@@ -20,11 +20,15 @@ export const useLogin = () => {
         data: { data },
       } = res;
       const { token, user } = data;
+   
+      console.log("user", user);
 
-      if (user?.is_admin !== "1") {
+      if (!user?.is_admin) {
         toast.error("Wrong email password !");
         return;
       }
+
+    
 
       if (token?.access_token) {
         localStorage.setItem("token", token.access_token);

@@ -16,7 +16,7 @@ function RouteComponent() {
     const user = userStr ? JSON.parse(userStr) : null;
     const navigate = useNavigate();
 
-    if (Boolean(token) && user?.is_admin === "1") {
+    if (Boolean(token) && user?.is_admin) {
         navigate({
             to: "/",
             replace: true
