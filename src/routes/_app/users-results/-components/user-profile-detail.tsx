@@ -1,5 +1,5 @@
 import type { ColumnDef } from "@tanstack/react-table";
-import { ArrowDown, ArrowLeft, ArrowUpDown, ChevronRight, Eye } from "lucide-react";
+import {  ArrowLeft, ArrowUpDown, ChevronRight, Eye } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
 import AppTable from "../../../../components/app-table";
 import { Button } from "../../../../components/ui/button";

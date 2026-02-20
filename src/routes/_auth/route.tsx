@@ -1,6 +1,6 @@
 import { Button } from '../../components/ui/button';
-import { createFileRoute, Link, Outlet, useNavigate, useRouterState } from '@tanstack/react-router'
-import { CornerDownLeft } from 'lucide-react';
+import { createFileRoute, Outlet, useNavigate, useRouterState } from '@tanstack/react-router'
+
 
 export const Route = createFileRoute('/_auth')({
     component: RouteComponent,

@@ -28,7 +28,9 @@ const LANGUAGES: DropdownOption<string>[] = [
 
 export default function Navbar() {
   const { t } = useTranslation();
+  console.log("🚀 ~ Navbar ~ t:", t)
   const isMobile = useIsMobile();
+  
 
 
   // Load saved language from localStorage

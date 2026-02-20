@@ -1,9 +1,6 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "../../../../components/ui/button";
-import IconGoogle from "../../../../components/svg-icon/icon-google";
-import IconApple from "../../../../components/svg-icon/icon-apple";
-import IconFacebook from "../../../../components/svg-icon/icon-facebook";
 import { Input } from "../../../../components/ui/input";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../../../components/ui/form";
 import { PasswordInput } from "../../../../components/ui/password-input";

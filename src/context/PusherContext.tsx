@@ -4,6 +4,7 @@ import { API_BASE_URL, PUSHER_CLUSTER, PUSHER_KEY } from "../consts";
 
 
 type PusherContextType = {
+  pusher: Pusher | null;
   isConnected: boolean;
   isStatusUpdate: boolean;
   setIsStatusUpdate: Dispatch<SetStateAction<boolean>>;
@@ -90,7 +91,7 @@ export const PusherProvider = ({ children }: { children: React.ReactNode }) => {
   }, [user]);
 
   return (
-    <PusherContext.Provider value={{ isConnected, isStatusUpdate, setIsStatusUpdate }}>
+    <PusherContext.Provider value={{ pusher: pusherRef.current, isConnected, isStatusUpdate, setIsStatusUpdate }}>
       {children}
     </PusherContext.Provider>
   );
