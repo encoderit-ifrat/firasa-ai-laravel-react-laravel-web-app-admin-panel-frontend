@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { SearchSchema } from "../../../types/search";
 import { useState } from "react";
 import type { TForm } from "../../../types/form";
 import { FORM_DATA } from "../../../data/form";
@@ -22,10 +23,12 @@ import { useDeleteUser } from "../settings/-api/mutations/use-delete-user";
 
 export const Route = createFileRoute("/_app/users-results/$userId")({
   component: RouteComponent,
+  validateSearch: SearchSchema,
 });
 
 function RouteComponent() {
   const { userId } = Route.useParams();
+  const params = Route.useSearch();
   const navigate = useNavigate();
   const [form, setForm] = useState<TForm>(FORM_DATA);
 
@@ -53,11 +56,7 @@ function RouteComponent() {
   } = useGetUserReports({
     userId: userIdNumber,
     params: {
-      page: 1,
-      per_page: 10,
-      search: "",
-      order_by: "id",
-      order: "desc",
+      ...params,
     },
     options: {
       enabled: !isNaN(userIdNumber),
@@ -127,6 +126,8 @@ function RouteComponent() {
       <UserProfileDetail
         user={user}
         reports={reports}
+        meta={reportsResponse?.meta}
+        params={params}
         onEdit={(id) =>
           setForm({
             type: "update",

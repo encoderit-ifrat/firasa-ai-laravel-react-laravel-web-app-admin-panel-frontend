@@ -1,5 +1,5 @@
 import type { ColumnDef } from "@tanstack/react-table";
-import {  ArrowLeft, ArrowUpDown, ChevronRight, Eye } from "lucide-react";
+import { ArrowLeft, ArrowUpDown, ChevronRight, Eye } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
 import AppTable from "../../../../components/app-table";
 import { Button } from "../../../../components/ui/button";
@@ -12,6 +12,9 @@ import ViewReportModal from "./view-report-modal";
 import { useState } from "react";
 import { Checkbox } from "../../../../components/ui/checkbox";
 import type { TUserReportSchema } from "../-type/users-results";
+import AppPagination from "../../../../components/app-pagination";
+import type { TMetaSchema } from "../../../../types/meta";
+import type { TSearchSchema } from "../../../../types/search";
 
 type UserData = {
   id: number;
@@ -35,6 +38,8 @@ type UserData = {
 interface UserProfileDetailProps {
   user: UserData;
   reports?: TUserReportSchema[];
+  meta?: TMetaSchema;
+  params: TSearchSchema;
   onEdit?: (userId: number) => void;
   onDelete?: (userId: number) => void;
 }
@@ -42,6 +47,8 @@ interface UserProfileDetailProps {
 export default function UserProfileDetail({
   user,
   reports = [], // Add default value
+  meta,
+  params,
   onEdit,
   onDelete,
 }: UserProfileDetailProps) {
@@ -63,7 +70,7 @@ export default function UserProfileDetail({
             aria-label="Select row"
           />
           <span className="font-medium">
-            {row.index + 1}
+            {(params.page - 1) * params.per_page + (row.index + 1)}
           </span>
         </div>
       ),
@@ -73,7 +80,7 @@ export default function UserProfileDetail({
     },
     {
       id: "reportTitle",
-      accessorFn: (row) => row.full_result?.insights?.title || row.free_result?.insights?.title || row.personality_type || "Personality Analysis",
+      accessorFn: (row) => row.name || row.full_result?.insights?.title || row.free_result?.insights?.title || row.personality_type || "Personality Analysis",
       header: ({ column }) => (
         <Button
           variant="ghost"
@@ -84,7 +91,12 @@ export default function UserProfileDetail({
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       ),
-      cell: ({ row }) => <div>{row.getValue("reportTitle")}</div>,
+
+      cell: ({ row }) => (
+        <span className="max-w-[280px] block whitespace-normal line-clamp-3">
+          {row.getValue("reportTitle") || "N/A"}
+        </span>
+      ),
     },
     {
       accessorKey: "created_at",
@@ -117,7 +129,11 @@ export default function UserProfileDetail({
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
       ),
-      cell: ({ row }) => <div>{row.getValue("device_used") || "N/A"}</div>,
+      cell: ({ row }) => (
+        <span className="max-w-[280px] block whitespace-normal line-clamp-3">
+          {row.getValue("device_used") || "N/A"}
+        </span>
+      ),
     },
     {
       id: "type",
@@ -339,6 +355,40 @@ export default function UserProfileDetail({
           columns={reportColumns}
         />
       </div>
+
+      {meta && (
+        <div className="px-4 py-4 rounded-b-lg bg-custom-background-white border-t">
+          <AppPagination
+            meta={meta}
+            currentPage={meta?.current_page}
+            totalPages={meta?.last_page}
+            onClickPage={(val) =>
+              navigate({
+                to: ".",
+                search: { ...params, page: val },
+              })
+            }
+            onClickPrev={(val) =>
+              navigate({
+                to: ".",
+                search: { ...params, page: val },
+              })
+            }
+            onClickNext={(val) =>
+              navigate({
+                to: ".",
+                search: { ...params, page: val },
+              })
+            }
+            onPerPageChange={(perPage) =>
+              navigate({
+                to: ".",
+                search: { ...params, page: 1, per_page: perPage },
+              })
+            }
+          />
+        </div>
+      )}
       <ViewReportModal
         open={viewReportOpen}
         onOpenChange={setViewReportOpen}

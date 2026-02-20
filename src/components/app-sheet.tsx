@@ -28,7 +28,7 @@ export default function AppSheet({
                 showCloseButton={false}
                 className="w-[90vw] p-0 flex flex-col gap-0 sm:max-w-xl overflow-hidden rounded-lg data-[state=open]:rounded-lg"
             >
-                <SheetHeader className="p-4 border-b space-y-0 bg-white z-10 shrink-0 whitespace-nowrap">
+                <SheetHeader className="p-4 border-b space-y-0 bg-white z-10 shrink-0">
                     <div className="flex items-center justify-between gap-1">
                         <div className="flex items-center gap-2">
                             <Button
