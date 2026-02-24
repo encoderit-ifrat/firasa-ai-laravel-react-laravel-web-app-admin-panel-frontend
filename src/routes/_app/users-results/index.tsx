@@ -385,22 +385,22 @@ function RouteComponent() {
                     }),
                 },
               },
-              {
-                type: "update",
-                name: "edit",
-                icon: IconUpdate,
+              // {
+              //   type: "update",
+              //   name: "edit",
+              //   icon: IconUpdate,
 
-                props: {
-                  className: "text-primary",
-                  onClick: () =>
-                    setForm({
-                      type: "update",
-                      title: "Update User Result",
-                      description: "",
-                      id: String(data.id),
-                    }),
-                },
-              },
+              //   props: {
+              //     className: "text-primary",
+              //     onClick: () =>
+              //       setForm({
+              //         type: "update",
+              //         title: "Update User Result",
+              //         description: "",
+              //         id: String(data.id),
+              //       }),
+              //   },
+              // },
               {
                 type: "delete",
                 name: "delete",
@@ -565,7 +565,7 @@ function RouteComponent() {
         </div>
       )}
       {/* Create / Update Dialog */}
-      <Dialog
+      {/* <Dialog
         open={form.type === "create" || form.type === "update"}
         onOpenChange={() => setForm(FORM_DATA)}
       >
@@ -590,7 +590,7 @@ function RouteComponent() {
             />
           </div>
         </DialogContent>
-      </Dialog>
+      </Dialog> */}
       {/* Delete Dialog */}
       <AlertDialog
         open={form.type === "delete"}
