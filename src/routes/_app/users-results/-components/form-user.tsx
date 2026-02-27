@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslation } from "react-i18next";
 import AppSheet from "../../../../components/app-sheet";
 import {
   Form,
@@ -35,6 +36,7 @@ export default function FormUser({
   formData,
   onSuccess,
 }: TProps) {
+  const { t } = useTranslation();
   const form = useForm<TUserFormSchema>({
     resolver: zodResolver(UserFormSchema),
     defaultValues: {
@@ -72,7 +74,7 @@ export default function FormUser({
     <AppSheet
       open={open}
       onOpenChange={onClose}
-      title={formData ? "Update User" : "Add New User"}
+      title={formData ? t("users.updateUser") : t("users.addNewUser")}
       actions={
         <>
           <Button
@@ -85,7 +87,7 @@ export default function FormUser({
             }}
             className="capitalize"
           >
-            Cancel
+            {t("common.cancel")}
           </Button>
           <Button
             type="submit"
@@ -93,13 +95,11 @@ export default function FormUser({
             variant="customGradient"
             onClick={handleSubmit(onSubmit)}
           >
-            {formData ? "Update" : "Create"}
+            {formData ? t("common.update") : t("common.add")}
           </Button>
         </>
       }
     >
-
-
       <Form {...form}>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 py-4">
           {/* NAME */}
@@ -108,9 +108,9 @@ export default function FormUser({
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Name *</FormLabel>
+                <FormLabel>{t("table.name")} *</FormLabel>
                 <FormControl>
-                  <Input placeholder="Enter your name" {...field} />
+                  <Input placeholder={t("users.enterYourName")} {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -123,9 +123,13 @@ export default function FormUser({
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email *</FormLabel>
+                <FormLabel>{t("table.email")} *</FormLabel>
                 <FormControl>
-                  <Input type="email" placeholder="Enter your email" {...field} />
+                  <Input
+                    type="email"
+                    placeholder="Enter your email"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -138,19 +142,21 @@ export default function FormUser({
             name="gender"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Gender *</FormLabel>
+                <FormLabel>{t("users.gender")} *</FormLabel>
                 <FormControl>
                   <Select
                     value={field.value || undefined}
                     onValueChange={field.onChange}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder="Select gender" />
+                      <SelectValue placeholder={t("users.selectGender")} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="male">Male</SelectItem>
-                      <SelectItem value="female">Female</SelectItem>
-                      <SelectItem value="other">Other</SelectItem>
+                      <SelectItem value="male">{t("users.male")}</SelectItem>
+                      <SelectItem value="female">
+                        {t("users.female")}
+                      </SelectItem>
+                      <SelectItem value="other">{t("users.other")}</SelectItem>
                     </SelectContent>
                   </Select>
                 </FormControl>
@@ -165,7 +171,7 @@ export default function FormUser({
             name="datetime"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Date & Time *</FormLabel>
+                <FormLabel>{t("users.dateTime")} *</FormLabel>
                 <FormControl>
                   <Input type="datetime-local" {...field} />
                 </FormControl>

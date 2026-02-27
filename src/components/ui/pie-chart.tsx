@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Pie, PieChart, Cell } from "recharts";
 import { Card, CardContent, CardHeader, CardTitle } from "./card";
 import {
@@ -13,13 +14,6 @@ import { useGetDashboardDistribution } from "../../routes/_app/_dashboard/-api/q
 export const description = "A simple pie chart";
 
 type ChartRange = "daily" | "last_7_days" | "monthly" | "yearly" | "all";
-
-const rangeOptions: DropdownOption<ChartRange>[] = [
-  { label: "Daily", value: "daily" },
-  { label: "Last 7 days", value: "last_7_days" },
-  { label: "Month", value: "monthly" },
-  { label: "Year", value: "yearly" },
-];
 
 const chartConfig = {} satisfies ChartConfig;
 
@@ -57,7 +51,15 @@ const renderCustomLabel = ({
 };
 
 export function CircleChart() {
+  const { t } = useTranslation();
   const [range, setRange] = useState<ChartRange>("yearly");
+
+  const rangeOptions: DropdownOption<ChartRange>[] = [
+    { label: t("dashboard.daily"), value: "daily" },
+    { label: t("dashboard.last7days"), value: "last_7_days" },
+    { label: t("dashboard.month"), value: "monthly" },
+    { label: t("dashboard.year"), value: "yearly" },
+  ];
 
   const { data: dashboardDistribution } = useGetDashboardDistribution({
     params: {
@@ -71,20 +73,34 @@ export function CircleChart() {
   // Build chart data dynamically from API response
   const chartData = useMemo(() => {
     return [
-      { category: "Free", value: dashboardDistribution?.free ?? 0, fill: "#FFA1E6" },
-      { category: "Pro", value: dashboardDistribution?.pro ?? 0, fill: "#FA3ABC" },
-      { category: "Subscribers", value: dashboardDistribution?.subscribers ?? 0, fill: "#CC0A7E" },
+      {
+        category: t("charts.free"),
+        value: dashboardDistribution?.free ?? 0,
+        fill: "#FFA1E6",
+      },
+      {
+        category: t("charts.pro"),
+        value: dashboardDistribution?.pro ?? 0,
+        fill: "#FA3ABC",
+      },
+      {
+        category: t("charts.subscribers"),
+        value: dashboardDistribution?.subscribers ?? 0,
+        fill: "#CC0A7E",
+      },
     ];
-  }, [dashboardDistribution]);
+  }, [dashboardDistribution, t]);
 
   return (
     <Card>
       <CardHeader>
         <div className="flex items-center justify-between gap-4">
-          <CardTitle className="text-3xl font-semibold">Users</CardTitle>
+          <CardTitle className="text-3xl font-semibold">
+            {t("charts.users")}
+          </CardTitle>
           <DropdownSelector
             options={rangeOptions}
-            defaultValue={rangeOptions.find(opt => opt.value === range)}
+            defaultValue={rangeOptions.find((opt) => opt.value === range)}
             onChange={(opt) => setRange(opt.value)}
           />
         </div>
@@ -116,7 +132,6 @@ export function CircleChart() {
                 </Pie>
               </PieChart>
             </ChartContainer>
-
           </div>
 
           <div className="flex flex-col gap-3 lg:justify-center">

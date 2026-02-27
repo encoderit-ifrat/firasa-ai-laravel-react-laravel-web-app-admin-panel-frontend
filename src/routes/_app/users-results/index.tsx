@@ -1,12 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
-import type { ColumnDef, VisibilityState, RowSelectionState } from "@tanstack/react-table";
-import {
-  ArrowDown,
-  ChevronsUpDown,
-  Eye,
-  Rows3,
-  Trash2,
-} from "lucide-react";
+import { useTranslation } from "react-i18next";
+import type {
+  ColumnDef,
+  VisibilityState,
+  RowSelectionState,
+} from "@tanstack/react-table";
+import { ArrowDown, ChevronsUpDown, Eye, Rows3, Trash2 } from "lucide-react";
 import { useState } from "react";
 import {
   DropdownMenu,
@@ -67,6 +66,7 @@ const statusVariantMap = {
 } as const;
 
 function RouteComponent() {
+  const { t } = useTranslation();
   const [form, setForm] = useState<TForm>(FORM_DATA);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
@@ -78,7 +78,11 @@ function RouteComponent() {
   const debouncedSearch = useDebounce(search, 500);
 
   // API queries
-  const { data: usersResultsResponse, isLoading, refetch } = useGetAllUsersResults({
+  const {
+    data: usersResultsResponse,
+    isLoading,
+    refetch,
+  } = useGetAllUsersResults({
     params: {
       ...params,
       page: debouncedSearch ? -1 : params?.page,
@@ -93,7 +97,8 @@ function RouteComponent() {
 
   const { data, meta } = usersResultsResponse ?? {};
 
-  const { mutate: deleteUser, isPending: isPendingDelete } = useDeleteUserResult();
+  const { mutate: deleteUser, isPending: isPendingDelete } =
+    useDeleteUserResult();
   const { exportData } = useExport();
 
   const handleExport = async () => {
@@ -115,11 +120,11 @@ function RouteComponent() {
           endpoint: "/export-user-results",
           filename: "users-results.xlsx",
         },
-        exportParams
+        exportParams,
       );
     } catch (error) {
-      console.error("Export failed:", error);
-      toast.error("Failed to export users results");
+      console.error(t("messages.exportFailed"), error);
+      toast.error(t("messages.failedToExport"));
     }
   };
 
@@ -139,7 +144,7 @@ function RouteComponent() {
             aria-label="Select all"
           />
           <div className="flex items-center gap-1">
-            <span className="font-medium">SL</span>
+            <span className="font-medium">{t("settings.sl")}</span>
             <ArrowDown className="h-4 w-4 text-muted-foreground" />
           </div>
         </div>
@@ -167,13 +172,14 @@ function RouteComponent() {
           variant="ghost"
           onClick={() => {
             const isCurrent = params.order_by === "name";
-            const newOrder = isCurrent && params.order === "asc" ? "desc" : "asc";
+            const newOrder =
+              isCurrent && params.order === "asc" ? "desc" : "asc";
             navigate({
               search: { ...params, order_by: "name", order: newOrder },
             });
           }}
         >
-          Name
+          {t("table.name")}
           <ArrowDown />
         </Button>
       ),
@@ -188,14 +194,15 @@ function RouteComponent() {
           variant="ghost"
           onClick={() => {
             const isCurrent = params.order_by === "email";
-            const newOrder = isCurrent && params.order === "asc" ? "desc" : "asc";
+            const newOrder =
+              isCurrent && params.order === "asc" ? "desc" : "asc";
             navigate({
               search: { ...params, order_by: "email", order: newOrder },
             });
           }}
           className="flex items-center gap-1"
         >
-          Email
+          {t("table.email")}
           <ChevronsUpDown className="h-4 w-4" />
         </Button>
       ),
@@ -211,14 +218,19 @@ function RouteComponent() {
           variant="ghost"
           onClick={() => {
             const isCurrent = params.order_by === "last_device_used";
-            const newOrder = isCurrent && params.order === "asc" ? "desc" : "asc";
+            const newOrder =
+              isCurrent && params.order === "asc" ? "desc" : "asc";
             navigate({
-              search: { ...params, order_by: "last_device_used", order: newOrder },
+              search: {
+                ...params,
+                order_by: "last_device_used",
+                order: newOrder,
+              },
             });
           }}
           className="flex items-center gap-1"
         >
-          Device Used
+          {t("users.deviceUsed")}
           <ChevronsUpDown className="h-4 w-4" />
         </Button>
       ),
@@ -236,14 +248,15 @@ function RouteComponent() {
           variant="ghost"
           onClick={() => {
             const isCurrent = params.order_by === "plan";
-            const newOrder = isCurrent && params.order === "asc" ? "desc" : "asc";
+            const newOrder =
+              isCurrent && params.order === "asc" ? "desc" : "asc";
             navigate({
               search: { ...params, order_by: "plan", order: newOrder },
             });
           }}
           className="flex items-center gap-1"
         >
-          Plan
+          {t("users.plan")}
           <ChevronsUpDown className="h-4 w-4" />
         </Button>
       ),
@@ -259,7 +272,9 @@ function RouteComponent() {
         return (
           <Badge
             variant="outline"
-            className={cn(planColors[plan?.toLowerCase() as keyof typeof planColors])}
+            className={cn(
+              planColors[plan?.toLowerCase() as keyof typeof planColors],
+            )}
           >
             {plan?.charAt(0).toUpperCase() + plan?.slice(1) || "N/A"}
           </Badge>
@@ -273,20 +288,27 @@ function RouteComponent() {
           variant="ghost"
           onClick={() => {
             const isCurrent = params.order_by === "analysis_taken_count";
-            const newOrder = isCurrent && params.order === "asc" ? "desc" : "asc";
+            const newOrder =
+              isCurrent && params.order === "asc" ? "desc" : "asc";
             navigate({
-              search: { ...params, order_by: "analysis_taken_count", order: newOrder },
+              search: {
+                ...params,
+                order_by: "analysis_taken_count",
+                order: newOrder,
+              },
             });
           }}
           className="flex items-center gap-1"
         >
-          Tests Taken
+          {t("users.testsTaken")}
           <ChevronsUpDown className="h-4 w-4" />
         </Button>
       ),
       accessorKey: "analysis_taken_count",
       cell: ({ row }) => (
-        <div className="font-medium px-8">{row.getValue("analysis_taken_count")}</div>
+        <div className="font-medium px-8">
+          {row.getValue("analysis_taken_count")}
+        </div>
       ),
       size: 120,
     },
@@ -296,14 +318,19 @@ function RouteComponent() {
           variant="ghost"
           onClick={() => {
             const isCurrent = params.order_by === "last_analysis_date";
-            const newOrder = isCurrent && params.order === "asc" ? "desc" : "asc";
+            const newOrder =
+              isCurrent && params.order === "asc" ? "desc" : "asc";
             navigate({
-              search: { ...params, order_by: "last_analysis_date", order: newOrder },
+              search: {
+                ...params,
+                order_by: "last_analysis_date",
+                order: newOrder,
+              },
             });
           }}
           className="flex items-center gap-1"
         >
-          Last Test Date
+          {t("users.lastTestDate")}
           <ChevronsUpDown className="h-4 w-4" />
         </Button>
       ),
@@ -324,21 +351,23 @@ function RouteComponent() {
           variant="ghost"
           onClick={() => {
             const isCurrent = params.order_by === "status";
-            const newOrder = isCurrent && params.order === "asc" ? "desc" : "asc";
+            const newOrder =
+              isCurrent && params.order === "asc" ? "desc" : "asc";
             navigate({
               search: { ...params, order_by: "status", order: newOrder },
             });
           }}
           className="flex items-center gap-1"
         >
-          Status
+          {t("table.status")}
           <ChevronsUpDown className="h-4 w-4" />
         </Button>
       ),
       accessorKey: "status",
       cell: ({ row }) => {
         const status = row.getValue("status") as string;
-        const statusKey = status?.toLowerCase() as keyof typeof statusVariantMap;
+        const statusKey =
+          status?.toLowerCase() as keyof typeof statusVariantMap;
 
         return (
           <Badge variant={statusVariantMap[statusKey] || "unavailable"}>
@@ -347,7 +376,7 @@ function RouteComponent() {
                 "w-1.5 h-1.5 rounded-full",
                 statusKey === "active" && "bg-[#34C759]",
                 statusKey === "suspended" && "bg-[#FF9500]",
-                (statusKey === "inactive" || !statusKey) && "bg-[#FF3B30]"
+                (statusKey === "inactive" || !statusKey) && "bg-[#FF3B30]",
               )}
             />
             {status?.charAt(0).toUpperCase() + status?.slice(1) || "N/A"}
@@ -357,7 +386,7 @@ function RouteComponent() {
       size: 120,
     },
     {
-      header: "Actions",
+      header: t("table.actions"),
       accessorKey: "action",
       cell: ({ row }) => {
         const data = row.original;
@@ -422,7 +451,7 @@ function RouteComponent() {
     <div className="p-4">
       <div className="flex justify-between mb-6">
         <h1 className="text-primary text-custom-header-text text-4xl font-bold">
-          Users & Results
+          {t("users.usersAndResults")}
         </h1>
         {/* <Button
           variant="customGradient"
@@ -456,11 +485,13 @@ function RouteComponent() {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="gray">
-                  <Rows3 /> Columns
+                  <Rows3 /> {t("table.columns")}
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-[150px]">
-                <DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
+                <DropdownMenuLabel>
+                  {t("table.toggleColumns")}
+                </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 {(columns as any[])
                   .filter((column) => typeof column.accessorKey === "string")
@@ -487,11 +518,11 @@ function RouteComponent() {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="gray">
-                  <IconSort /> Sort
+                  <IconSort /> {t("common.sort")}
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-[150px]">
-                <DropdownMenuLabel>Sort Order</DropdownMenuLabel>
+                <DropdownMenuLabel>{t("table.sortOrder")}</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuRadioGroup
                   value={params.order || "desc"}
@@ -502,17 +533,17 @@ function RouteComponent() {
                   }
                 >
                   <DropdownMenuRadioItem value="asc">
-                    Ascending
+                    {t("table.ascending")}
                   </DropdownMenuRadioItem>
                   <DropdownMenuRadioItem value="desc">
-                    Descending
+                    {t("table.descending")}
                   </DropdownMenuRadioItem>
                 </DropdownMenuRadioGroup>
               </DropdownMenuContent>
             </DropdownMenu>
 
             <Button variant="outline" onClick={handleExport}>
-              <IconExport /> Export
+              <IconExport /> {t("common.export")}
             </Button>
           </div>
         </div>
@@ -590,17 +621,15 @@ function RouteComponent() {
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>
-              Are you sure you want to delete?
-            </AlertDialogTitle>
+            <AlertDialogTitle>{t("messages.confirmDelete")}</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone.
+              {t("messages.actionCannotBeUndone")}
             </AlertDialogDescription>
           </AlertDialogHeader>
 
           <AlertDialogFooter>
             <AlertDialogCancel className="capitalize min-w-24">
-              Cancel
+              {t("common.cancel")}
             </AlertDialogCancel>
 
             <Button
@@ -616,16 +645,16 @@ function RouteComponent() {
                         setForm(FORM_DATA);
                         refetch();
                       },
-                    }
+                    },
                   );
                 }
               }}
             >
-              <Trash2 /> Delete
+              <Trash2 /> {t("common.delete")}
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
     </div>
-  )
+  );
 }

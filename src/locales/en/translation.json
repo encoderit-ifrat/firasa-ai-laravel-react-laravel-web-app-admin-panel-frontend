@@ -44,25 +44,27 @@
     "logout": "Logout",
     "language": "Language",
     "theme": "Theme",
-    "upgradeToPro":"upgradeToPro"
+    "upgradeToPro": "Upgrade to Pro",
+    "columns": "Columns",
+    "toggleColumns": "Toggle columns"
   },
   "sidebar": {
-  "dashboard": "Dashboard",
-  "home": "Home",
-  "projects": "Projects",
-  "tasks": "Tasks",
-  "calendar": "Calendar",
-  "reports": "Reports",
-  "analytics": "Analytics",
-  "team": "Team",
-  "messages": "Messages",
-  "files": "Files",
-  "settings": "Settings",
-  "help": "Help",
-  "usersResults": "Users & Results",
-  "contentManagement": "Content Management",
-  "publicApiManagement": "Public API Management"
-},
+    "dashboard": "Dashboard",
+    "home": "Home",
+    "projects": "Projects",
+    "tasks": "Tasks",
+    "calendar": "Calendar",
+    "reports": "Reports",
+    "analytics": "Analytics",
+    "team": "Team",
+    "messages": "Messages",
+    "files": "Files",
+    "settings": "Settings",
+    "help": "Help",
+    "usersResults": "Users & Results",
+    "contentManagement": "Content Management",
+    "publicApiManagement": "Public API Management"
+  },
 
   "auth": {
     "login": "Login",
@@ -80,7 +82,26 @@
     "dontHaveAccount": "Don't have an account?",
     "signIn": "Sign In",
     "signUp": "Sign Up",
-    "signOut": "Sign Out"
+    "signOut": "Sign Out",
+    "signInToFaraseh": "Sign in to Faraseh",
+    "enterPassword": "Enter password",
+    "forgotPasswordQ": "Forgot Password?"
+  },
+  "settings": {
+    "title": "Settings",
+    "adminManagement": "Admin Management",
+    "apiKeysManagement": "API Keys Management",
+    "languageManagement": "Language Management",
+    "addNewAdmin": "Add New Admin",
+    "updateAdmin": "Update Admin",
+    "inviteAdmin": "Invite Admin",
+    "updating": "Updating...",
+    "creating": "Creating...",
+    "fullName": "Full Name",
+    "role": "Role",
+    "selectRole": "Select role",
+    "adminDataNotFound": "Admin data not found.",
+    "sl": "SL"
   },
   "profile": {
     "myProfile": "My Profile",
@@ -96,8 +117,7 @@
     "country": "Country",
     "zipCode": "ZIP Code",
     "avatar": "Avatar",
-    "upgradeToPro":"upgradeToPro"
-
+    "upgradeToPro": "upgradeToPro"
   },
   "dashboard": {
     "overview": "Overview",
@@ -109,7 +129,33 @@
     "activeTasks": "Active Tasks",
     "completedTasks": "Completed Tasks",
     "revenue": "Revenue",
-    "expenses": "Expenses"
+    "expenses": "Expenses",
+    "dashboard": "Dashboard",
+    "dashboardOverview": "Dashboard Overview",
+    "completedTests": "Completed Tests",
+    "upgradeToPro": "Upgrade to Pro",
+    "conversion": "Conversion",
+    "daily": "Daily",
+    "last7days": "Last 7 days",
+    "month": "Month",
+    "year": "Year"
+  },
+  "users": {
+    "usersAndResults": "Users & Results",
+    "addNewUser": "Add New User",
+    "updateUser": "Update User",
+    "deviceUsed": "Device Used",
+    "plan": "Plan",
+    "testsTaken": "Tests Taken",
+    "lastTestDate": "Last Test Date",
+    "gender": "Gender",
+    "selectGender": "Select gender",
+    "male": "Male",
+    "female": "Female",
+    "other": "Other",
+    "dateTime": "Date & Time",
+    "enterYourName": "Enter your name",
+    "enterYourEmail": "Enter your email"
   },
   "table": {
     "name": "Name",
@@ -123,7 +169,12 @@
     "noData": "No data available",
     "showingEntries": "Showing {{from}} to {{to}} of {{total}} entries",
     "search": "Search...",
-    "itemsPerPage": "Items per page"
+    "itemsPerPage": "Items per page",
+    "ascending": "Ascending",
+    "descending": "Descending",
+    "sortOrder": "Sort Order",
+    "columns": "Columns",
+    "toggleColumns": "Toggle columns"
   },
   "form": {
     "title": "Title",
@@ -167,7 +218,13 @@
       "delete": "Are you sure you want to delete this?",
       "cancel": "Are you sure you want to cancel?",
       "leave": "Are you sure you want to leave?"
-    }
+    },
+    "confirmDelete": "Are you sure you want to delete?",
+    "confirmDeleteUser": "Are you sure you want to delete this user? This action cannot be undone.",
+    "actionCannotBeUndone": "This action cannot be undone.",
+    "savedSuccessfully": "Saved successfully",
+    "failedToExport": "Failed to export users results",
+    "exportFailed": "Export failed:"
   },
   "status": {
     "active": "Active",
@@ -197,6 +254,16 @@
     "previous": "Previous",
     "page": "Page",
     "of": "of"
+  },
+  "charts": {
+    "users": "Users",
+    "free": "Free",
+    "pro": "Pro",
+    "subscribers": "Subscribers",
+    "conversionFunnel": "Conversion Funnel",
+    "visitors": "Visitors",
+    "testStarted": "Test Started",
+    "testCompleted": "Test Completed",
+    "upgraded": "Upgraded"
   }
- 
 }

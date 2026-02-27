@@ -1,12 +1,8 @@
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "./card";
+import { Card, CardContent, CardHeader, CardTitle } from "./card";
 import {
   ChartContainer,
   ChartTooltip,
@@ -20,26 +16,27 @@ export const description = "A stacked bar chart showing conversion funnel";
 
 type ChartRange = "daily" | "last_7_days" | "monthly" | "yearly" | "all";
 
-const rangeOptions: DropdownOption<ChartRange>[] = [
-  { label: "Daily", value: "daily" },
-  { label: "Last 7 days", value: "last_7_days" },
-  { label: "Month", value: "monthly" },
-  { label: "Year", value: "yearly" },
-];
-
-const chartConfig = {
-  conversion: {
-    label: "Conversion",
-    color: "#FFA1E6",
-  },
-  nonConversion: {
-    label: "Non-Conversion",
-    color: "#E5E5E5",
-  },
-} satisfies ChartConfig;
-
 export function LineChart() {
+  const { t } = useTranslation();
   const [range, setRange] = useState<ChartRange>("yearly");
+
+  const rangeOptions: DropdownOption<ChartRange>[] = [
+    { label: t("dashboard.daily"), value: "daily" },
+    { label: t("dashboard.last7days"), value: "last_7_days" },
+    { label: t("dashboard.month"), value: "monthly" },
+    { label: t("dashboard.year"), value: "yearly" },
+  ];
+
+  const chartConfig = {
+    conversion: {
+      label: t("dashboard.conversion"),
+      color: "#FFA1E6",
+    },
+    nonConversion: {
+      label: "Non-Conversion",
+      color: "#E5E5E5",
+    },
+  } satisfies ChartConfig;
 
   const { data: dashboardConversionFunnel } = useGetDashboardConversionFunnel({
     params: {
@@ -58,12 +55,12 @@ export function LineChart() {
     const upgraded = dashboardConversionFunnel?.upgraded ?? 0;
 
     return [
-      { category: "Visitors", conversion: visitors },
-      { category: "Test Started", conversion: testStarted },
-      { category: "Test Completed", conversion: testCompleted },
-      { category: "Upgraded", conversion: upgraded },
+      { category: t("charts.visitors"), conversion: visitors },
+      { category: t("charts.testStarted"), conversion: testStarted },
+      { category: t("charts.testCompleted"), conversion: testCompleted },
+      { category: t("charts.upgraded"), conversion: upgraded },
     ];
-  }, [dashboardConversionFunnel]);
+  }, [dashboardConversionFunnel, t]);
 
   // Calculate max value for Y-axis domain
   const maxValue = useMemo(() => {
@@ -76,11 +73,11 @@ export function LineChart() {
       <CardHeader>
         <div className="flex items-center justify-between gap-4">
           <CardTitle className="text-3xl font-semibold">
-            Conversion Funnel
+            {t("charts.conversionFunnel")}
           </CardTitle>
           <DropdownSelector
             options={rangeOptions}
-            defaultValue={rangeOptions.find(opt => opt.value === range)}
+            defaultValue={rangeOptions.find((opt) => opt.value === range)}
             onChange={(opt) => setRange(opt.value)}
           />
         </div>
@@ -92,17 +89,19 @@ export function LineChart() {
             data={chartData}
             margin={{ top: 5, right: 10, left: 0, bottom: 5 }}
           >
-            <CartesianGrid strokeDasharray="3 3" vertical={true} horizontal={false} stroke="#f0f0f0" />
+            <CartesianGrid
+              strokeDasharray="3 3"
+              vertical={true}
+              horizontal={false}
+              stroke="#f0f0f0"
+            />
             <XAxis
               dataKey="category"
               tickLine={false}
               tickMargin={10}
               axisLine={true}
             />
-            <YAxis
-              axisLine={true}
-              domain={[0, maxValue]}
-            />
+            <YAxis axisLine={true} domain={[0, maxValue]} />
             <ChartTooltip content={<ChartTooltipContent hideLabel />} />
             <Bar dataKey="conversion" fill="#FFA1E6" />
           </BarChart>
@@ -110,7 +109,9 @@ export function LineChart() {
         <div className="flex justify-center mt-4">
           <div className="flex items-center gap-2">
             <div className="w-3 h-3 rounded-sm bg-[#FFA1E6]"></div>
-            <span className="text-sm text-muted-foreground">Conversion</span>
+            <span className="text-sm text-muted-foreground">
+              {t("dashboard.conversion")}
+            </span>
           </div>
         </div>
       </CardContent>

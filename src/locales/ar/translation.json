@@ -43,25 +43,28 @@
     "settings": "الإعدادات",
     "logout": "تسجيل الخروج",
     "language": "اللغة",
-    "theme": "المظهر"
+    "theme": "المظهر",
+    "upgradeToPro": "ترقية إلى النسخة الاحترافية",
+    "columns": "الأعمدة",
+    "toggleColumns": "تبديل الأعمدة"
   },
   "sidebar": {
-  "dashboard": "لوحة التحكم",
-  "home": "الرئيسية",
-  "projects": "المشاريع",
-  "tasks": "المهام",
-  "calendar": "التقويم",
-  "reports": "التقارير",
-  "analytics": "التحليلات",
-  "team": "الفريق",
-  "messages": "الرسائل",
-  "files": "الملفات",
-  "settings": "الإعدادات",
-  "help": "المساعدة",
-  "usersResults": "المستخدمون والنتائج",
-  "contentManagement": "إدارة المحتوى",
-  "publicApiManagement": "إدارة واجهة برمجة التطبيقات العامة"
-},
+    "dashboard": "لوحة التحكم",
+    "home": "الرئيسية",
+    "projects": "المشاريع",
+    "tasks": "المهام",
+    "calendar": "التقويم",
+    "reports": "التقارير",
+    "analytics": "التحليلات",
+    "team": "الفريق",
+    "messages": "الرسائل",
+    "files": "الملفات",
+    "settings": "الإعدادات",
+    "help": "المساعدة",
+    "usersResults": "المستخدمون والنتائج",
+    "contentManagement": "إدارة المحتوى",
+    "publicApiManagement": "إدارة واجهة برمجة التطبيقات العامة"
+  },
 
   "auth": {
     "login": "تسجيل الدخول",
@@ -79,7 +82,26 @@
     "dontHaveAccount": "ليس لديك حساب؟",
     "signIn": "تسجيل الدخول",
     "signUp": "إنشاء حساب",
-    "signOut": "تسجيل الخروج"
+    "signOut": "تسجيل الخروج",
+    "signInToFaraseh": "تسجيل الدخول إلى فراسة",
+    "enterPassword": "أدخل كلمة المرور",
+    "forgotPasswordQ": "هل نسيت كلمة المرور؟"
+  },
+  "settings": {
+    "title": "الإعدادات",
+    "adminManagement": "إدارة المسؤولين",
+    "apiKeysManagement": "إدارة مفاتيح واجهة برمجة التطبيقات",
+    "languageManagement": "إدارة اللغات",
+    "addNewAdmin": "إضافة مسؤول جديد",
+    "updateAdmin": "تحديث المسؤول",
+    "inviteAdmin": "دعوة مسؤول",
+    "updating": "جارٍ التحديث...",
+    "creating": "جارٍ الإنشاء...",
+    "fullName": "الاسم الكامل",
+    "role": "الدور",
+    "selectRole": "اختر الدور",
+    "adminDataNotFound": "لم يتم العثور على بيانات المسؤول.",
+    "sl": "م"
   },
   "profile": {
     "myProfile": "ملفي الشخصي",
@@ -110,7 +132,33 @@
     "activeTasks": "المهام النشطة",
     "completedTasks": "المهام المكتملة",
     "revenue": "الإيرادات",
-    "expenses": "النفقات"
+    "expenses": "النفقات",
+    "dashboard": "لوحة التحكم",
+    "dashboardOverview": "نظرة عامة على لوحة التحكم",
+    "completedTests": "الاختبارات المكتملة",
+    "upgradeToPro": "ترقية إلى النسخة الاحترافية",
+    "conversion": "التحويل",
+    "daily": "يومي",
+    "last7days": "آخر 7 أيام",
+    "month": "شهر",
+    "year": "سنة"
+  },
+  "users": {
+    "usersAndResults": "المستخدمون والنتائج",
+    "addNewUser": "إضافة مستخدم جديد",
+    "updateUser": "تحديث المستخدم",
+    "deviceUsed": "الجهاز المستخدم",
+    "plan": "الخطة",
+    "testsTaken": "الاختبارات التي تم إجراؤها",
+    "lastTestDate": "تاريخ آخر اختبار",
+    "gender": "الجنس",
+    "selectGender": "اختر الجنس",
+    "male": "ذكر",
+    "female": "أنثى",
+    "other": "أخرى",
+    "dateTime": "التاريخ والوقت",
+    "enterYourName": "أدخل اسمك",
+    "enterYourEmail": "أدخل بريدك الإلكتروني"
   },
   "table": {
     "name": "الاسم",
@@ -124,7 +172,12 @@
     "noData": "لا توجد بيانات",
     "showingEntries": "عرض {{from}} إلى {{to}} من أصل {{total}} مدخلات",
     "search": "ابحث...",
-    "itemsPerPage": "عدد العناصر في الصفحة"
+    "itemsPerPage": "عدد العناصر في الصفحة",
+    "ascending": "تصاعدي",
+    "descending": "تنازلي",
+    "sortOrder": "ترتيب الفرز",
+    "columns": "الأعمدة",
+    "toggleColumns": "تبديل الأعمدة"
   },
   "form": {
     "title": "العنوان",
@@ -168,7 +221,13 @@
       "delete": "هل أنت متأكد أنك تريد حذف هذا؟",
       "cancel": "هل أنت متأكد أنك تريد الإلغاء؟",
       "leave": "هل أنت متأكد أنك تريد المغادرة؟"
-    }
+    },
+    "confirmDelete": "هل أنت متأكد أنك تريد الحذف؟",
+    "confirmDeleteUser": "هل أنت متأكد أنك تريد حذف هذا المستخدم؟ لا يمكن التراجع عن هذا الإجراء.",
+    "actionCannotBeUndone": "لا يمكن التراجع عن هذا الإجراء.",
+    "savedSuccessfully": "تم الحفظ بنجاح",
+    "failedToExport": "فشل تصدير نتائج المستخدمين",
+    "exportFailed": "فشل التصدير:"
   },
   "status": {
     "active": "نشط",
@@ -198,5 +257,16 @@
     "previous": "السابق",
     "page": "صفحة",
     "of": "من"
+  },
+  "charts": {
+    "users": "المستخدمون",
+    "free": "مجاني",
+    "pro": "احترافي",
+    "subscribers": "المشتركون",
+    "conversionFunnel": "قمع التحويل",
+    "visitors": "الزوار",
+    "testStarted": "بدء الاختبار",
+    "testCompleted": "اكتمل الاختبار",
+    "upgraded": "تمت الترقية"
   }
 }

@@ -1,15 +1,23 @@
-
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "../../../../components/ui/button";
 import { Input } from "../../../../components/ui/input";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../../../components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "../../../../components/ui/form";
 import { PasswordInput } from "../../../../components/ui/password-input";
 import { FormSchema, type TFormSchema } from "../-type/form";
 import { useLogin } from "../-api/use-login";
 import { Link } from "@tanstack/react-router";
+import { useTranslation } from "react-i18next";
 
 export function FormLogin() {
+  const { t } = useTranslation();
   const { mutate: login, isPending } = useLogin();
 
   const form = useForm<TFormSchema>({
@@ -28,7 +36,9 @@ export function FormLogin() {
   return (
     <div className="w-full max-w-[484px] mx-auto p-12 py-16 bg-white rounded-[14px]">
       <div className="flex flex-col gap-6">
-        <h1 className="text-3xl font-bold text-center text-[#3D3D3D] mb-4">Sign in to Faraseh</h1>
+        <h1 className="text-3xl font-bold text-center text-[#3D3D3D] mb-4">
+          {t("auth.signInToFaraseh")}
+        </h1>
 
         {/* <div className="flex flex-col gap-3">
           <Button
@@ -62,7 +72,10 @@ export function FormLogin() {
         </div> */}
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-5">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="flex flex-col gap-5"
+          >
             <FormField
               control={form.control}
               name="email"
@@ -70,7 +83,7 @@ export function FormLogin() {
                 <FormItem>
                   <div className="group relative">
                     <FormLabel className="-translate-y-1/2 absolute start-1 top-0 z-10 block bg-white px-2 text-xs text-[#3D3D3D]">
-                      Email *
+                      {t("auth.email")} *
                     </FormLabel>
                     <FormControl>
                       <Input
@@ -93,11 +106,11 @@ export function FormLogin() {
                 <FormItem>
                   <div className="group relative">
                     <FormLabel className="-translate-y-1/2 absolute start-1 top-0 z-10 block bg-white px-2 text-xs text-[#3D3D3D]">
-                      Password *
+                      {t("auth.password")} *
                     </FormLabel>
                     <FormControl>
                       <PasswordInput
-                        placeholder="Enter password"
+                        placeholder={t("auth.enterPassword")}
                         className="h-[60px] px-4 py-6 border-[#E5E7EB] rounded-[6px] focus:ring-0 focus:border-[#FF5B4D] text-base"
                         {...field}
                       />
@@ -115,14 +128,18 @@ export function FormLogin() {
               loading={isPending}
               className="w-full h-[60px] text-lg font-bold text-black"
             >
-              Sign in
+              {t("auth.signIn")}
             </Button>
           </form>
         </Form>
 
         <div className="flex justify-center items-center gap-1.5 mt-2 text-sm text-[#6B7280]">
-          <Link to="/forgot-password" title="Forgot Password" className="font-bold text-[#3D3D3D] hover:text-[#3D3D3D] transition-colors hover:underline cursor-pointer">
-            Forgot Password?
+          <Link
+            to="/forgot-password"
+            title={t("auth.forgotPasswordQ")}
+            className="font-bold text-[#3D3D3D] hover:text-[#3D3D3D] transition-colors hover:underline cursor-pointer"
+          >
+            {t("auth.forgotPasswordQ")}
           </Link>
         </div>
       </div>

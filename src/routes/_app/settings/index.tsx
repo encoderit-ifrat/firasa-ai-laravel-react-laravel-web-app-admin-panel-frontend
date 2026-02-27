@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useTranslation } from "react-i18next";
 import type { ColumnDef } from "@tanstack/react-table";
 import {
   Eye,
@@ -68,8 +69,8 @@ type ContentSection =
   | "admin-management"
   | "api-keys-management"
   | "language-management";
-
 function RouteComponent() {
+  const { t } = useTranslation();
   const [form, setForm] = useState<TForm>(FORM_DATA);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
@@ -83,9 +84,12 @@ function RouteComponent() {
   const debouncedSearch = useDebounce(search, 500); // 500ms delay
 
   const contentSections = [
-    { id: "admin-management" as ContentSection, label: "Admin Management" },
-    // { id: 'api-keys-management' as ContentSection, label: 'API Keys Management' },
-    // { id: 'language-management' as ContentSection, label: 'Language Management' },
+    {
+      id: "admin-management" as ContentSection,
+      label: t("settings.adminManagement"),
+    },
+    // { id: 'api-keys-management' as ContentSection, label: t('settings.apiKeysManagement') },
+    // { id: 'language-management' as ContentSection, label: t('settings.languageManagement') },
   ];
 
   // Pass debouncedSearch along with params from URL
@@ -188,7 +192,7 @@ function RouteComponent() {
             aria-label="Select all"
           />
           <div className="flex items-center gap-1">
-            <span className="font-medium">SL</span>
+            <span className="font-medium">{t("settings.sl")}</span>
             <ArrowDown className="h-4 w-4 text-muted-foreground" />
           </div>
         </div>
@@ -223,7 +227,7 @@ function RouteComponent() {
             });
           }}
         >
-          Name
+          {t("table.name")}
           <ArrowDown />
         </Button>
       ),
@@ -245,7 +249,7 @@ function RouteComponent() {
           }}
           className="flex items-center gap-1"
         >
-          Email
+          {t("table.email")}
           <ChevronsUpDown className="h-4 w-4" />
         </Button>
       ),
@@ -265,7 +269,7 @@ function RouteComponent() {
           }}
           className="flex items-center gap-1"
         >
-          Created At
+          {t("table.createdAt")}
           <ChevronsUpDown className="h-4 w-4" />
         </Button>
       ),
@@ -278,7 +282,7 @@ function RouteComponent() {
       },
     },
     {
-      header: "Actions",
+      header: t("table.actions"),
       accessorKey: "action",
       cell: ({ row }) => {
         const data = row.original;
@@ -294,7 +298,7 @@ function RouteComponent() {
                   onClick: () =>
                     setForm({
                       type: "read",
-                      title: "View User Result",
+                      title: t("settings.updateAdmin"),
                       description: "",
                       id: data.id,
                     }),
@@ -309,7 +313,7 @@ function RouteComponent() {
                   onClick: () =>
                     setForm({
                       type: "update",
-                      title: "Update User Result",
+                      title: t("settings.updateAdmin"),
                       description: "",
                       id: data.id,
                     }),
@@ -376,7 +380,7 @@ function RouteComponent() {
       <div className="px-4">
         <div className="flex justify-between mb-6 mt-6">
           <h1 className="text-primary text-custom-header-text text-4xl font-bold">
-            Settings
+            {t("settings.title")}
           </h1>
           <Button
             size="icon-lg"
@@ -384,12 +388,12 @@ function RouteComponent() {
             onClick={() =>
               setForm({
                 type: "create",
-                title: "Add New Admin",
+                title: t("settings.addNewAdmin"),
                 description: "",
               })
             }
           >
-            <Plus /> Add New Admin
+            <Plus /> {t("settings.addNewAdmin")}
           </Button>
         </div>
 
@@ -425,7 +429,7 @@ function RouteComponent() {
 
         <div className="mb-4">
           <h2 className="text-xl font-semibold mb-4 capitalize text-primary">
-            {activeSection.replace(/-/g, " ")}
+            {contentSections.find((s) => s.id === activeSection)?.label}
           </h2>
           <div className="flex justify-between mb-4">
             <SearchBar
@@ -437,11 +441,13 @@ function RouteComponent() {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="gray">
-                    <Rows3 /> Columns
+                    <Rows3 /> {t("table.columns")}
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-[150px]">
-                  <DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
+                  <DropdownMenuLabel>
+                    {t("table.toggleColumns")}
+                  </DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   {(columns as any[])
                     .filter((column) => typeof column.accessorKey === "string")
@@ -470,11 +476,11 @@ function RouteComponent() {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="gray">
-                    <IconSort /> Sort
+                    <IconSort /> {t("common.sort")}
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-[150px]">
-                  <DropdownMenuLabel>Sort Order</DropdownMenuLabel>
+                  <DropdownMenuLabel>{t("table.sortOrder")}</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuRadioGroup
                     value={params.order || "desc"}
@@ -485,17 +491,17 @@ function RouteComponent() {
                     }
                   >
                     <DropdownMenuRadioItem value="asc">
-                      Ascending
+                      {t("table.ascending")}
                     </DropdownMenuRadioItem>
                     <DropdownMenuRadioItem value="desc">
-                      Descending
+                      {t("table.descending")}
                     </DropdownMenuRadioItem>
                   </DropdownMenuRadioGroup>
                 </DropdownMenuContent>
               </DropdownMenu>
 
               <Button variant="outline" onClick={handleExport}>
-                <IconExport /> Export
+                <IconExport /> {t("common.export")}
               </Button>
             </div>
           </div>
@@ -550,7 +556,9 @@ function RouteComponent() {
             {form.id ? (
               <CardAdmin form_data={{ type: "read", id: form.id }} />
             ) : (
-              <p className="text-muted-foreground">Admin data not found.</p>
+              <p className="text-muted-foreground">
+                {t("settings.adminDataNotFound")}
+              </p>
             )}
           </div>
         </DialogContent>
@@ -579,17 +587,14 @@ function RouteComponent() {
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>
-              Are you sure you want to delete?
-            </AlertDialogTitle>
+            <AlertDialogTitle>{t("messages.confirmDelete")}</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete this user? This action cannot be
-              undone.
+              {t("messages.confirmDeleteUser")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="flex gap-2">
             <AlertDialogCancel className="capitalize min-w-24">
-              Cancel
+              {t("common.cancel")}
             </AlertDialogCancel>
             <Button
               variant="destructive"
@@ -607,7 +612,7 @@ function RouteComponent() {
                 )
               }
             >
-              <Trash2 /> Delete
+              <Trash2 /> {t("common.delete")}
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>

@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useTranslation } from "react-i18next";
 import { Card } from "../../../components/ui/card";
 import { Button } from "../../../components/ui/button";
 import IconUser from "../../../components/svg-icon/icon-user";
@@ -18,27 +19,23 @@ import {
   DropdownMenuTrigger,
 } from "../../../components/ui/dropdown-menu";
 
-const rangeOptions = [
-  { label: "Daily", value: "daily" },
-  { label: "Last 7 days", value: "last_7_days" },
-  { label: "Month", value: "monthly" },
-  { label: "Year", value: "yearly" },
-] as const;
+const getRangeOptions = (t: any) =>
+  [
+    { label: t("dashboard.daily"), value: "daily" },
+    { label: t("dashboard.last7days"), value: "last_7_days" },
+    { label: t("dashboard.month"), value: "monthly" },
+    { label: t("dashboard.year"), value: "yearly" },
+  ] as const;
 
-type TRangeValue = (typeof rangeOptions)[number]["value"];
-
-
-
-
-
+type TRangeValue = "daily" | "last_7_days" | "monthly" | "yearly";
 
 export const Route = createFileRoute("/_app/_dashboard/")({
   component: RouteComponent,
 });
 
-
-
 function RouteComponent() {
+  const { t } = useTranslation();
+  const rangeOptions = getRangeOptions(t);
   const [range, setRange] = useState<TRangeValue>("daily");
 
   const { data: dashboardOverview } = useGetDashboardOverview({
@@ -50,14 +47,13 @@ function RouteComponent() {
     },
   });
 
-
   // Dashboard cards with real data from API
   const dashboardCards = [
     {
       id: 1,
       icon: IconUser,
       value: dashboardOverview?.total_users?.toLocaleString() ?? "0",
-      label: "Total Users",
+      label: t("dashboard.totalUsers"),
       trend: MiniAreaChart,
       trendType: "positive" as const,
     },
@@ -65,7 +61,7 @@ function RouteComponent() {
       id: 2,
       icon: IconComplete,
       value: dashboardOverview?.completed_tests?.toLocaleString() ?? "0",
-      label: "Completed Tests",
+      label: t("dashboard.completedTests"),
       trend: MiniAreaChart,
       trendType: "positive" as const,
     },
@@ -73,7 +69,7 @@ function RouteComponent() {
       id: 3,
       icon: IconUpgrade,
       value: dashboardOverview?.upgraded_to_pro?.toLocaleString() ?? "0",
-      label: "Upgrade to Pro",
+      label: t("dashboard.upgradeToPro"),
       trend: MiniAreaChart,
       trendType: "positive" as const,
     },
@@ -81,16 +77,21 @@ function RouteComponent() {
       id: 4,
       icon: IconConversion,
       value: `${dashboardOverview?.conversion_rate ?? 0}%`,
-      label: "Conversion",
+      label: t("dashboard.conversion"),
       trend: MiniAreaChart,
-      trendType: (dashboardOverview?.conversion_rate ?? 0) >= 50 ? "positive" as const : "negative" as const,
+      trendType:
+        (dashboardOverview?.conversion_rate ?? 0) >= 50
+          ? ("positive" as const)
+          : ("negative" as const),
     },
   ];
 
   return (
     <section className="px-4">
       <div className="flex justify-between items-center">
-        <h1 className="text-primary text-custom-header-text text-4xl font-bold">Dashboard</h1>
+        <h1 className="text-primary text-custom-header-text text-4xl font-bold">
+          {t("dashboard.dashboard")}
+        </h1>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button size="lg" variant="gray">
@@ -112,7 +113,7 @@ function RouteComponent() {
       </div>
       <div className="mt-6 mb-10">
         <h6 className="text-xl font-semibold text-primary leading-[150%]">
-          Dashboard Overview
+          {t("dashboard.dashboardOverview")}
         </h6>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -146,9 +147,11 @@ function RouteComponent() {
           );
         })}
       </div>
-      <div className="divider border-1 mt-6"></div>
+      <div className="divider border mt-6"></div>
       <section className="mb-20">
-        <h1 className="text-primary mt-14 mb-10 text-xl font-medium">Statistics</h1>
+        <h1 className="text-primary mt-14 mb-10 text-xl font-medium">
+          {t("dashboard.statistics")}
+        </h1>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <CircleChart />
           <LineChart />

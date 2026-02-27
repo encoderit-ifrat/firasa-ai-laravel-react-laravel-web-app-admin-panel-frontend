@@ -1,8 +1,15 @@
 import { ArrowRight, ChevronLeftIcon } from "lucide-react";
 import { usePagination } from "../hooks/use-pagination";
-import { Pagination, PaginationContent, PaginationEllipsis, PaginationItem, PaginationLink } from "./ui/pagination";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+} from "./ui/pagination";
 import { cn } from "../lib/utils";
 import { buttonVariants } from "./ui/button";
+import { useTranslation } from "react-i18next";
 
 type PaginationProps = {
   meta?: {
@@ -35,8 +42,9 @@ export default function AppPagination({
   onClickPage,
   onClickPrev,
   onClickNext,
-  // onPerPageChange,
-}: PaginationProps) {
+}: // onPerPageChange,
+PaginationProps) {
+  const { t } = useTranslation();
   const { pages, showLeftEllipsis, showRightEllipsis } = usePagination({
     currentPage,
     totalPages,
@@ -61,7 +69,9 @@ export default function AppPagination({
               size="default"
             >
               <ChevronLeftIcon size={16} aria-hidden="true" />
-              <span className="ml-1 hidden sm:block">Previous</span>
+              <span className="ml-1 hidden sm:block">
+                {t("pagination.previous")}
+              </span>
             </PaginationLink>
           </PaginationItem>
         )}
@@ -82,7 +92,7 @@ export default function AppPagination({
                   "rounded-md w-9 h-9 transition-all duration-200",
                   page === currentPage
                     ? "bg-card text-foreground shadow-sm ring-1 ring-border/50 hover:bg-card"
-                    : "text-muted-foreground hover:bg-transparent hover:text-foreground"
+                    : "text-muted-foreground hover:bg-transparent hover:text-foreground",
                 )}
                 isActive={page === currentPage}
                 onClick={() => onClickPage(page)}
@@ -109,13 +119,13 @@ export default function AppPagination({
                 buttonVariants({
                   variant: "customGradient",
                 }),
-                "rounded-md shadow-sm gap-2 px-4"
+                "rounded-md shadow-sm gap-2 px-4",
               )}
               onClick={() => onClickNext(currentPage + 1)}
               aria-label="Go to next page"
               size="default"
             >
-              <span>Next</span>
+              <span>{t("pagination.next")}</span>
               <ArrowRight size={16} aria-hidden="true" />
             </PaginationLink>
           </PaginationItem>

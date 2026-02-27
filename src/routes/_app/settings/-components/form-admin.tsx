@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslation } from "react-i18next";
 
 import AppSheet from "../../../../components/app-sheet";
 import {
@@ -15,10 +16,7 @@ import { Input } from "../../../../components/ui/input";
 import { Button } from "../../../../components/ui/button";
 import { DropdownSelect } from "../../../../components/DropdownSelect";
 
-import {
-  AdminFormSchema,
-  type TAdminFormSchema,
-} from "../-type/admin-form";
+import { AdminFormSchema, type TAdminFormSchema } from "../-type/admin-form";
 import { useGetAllRoleDropdown } from "../-api/queries/use-dropdown-role";
 import { useCreateUser } from "../-api/mutations/use-create-user";
 import { useUpdateUser } from "../-api/mutations/use-update-user";
@@ -48,6 +46,7 @@ export default function FormAdmin({
   formData,
   onSuccess,
 }: TProps) {
+  const { t } = useTranslation();
   const form = useForm<TAdminFormSchema>({
     resolver: zodResolver(AdminFormSchema),
     defaultValues: {
@@ -58,9 +57,9 @@ export default function FormAdmin({
     },
   });
 
-  const { mutate: createUser, isPending: creating} = useCreateUser();
+  const { mutate: createUser, isPending: creating } = useCreateUser();
   const { mutate: updateUser, isPending: updating } = useUpdateUser();
-  
+
   // Fetch roles - API returns { data: [...], meta: {...} }
   const { data: rolesResponse } = useGetAllRoleDropdown({});
   console.log("🚀 ~ FormAdmin ~ rolesResponse:", rolesResponse);
@@ -74,8 +73,8 @@ export default function FormAdmin({
       const transformedData = {
         ...formData,
         roles: Array.isArray(formData.roles)
-          ? formData.roles.map((role: number | RoleData) => 
-              typeof role === 'object' ? role.id : role
+          ? formData.roles.map((role: number | RoleData) =>
+              typeof role === "object" ? role.id : role,
             )
           : formData.roles,
       };
@@ -86,7 +85,7 @@ export default function FormAdmin({
 
   function onSubmit(values: TAdminFormSchema) {
     console.log("🚀 ~ Submitting values:", values);
-    
+
     if (isUpdateMode && formData?.id) {
       // Update existing admin
       updateUser(
@@ -100,7 +99,7 @@ export default function FormAdmin({
             onClose();
             onSuccess?.();
           },
-        }
+        },
       );
     } else {
       // Create new admin
@@ -109,7 +108,6 @@ export default function FormAdmin({
           form.reset();
           onClose();
           onSuccess?.();
-         
         },
       });
     }
@@ -119,7 +117,9 @@ export default function FormAdmin({
     <AppSheet
       open={open}
       onOpenChange={onClose}
-      title={isUpdateMode ? "Update Admin" : "Add New Admin"}
+      title={
+        isUpdateMode ? t("settings.updateAdmin") : t("settings.addNewAdmin")
+      }
       actions={
         <div className="flex items-center gap-2">
           <Button
@@ -131,7 +131,7 @@ export default function FormAdmin({
               onClose();
             }}
           >
-            Cancel
+            {t("common.cancel")}
           </Button>
 
           <Button
@@ -142,8 +142,12 @@ export default function FormAdmin({
             disabled={creating || updating}
           >
             {creating || updating
-              ? isUpdateMode ? "Updating..." : "Creating..."
-              : isUpdateMode ? "Update Admin" : "Invite Admin"}
+              ? isUpdateMode
+                ? t("settings.updating")
+                : t("settings.creating")
+              : isUpdateMode
+                ? t("settings.updateAdmin")
+                : t("settings.inviteAdmin")}
           </Button>
         </div>
       }
@@ -160,9 +164,12 @@ export default function FormAdmin({
             name="name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Full Name *</FormLabel>
+                <FormLabel>{t("settings.fullName")} *</FormLabel>
                 <FormControl>
-                  <Input placeholder="Full Name..." {...field} />
+                  <Input
+                    placeholder={t("settings.fullName") + "..."}
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -175,9 +182,13 @@ export default function FormAdmin({
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email *</FormLabel>
+                <FormLabel>{t("auth.email")} *</FormLabel>
                 <FormControl>
-                  <Input type="email" placeholder="mail@domain.com" {...field} />
+                  <Input
+                    type="email"
+                    placeholder="mail@domain.com"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -190,15 +201,21 @@ export default function FormAdmin({
             name="roles"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Role *</FormLabel>
+                <FormLabel>{t("settings.role")} *</FormLabel>
                 <FormControl>
                   <DropdownSelect
-                    value={field.value?.[0] ? String(field.value[0]) : undefined}
-                    options={rolesResponse?.data?.map((role: RoleData) => ({
-                      label: role.name.charAt(0).toUpperCase() + role.name.slice(1),
-                      value: String(role.id),
-                    })) ?? []}
-                    placeholder="Select role"
+                    value={
+                      field.value?.[0] ? String(field.value[0]) : undefined
+                    }
+                    options={
+                      rolesResponse?.data?.map((role: RoleData) => ({
+                        label:
+                          role.name.charAt(0).toUpperCase() +
+                          role.name.slice(1),
+                        value: String(role.id),
+                      })) ?? []
+                    }
+                    placeholder={t("settings.selectRole")}
                     onChange={(value) => field.onChange([Number(value)])}
                     className="w-full"
                   />
