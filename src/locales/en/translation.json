@@ -73,6 +73,7 @@
     "password": "Password",
     "confirmPassword": "Confirm Password",
     "forgotPassword": "Forgot Password?",
+    "forgotPasswordTitle": "Forgot Password",
     "resetPassword": "Reset Password",
     "rememberMe": "Remember Me",
     "name": "Name",
@@ -83,7 +84,12 @@
     "signIn": "Sign In",
     "signUp": "Sign Up",
     "signOut": "Sign Out",
-    "signInToFaraseh": "Sign in to Firasa",
+    "signInToFirasa": "Sign in to Firasa",
+    "createAccount": "Create Account",
+    "fullName": "Full Name",
+    "enterEmail": "Enter your email",
+    "backToLogin": "Back to Login",
+    "updatePassword": "Update Password",
     "enterPassword": "Enter password",
     "forgotPasswordQ": "Forgot Password?"
   },
@@ -271,5 +277,13 @@
     "testStarted": "Test Started",
     "testCompleted": "Test Completed",
     "upgraded": "Upgraded"
+  },
+  "common": {
+    "view": "View",
+    "edit": "Edit",
+    "delete": "Delete",
+    "johnDoe": "John Doe",
+    "mailPlaceholder": "mail@domain.com",
+    "submit": "Submit"
   }
 }

@@ -37,7 +37,7 @@ export function FormLogin() {
     <div className="w-full max-w-[484px] mx-auto p-12 py-16 bg-white rounded-[14px]">
       <div className="flex flex-col gap-6">
         <h1 className="text-3xl font-bold text-center text-[#3D3D3D] mb-4">
-          {t("auth.signInToFaraseh")}
+          {t("auth.signInToFirasa")}
         </h1>
 
         {/* <div className="flex flex-col gap-3">

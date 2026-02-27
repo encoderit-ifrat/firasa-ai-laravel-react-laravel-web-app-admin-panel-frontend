@@ -1,5 +1,6 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslation } from "react-i18next";
 import { Button } from "../../../../components/ui/button";
 import {
   Form,
@@ -21,6 +22,7 @@ type TProps = {
 };
 
 export default function FormResetPassword({ email, token }: TProps) {
+  const { t } = useTranslation();
   const { mutate: resetPassword, status } = useResetPassword();
 
   const form = useForm<TFormSchema>({ resolver: zodResolver(FormSchema) });
@@ -29,7 +31,7 @@ export default function FormResetPassword({ email, token }: TProps) {
   useEffect(() => {
     setValue("email", email);
     setValue("token", token);
-  }, [email, token, setValue])
+  }, [email, token, setValue]);
 
   function onSubmit(values: TFormSchema) {
     resetPassword(values);
@@ -38,10 +40,15 @@ export default function FormResetPassword({ email, token }: TProps) {
   return (
     <div className="w-full max-w-[484px] mx-auto p-12 py-16 bg-white rounded-[14px]">
       <div className="flex flex-col gap-6">
-        <h1 className="text-3xl font-bold text-center text-[#3D3D3D] mb-4">Reset Password</h1>
+        <h1 className="text-3xl font-bold text-center text-[#3D3D3D] mb-4">
+          {t("auth.resetPassword")}
+        </h1>
 
         <Form {...form}>
-          <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="flex flex-col gap-5"
+          >
             <FormField
               control={control}
               name="password"
@@ -49,11 +56,11 @@ export default function FormResetPassword({ email, token }: TProps) {
                 <FormItem>
                   <div className="group relative">
                     <FormLabel className="-translate-y-1/2 absolute start-1 top-0 z-10 block bg-white px-2 text-xs text-[#3D3D3D]">
-                      Password *
+                      {t("auth.password")} *
                     </FormLabel>
                     <FormControl>
                       <PasswordInput
-                        placeholder="Enter password"
+                        placeholder={t("auth.enterPassword")}
                         className="h-[60px] px-4 py-6 border-[#E5E7EB] rounded-[6px] focus:ring-0 focus:border-[#FF5B4D] text-base"
                         {...field}
                       />
@@ -71,11 +78,11 @@ export default function FormResetPassword({ email, token }: TProps) {
                 <FormItem>
                   <div className="group relative">
                     <FormLabel className="-translate-y-1/2 absolute start-1 top-0 z-10 block bg-white px-2 text-xs text-[#3D3D3D]">
-                      Confirm Password *
+                      {t("auth.confirmPassword")} *
                     </FormLabel>
                     <FormControl>
                       <PasswordInput
-                        placeholder="Confirm password"
+                        placeholder={t("auth.confirmPassword")}
                         className="h-[60px] px-4 py-6 border-[#E5E7EB] rounded-[6px] focus:ring-0 focus:border-[#FF5B4D] text-base"
                         {...field}
                       />
@@ -93,7 +100,7 @@ export default function FormResetPassword({ email, token }: TProps) {
               className="w-full h-[60px] text-lg font-bold text-black"
               loading={status === "pending"}
             >
-              Update Password
+              {t("auth.updatePassword")}
             </Button>
           </form>
         </Form>
@@ -103,7 +110,7 @@ export default function FormResetPassword({ email, token }: TProps) {
             to="/login"
             className="font-bold text-[#3D3D3D] hover:underline cursor-pointer"
           >
-            Back to Login
+            {t("auth.backToLogin")}
           </Link>
         </div>
       </div>

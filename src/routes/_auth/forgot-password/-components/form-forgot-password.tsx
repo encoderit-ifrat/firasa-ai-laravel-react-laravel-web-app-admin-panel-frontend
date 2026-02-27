@@ -1,5 +1,6 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useTranslation } from "react-i18next";
 import { Button } from "../../../../components/ui/button";
 import {
   Form,
@@ -14,9 +15,8 @@ import { useForgotPassword } from "../-api";
 import { Input } from "../../../../components/ui/input";
 import { Link } from "@tanstack/react-router";
 
-
-
 export default function FormForgotPassword() {
+  const { t } = useTranslation();
   const { mutate: forgotPassword, status } = useForgotPassword();
 
   const form = useForm<TFormSchema>({
@@ -38,10 +38,15 @@ export default function FormForgotPassword() {
   return (
     <div className="w-full max-w-[484px] mx-auto p-12 py-16 bg-white rounded-[14px]">
       <div className="flex flex-col gap-6">
-        <h1 className="text-3xl font-bold text-center text-[#3D3D3D] mb-4">Forgot Password</h1>
+        <h1 className="text-3xl font-bold text-center text-[#3D3D3D] mb-4">
+          {t("auth.forgotPasswordTitle")}
+        </h1>
 
         <Form {...form}>
-          <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-8">
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="flex flex-col gap-8"
+          >
             <FormField
               control={control}
               name="email"
@@ -49,12 +54,12 @@ export default function FormForgotPassword() {
                 <FormItem>
                   <div className="group relative">
                     <FormLabel className="-translate-y-1/2 absolute start-1 top-0 z-10 block bg-white px-2 text-xs text-[#3D3D3D]">
-                      Email *
+                      {t("auth.email")} *
                     </FormLabel>
                     <FormControl>
                       <Input
                         type="email"
-                        placeholder="Enter your email"
+                        placeholder={t("auth.enterEmail")}
                         className="h-[60px] px-4 py-6 border-[#E5E7EB] rounded-[6px] focus:ring-0 focus:border-[#FF5B4D] placeholder:text-[#9CA3AF] text-base"
                         {...field}
                       />
@@ -72,7 +77,7 @@ export default function FormForgotPassword() {
               className="w-full h-[60px] text-lg font-bold text-black"
               loading={status === "pending"}
             >
-              Submit
+              {t("common.submit")}
             </Button>
           </form>
         </Form>
@@ -82,7 +87,7 @@ export default function FormForgotPassword() {
             to="/login"
             className="font-bold text-[#3D3D3D] hover:text-[#3D3D3D] transition-colors hover:underline cursor-pointer"
           >
-            Back to Login
+            {t("auth.backToLogin")}
           </Link>
         </div>
       </div>

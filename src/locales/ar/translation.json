@@ -72,8 +72,9 @@
     "email": "البريد الإلكتروني",
     "password": "كلمة المرور",
     "confirmPassword": "تأكيد كلمة المرور",
-    "forgotPassword": "هل نسيت كلمة المرور؟",
-    "resetPassword": "إعادة تعيين كلمة المرور",
+    "forgotPassword": "نسيت كلمة السر",
+    "forgotPasswordTitle": "نسيت كلمة السر",
+    "resetPassword": "إعادة تعيين كلمة السر",
     "rememberMe": "تذكرني",
     "name": "الاسم",
     "username": "اسم المستخدم",
@@ -81,9 +82,14 @@
     "alreadyHaveAccount": "هل لديك حساب بالفعل؟",
     "dontHaveAccount": "ليس لديك حساب؟",
     "signIn": "تسجيل الدخول",
-    "signUp": "إنشاء حساب",
+    "signUp": "تسجيل",
     "signOut": "تسجيل الخروج",
-    "signInToFaraseh": "تسجيل الدخول إلى فراسة",
+    "signInToFirasa": "تسجيل الدخول إلى Firasa",
+    "createAccount": "إنشاء حساب",
+    "fullName": "الاسم الكامل",
+    "enterEmail": "أدخل بريدك الإلكتروني",
+    "backToLogin": "العودة إلى تسجيل الدخول",
+    "updatePassword": "تحديث كلمة السر",
     "enterPassword": "أدخل كلمة المرور",
     "forgotPasswordQ": "هل نسيت كلمة المرور؟"
   },
@@ -274,5 +280,13 @@
     "testStarted": "بدء الاختبار",
     "testCompleted": "اكتمل الاختبار",
     "upgraded": "تمت الترقية"
+  },
+  "common": {
+    "view": "عرض",
+    "edit": "تعديل",
+    "delete": "حذف",
+    "johnDoe": "جون دو",
+    "mailPlaceholder": "mail@domain.com",
+    "submit": "إرسال"
   }
 }
