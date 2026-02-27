@@ -26,7 +26,7 @@ import { cn } from "../lib/utils";
 import { useIsMobile } from "../hooks/use-mobile";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const {
     location: { pathname },
   } = useRouterState();
@@ -85,8 +85,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     },
   ];
 
-  // RTL support: open sidebar from right for Arabic
-  const sidebarSide = i18n.language === "ar" ? "right" : "left";
+  // Force sidebar to left side regardless of language
+  const sidebarSide = "left";
 
   const isMobile = useIsMobile();
 

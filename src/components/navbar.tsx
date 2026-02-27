@@ -43,7 +43,7 @@ export default function Navbar() {
     const option = LANGUAGES.find((lang) => lang.value === value);
     if (option) {
       i18n.changeLanguage(option.value);
-      document.documentElement.dir = option.value === "ar" ? "rtl" : "ltr";
+      // document.documentElement.dir = option.value === "ar" ? "rtl" : "ltr";
       localStorage.setItem("language", option.value);
     }
   };
