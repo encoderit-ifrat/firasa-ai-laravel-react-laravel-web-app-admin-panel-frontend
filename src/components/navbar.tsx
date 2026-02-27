@@ -13,25 +13,23 @@ import { NotificationDropdown } from "./notification-dropdown";
 const USFlag = ({ className }: { className?: string }) => (
   <span className={className || "text-base leading-none"}>🇺🇸</span>
 );
-const BDFlag = ({ className }: { className?: string }) => (
-  <span className={className || "text-base leading-none"}>🇧🇩</span>
-);
+// const BDFlag = ({ className }: { className?: string }) => (
+//   <span className={className || "text-base leading-none"}>🇧🇩</span>
+// );
 const SAFlag = ({ className }: { className?: string }) => (
   <span className={className || "text-base leading-none"}>🇸🇦</span>
 );
 
 const LANGUAGES: DropdownOption<string>[] = [
   { value: "en", label: "English", icon: USFlag },
-  { value: "bn", label: "Bangla", icon: BDFlag },
+  // { value: "bn", label: "Bangla", icon: BDFlag },
   { value: "ar", label: "Arabic", icon: SAFlag },
 ];
 
 export default function Navbar() {
   const { t } = useTranslation();
-  console.log("🚀 ~ Navbar ~ t:", t)
+  console.log("🚀 ~ Navbar ~ t:", t);
   const isMobile = useIsMobile();
-  
-
 
   // Load saved language from localStorage
   useEffect(() => {
@@ -58,8 +56,6 @@ export default function Navbar() {
     email: userData?.email || "encoderit@gmail.com",
     avatar: userData?.avatar_url || "/image/profilePhoto.png",
   };
-
-
 
   // Get current language value
   const currentLanguage = i18n.language || "en";
