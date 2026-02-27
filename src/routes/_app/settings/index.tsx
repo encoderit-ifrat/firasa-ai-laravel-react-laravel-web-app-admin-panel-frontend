@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
 import {
   Eye,
@@ -24,7 +24,7 @@ import type { TForm } from "../../../types/form";
 import { FORM_DATA } from "../../../data/form";
 import AppActionsDropdown from "../../../components/app-actions-dropdown";
 import AppTable from "../../../components/app-table";
-import AppPagination from '../../../components/app-pagination';
+import AppPagination from "../../../components/app-pagination";
 import { Button } from "../../../components/ui/button";
 import SearchBar from "../../../components/ui/search-bar";
 import IconSort from "../../../components/svg-icon/icon-sort";
@@ -47,30 +47,34 @@ import {
   AlertDialogCancel,
 } from "../../../components/ui/alert-dialog";
 import { cn } from "../../../lib/utils";
-import FormAdmin from './-components/form-admin';
-import IconUpdate from '../../../components/svg-icon/icon-update';
-import IconDelete from '../../../components/svg-icon/icon-delete';
-import CardAdmin from './-components/card-admin';
-import { useGetAllUsers } from './-api/queries/use-get-all-users';
-import type { TAdminSchema } from './-type/admin';
-import { useDeleteUser } from './-api/mutations/use-delete-user';
-import { SearchSchema } from '../../../types/search';
-import { useDebounce } from '../../../hooks/search-hooks';
-import Loading from '../../../components/base/loading';
-import { useExport } from '../../../hooks/use-export';
+import FormAdmin from "./-components/form-admin";
+import IconUpdate from "../../../components/svg-icon/icon-update";
+import IconDelete from "../../../components/svg-icon/icon-delete";
+import CardAdmin from "./-components/card-admin";
+import { useGetAllUsers } from "./-api/queries/use-get-all-users";
+import type { TAdminSchema } from "./-type/admin";
+import { useDeleteUser } from "./-api/mutations/use-delete-user";
+import { SearchSchema } from "../../../types/search";
+import { useDebounce } from "../../../hooks/search-hooks";
+import Loading from "../../../components/base/loading";
+import { useExport } from "../../../hooks/use-export";
 
-export const Route = createFileRoute('/_app/settings/')({
+export const Route = createFileRoute("/_app/settings/")({
   component: RouteComponent,
   validateSearch: SearchSchema,
-})
+});
 
-type ContentSection = 'admin-management' | 'api-keys-management' | 'language-management';
+type ContentSection =
+  | "admin-management"
+  | "api-keys-management"
+  | "language-management";
 
 function RouteComponent() {
   const [form, setForm] = useState<TForm>(FORM_DATA);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
-  const [activeSection, setActiveSection] = useState<ContentSection>('admin-management');
+  const [activeSection, setActiveSection] =
+    useState<ContentSection>("admin-management");
   const params = Route.useSearch();
   const navigate = Route.useNavigate();
 
@@ -79,13 +83,17 @@ function RouteComponent() {
   const debouncedSearch = useDebounce(search, 500); // 500ms delay
 
   const contentSections = [
-    { id: 'admin-management' as ContentSection, label: 'Admin Management' },
-    { id: 'api-keys-management' as ContentSection, label: 'API Keys Management' },
-    { id: 'language-management' as ContentSection, label: 'Language Management' },
+    { id: "admin-management" as ContentSection, label: "Admin Management" },
+    // { id: 'api-keys-management' as ContentSection, label: 'API Keys Management' },
+    // { id: 'language-management' as ContentSection, label: 'Language Management' },
   ];
 
   // Pass debouncedSearch along with params from URL
-  const { data: users, isLoading: isLoading, refetch } = useGetAllUsers({
+  const {
+    data: users,
+    isLoading: isLoading,
+    refetch,
+  } = useGetAllUsers({
     params: {
       ...params, // This includes page and per_page from URL
       page: debouncedSearch ? -1 : params?.page,
@@ -123,7 +131,7 @@ function RouteComponent() {
           endpoint: "export/system-users", // Assuming this is the endpoint for admin export
           filename: "admins.xlsx",
         },
-        exportParams
+        exportParams,
       );
     } catch (error) {
       console.error("Export failed:", error);
@@ -208,7 +216,8 @@ function RouteComponent() {
           variant="ghost"
           onClick={() => {
             const isCurrent = params.order_by === "name";
-            const newOrder = isCurrent && params.order === "asc" ? "desc" : "asc";
+            const newOrder =
+              isCurrent && params.order === "asc" ? "desc" : "asc";
             navigate({
               search: { ...params, order_by: "name", order: newOrder },
             });
@@ -263,7 +272,9 @@ function RouteComponent() {
       accessorKey: "created_at",
       cell: ({ row }) => {
         const date = new Date(row.getValue("created_at"));
-        return <div className="font-medium px-4">{date.toLocaleDateString()}</div>;
+        return (
+          <div className="font-medium px-4">{date.toLocaleDateString()}</div>
+        );
       },
     },
     {
@@ -328,9 +339,11 @@ function RouteComponent() {
 
   const renderContent = () => {
     switch (activeSection) {
-      case 'admin-management':
+      case "admin-management":
         return isLoading ? (
-          <div className="p-8 text-center"><Loading /></div>
+          <div className="p-8 text-center">
+            <Loading />
+          </div>
         ) : (
           <AppTable
             data={data ?? []}
@@ -341,10 +354,18 @@ function RouteComponent() {
             onRowSelectionChange={setRowSelection}
           />
         );
-      case 'api-keys-management':
-        return <div className="p-8 text-center text-gray-500">API Keys Management content goes here</div>;
-      case 'language-management':
-        return <div className="p-8 text-center text-gray-500">Language Management content goes here</div>;
+      case "api-keys-management":
+        return (
+          <div className="p-8 text-center text-gray-500">
+            API Keys Management content goes here
+          </div>
+        );
+      case "language-management":
+        return (
+          <div className="p-8 text-center text-gray-500">
+            Language Management content goes here
+          </div>
+        );
       default:
         return null;
     }
@@ -354,7 +375,9 @@ function RouteComponent() {
     <div className="space-y-4 p-4">
       <div className="px-4">
         <div className="flex justify-between mb-6 mt-6">
-          <h1 className="text-primary text-custom-header-text text-4xl font-bold">Settings</h1>
+          <h1 className="text-primary text-custom-header-text text-4xl font-bold">
+            Settings
+          </h1>
           <Button
             size="icon-lg"
             variant="customGradient"
@@ -388,7 +411,7 @@ function RouteComponent() {
                   "hover:text-gray-900",
                   activeSection === section.id
                     ? "text-gradient"
-                    : "text-gray-600"
+                    : "text-gray-600",
                 )}
               >
                 {section.label}
@@ -401,9 +424,15 @@ function RouteComponent() {
         </div>
 
         <div className="mb-4">
-          <h2 className="text-xl font-semibold mb-4 capitalize text-primary">{activeSection.replace(/-/g, ' ')}</h2>
+          <h2 className="text-xl font-semibold mb-4 capitalize text-primary">
+            {activeSection.replace(/-/g, " ")}
+          </h2>
           <div className="flex justify-between mb-4">
-            <SearchBar variant="bordered" searchValue={search} onSearchChange={setSearch} />
+            <SearchBar
+              variant="bordered"
+              searchValue={search}
+              onSearchChange={setSearch}
+            />
             <div className="flex gap-2">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -477,7 +506,7 @@ function RouteComponent() {
       </div>
 
       {/* Data Info & Pagination */}
-      {activeSection === 'admin-management' && !isLoading && meta && (
+      {activeSection === "admin-management" && !isLoading && meta && (
         <div className="flex items-center justify-between px-4">
           <AppPagination
             meta={meta}
@@ -554,7 +583,8 @@ function RouteComponent() {
               Are you sure you want to delete?
             </AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete this user? This action cannot be undone.
+              Are you sure you want to delete this user? This action cannot be
+              undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter className="flex gap-2">
@@ -573,7 +603,7 @@ function RouteComponent() {
                       setForm(FORM_DATA);
                       refetch();
                     },
-                  }
+                  },
                 )
               }
             >

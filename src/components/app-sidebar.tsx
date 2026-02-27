@@ -69,20 +69,20 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       isActive: isActiveLink(["/settings"]),
       isVisible: true,
     },
-    {
-      name: t("sidebar.contentManagement", "Content Management"),
-      url: "/content-management",
-      icon: IconContent,
-      isActive: isActiveLink(["/content-management"]),
-      isVisible: true,
-    },
-    {
-      name: t("sidebar.publicApiManagement", "Public API Management"),
-      url: "/public-api-management",
-      icon: IconPublicApi,
-      isActive: isActiveLink(["/public-api-management"]),
-      isVisible: true,
-    },
+    // {
+    //   name: t("sidebar.contentManagement", "Content Management"),
+    //   url: "/content-management",
+    //   icon: IconContent,
+    //   isActive: isActiveLink(["/content-management"]),
+    //   isVisible: true,
+    // },
+    // {
+    //   name: t("sidebar.publicApiManagement", "Public API Management"),
+    //   url: "/public-api-management",
+    //   icon: IconPublicApi,
+    //   isActive: isActiveLink(["/public-api-management"]),
+    //   isVisible: true,
+    // },
   ];
 
   // Force sidebar to left side regardless of language
