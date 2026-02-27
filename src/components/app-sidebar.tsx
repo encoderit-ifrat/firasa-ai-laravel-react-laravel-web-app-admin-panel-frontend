@@ -25,7 +25,6 @@ import { ChevronsUpDown } from "lucide-react";
 import { cn } from "../lib/utils";
 import { useIsMobile } from "../hooks/use-mobile";
 
-
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { t, i18n } = useTranslation();
   const {
@@ -112,7 +111,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               {/* LEFT: LOGO */}
               <div className="flex items-center gap-1">
                 <IconHead className="size-8 shrink-0 cursor-pointer" />
-                <IconHeaderName className="h-5 w-auto -ml-1" />
+                <div className="text-3xl font-bold text-gradient">Firasa</div>
+                {/* <IconHeaderName className="h-5 w-auto -ml-1" /> */}
               </div>
 
               {/* RIGHT: TOGGLE */}
@@ -131,16 +131,18 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <NewNavUser user={user}>
           <SidebarMenuButton
             size="lg"
-            className={cn("data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground border-2 rounded-full  bg-[#F4F2F3]", {
-              "p-0 border-none": isMobile
-            })}
+            className={cn(
+              "data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground border-2 rounded-full  bg-[#F4F2F3]",
+              {
+                "p-0 border-none": isMobile,
+              },
+            )}
           >
             <NewNavUserAvatar className="h-8 w-8" />
             <NewNavUserInfo />
             <ChevronsUpDown className="ml-auto size-4" />
           </SidebarMenuButton>
         </NewNavUser>
-
       </SidebarFooter>
     </Sidebar>
   );
