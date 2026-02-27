@@ -65,6 +65,16 @@ const statusVariantMap = {
   inactive: "unavailable",
 } as const;
 
+const columnLabelMap: Record<string, string> = {
+  name: "table.name",
+  email: "table.email",
+  last_device_used: "users.deviceUsed",
+  plan: "users.plan",
+  analysis_taken_count: "users.testsTaken",
+  last_analysis_date: "users.lastTestDate",
+  status: "table.status",
+};
+
 function RouteComponent() {
   const { t } = useTranslation();
   const [form, setForm] = useState<TForm>(FORM_DATA);
@@ -237,7 +247,7 @@ function RouteComponent() {
       accessorKey: "last_device_used",
       cell: ({ row }) => (
         <div className="font-medium px-6">
-          {row.getValue("last_device_used") || "N/A"}
+          {row.getValue("last_device_used") || t("common.none")}
         </div>
       ),
       size: 150,
@@ -276,7 +286,7 @@ function RouteComponent() {
               planColors[plan?.toLowerCase() as keyof typeof planColors],
             )}
           >
-            {plan?.charAt(0).toUpperCase() + plan?.slice(1) || "N/A"}
+            {plan ? t(`plans.${plan.toLowerCase()}`) : "N/A"}
           </Badge>
         );
       },
@@ -339,7 +349,7 @@ function RouteComponent() {
         const date = row.getValue("last_analysis_date") as string | null;
         return (
           <div className="font-medium px-6">
-            {date ? new Date(date).toLocaleDateString() : "01/12/2022"}
+            {date ? new Date(date).toLocaleDateString() : t("common.none")}
           </div>
         );
       },
@@ -379,7 +389,7 @@ function RouteComponent() {
                 (statusKey === "inactive" || !statusKey) && "bg-[#FF3B30]",
               )}
             />
-            {status?.charAt(0).toUpperCase() + status?.slice(1) || "N/A"}
+            {status ? t(`status.${statusKey}`) : "N/A"}
           </Badge>
         );
       },
@@ -508,7 +518,10 @@ function RouteComponent() {
                           }))
                         }
                       >
-                        {column.accessorKey.replace(/_/g, " ")}
+                        {t(
+                          columnLabelMap[column.accessorKey] ||
+                            column.accessorKey.replace(/_/g, " "),
+                        )}
                       </DropdownMenuCheckboxItem>
                     );
                   })}

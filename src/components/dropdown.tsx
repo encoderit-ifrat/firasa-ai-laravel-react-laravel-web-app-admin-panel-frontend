@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ChevronDown } from "lucide-react";
 import { Button } from "./ui/button";
 import {
@@ -27,20 +27,35 @@ export function DropdownSelector<T = string>({
   onChange,
   buttonClassName,
 }: DropdownSelectorProps<T>) {
-  const [selected, setSelected] = useState<DropdownOption<T>>(defaultValue || options[0]);
+  const [selectedValue, setSelectedValue] = useState<T>(
+    (defaultValue || options[0]).value,
+  );
+
+  // Sync state if defaultValue changes
+  useEffect(() => {
+    if (defaultValue) {
+      setSelectedValue(defaultValue.value);
+    }
+  }, [defaultValue?.value]);
+
+  const currentOption =
+    options.find((opt) => opt.value === selectedValue) || options[0];
 
   const handleSelect = (option: DropdownOption<T>) => {
-    console.log(option)
-    setSelected(option);
+    setSelectedValue(option.value);
     onChange?.(option);
   };
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="lg" className={`flex items-center gap-2 bg-[#F4F2F3] ${buttonClassName || ""}`}>
-          {selected.icon && <selected.icon className="w-4 h-4" />}
-          {selected.label}
+        <Button
+          variant="outline"
+          size="lg"
+          className={`flex items-center gap-2 bg-[#F4F2F3] ${buttonClassName || ""}`}
+        >
+          {currentOption.icon && <currentOption.icon className="w-4 h-4" />}
+          {currentOption.label}
           <ChevronDown className="w-4 h-4" />
         </Button>
       </DropdownMenuTrigger>

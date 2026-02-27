@@ -237,7 +237,13 @@
     "inProgress": "قيد التنفيذ",
     "cancelled": "ملغى",
     "draft": "مسودة",
-    "published": "منشور"
+    "published": "منشور",
+    "suspended": "موقوف"
+  },
+  "plans": {
+    "free": "مجاني",
+    "pro": "احترافي",
+    "premium": "متميز"
   },
   "time": {
     "today": "اليوم",

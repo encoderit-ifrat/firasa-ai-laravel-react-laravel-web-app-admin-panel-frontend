@@ -234,7 +234,13 @@
     "inProgress": "In Progress",
     "cancelled": "Cancelled",
     "draft": "Draft",
-    "published": "Published"
+    "published": "Published",
+    "suspended": "Suspended"
+  },
+  "plans": {
+    "free": "Free",
+    "pro": "Pro",
+    "premium": "Premium"
   },
   "time": {
     "today": "Today",
