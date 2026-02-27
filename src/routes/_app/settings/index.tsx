@@ -60,6 +60,13 @@ import { useDebounce } from "../../../hooks/search-hooks";
 import Loading from "../../../components/base/loading";
 import { useExport } from "../../../hooks/use-export";
 
+const columnLabelMap: Record<string, string> = {
+  name: "table.name",
+  email: "table.email",
+  created_at: "table.createdAt",
+  action: "table.actions",
+};
+
 export const Route = createFileRoute("/_app/settings/")({
   component: RouteComponent,
   validateSearch: SearchSchema,
@@ -282,7 +289,7 @@ function RouteComponent() {
       },
     },
     {
-      header: t("table.actions"),
+      header: () => t("table.actions"),
       accessorKey: "action",
       cell: ({ row }) => {
         const data = row.original;
@@ -291,10 +298,11 @@ function RouteComponent() {
             actions={[
               {
                 type: "read",
-                name: "view",
+                name: t("common.view"),
                 icon: Eye,
                 props: {
                   variant: "update",
+                  "aria-label": t("common.view"),
                   onClick: () =>
                     setForm({
                       type: "read",
@@ -306,10 +314,11 @@ function RouteComponent() {
               },
               {
                 type: "update",
-                name: "edit",
+                name: t("common.edit"),
                 icon: IconUpdate,
                 props: {
                   variant: "update",
+                  "aria-label": t("common.edit"),
                   onClick: () =>
                     setForm({
                       type: "update",
@@ -321,10 +330,11 @@ function RouteComponent() {
               },
               {
                 type: "delete",
-                name: "delete",
+                name: t("common.delete"),
                 icon: IconDelete,
                 props: {
                   variant: "delete",
+                  "aria-label": t("common.delete"),
                   onClick: () =>
                     setForm({
                       type: "delete",
@@ -338,6 +348,7 @@ function RouteComponent() {
           />
         );
       },
+      size: 100,
     },
   ];
 
@@ -435,6 +446,7 @@ function RouteComponent() {
             <SearchBar
               variant="bordered"
               searchValue={search}
+              searchPlaceholder={t("table.search")}
               onSearchChange={setSearch}
             />
             <div className="flex gap-2">
@@ -466,7 +478,10 @@ function RouteComponent() {
                             }))
                           }
                         >
-                          {column.accessorKey.replace(/_/g, " ")}
+                          {t(
+                            columnLabelMap[column.accessorKey] ||
+                              column.accessorKey.replace(/_/g, " "),
+                          )}
                         </DropdownMenuCheckboxItem>
                       );
                     })}

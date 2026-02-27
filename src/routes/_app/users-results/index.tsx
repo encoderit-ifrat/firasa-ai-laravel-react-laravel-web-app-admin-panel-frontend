@@ -73,6 +73,7 @@ const columnLabelMap: Record<string, string> = {
   analysis_taken_count: "users.testsTaken",
   last_analysis_date: "users.lastTestDate",
   status: "table.status",
+  action: "table.actions",
 };
 
 function RouteComponent() {
@@ -396,7 +397,7 @@ function RouteComponent() {
       size: 120,
     },
     {
-      header: t("table.actions"),
+      header: () => t("table.actions"),
       accessorKey: "action",
       cell: ({ row }) => {
         const data = row.original;
@@ -405,10 +406,11 @@ function RouteComponent() {
             actions={[
               {
                 type: "read",
-                name: "view",
+                name: t("common.view"),
                 icon: Eye,
                 props: {
                   className: "text-primary",
+                  "aria-label": t("common.view"),
                   onClick: () =>
                     navigate({
                       to: "/users-results/$userId",
@@ -416,28 +418,13 @@ function RouteComponent() {
                     }),
                 },
               },
-              // {
-              //   type: "update",
-              //   name: "edit",
-              //   icon: IconUpdate,
-
-              //   props: {
-              //     className: "text-primary",
-              //     onClick: () =>
-              //       setForm({
-              //         type: "update",
-              //         title: "Update User Result",
-              //         description: "",
-              //         id: String(data.id),
-              //       }),
-              //   },
-              // },
               {
                 type: "delete",
-                name: "delete",
+                name: t("common.delete"),
                 icon: IconDelete,
                 props: {
                   variant: "delete",
+                  "aria-label": t("common.delete"),
                   onClick: () =>
                     setForm({
                       type: "delete",
@@ -488,6 +475,7 @@ function RouteComponent() {
                   search: { ...params, page: 1 },
                 });
               }}
+              searchPlaceholder={t("table.search")}
               variant="bordered"
             />
           </div>
